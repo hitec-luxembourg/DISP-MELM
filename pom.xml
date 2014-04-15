@@ -30,6 +30,7 @@
   <properties>
     <schema.file>schema.ddl</schema.file>
     <schema.dir>resources/db</schema.dir>
+    <jersey.version>2.6</jersey.version>
   </properties>
 
   <profiles>
@@ -153,7 +154,7 @@
       <version>2.5</version>
       <scope>provided</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
@@ -170,6 +171,24 @@
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
       <version>1.9</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.glassfish.jersey.containers</groupId>
+      <artifactId>jersey-container-servlet</artifactId>
+      <version>${jersey.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.glassfish.jersey.ext</groupId>
+      <artifactId>jersey-spring3</artifactId>
+      <version>${jersey.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.glassfish.jersey.ext</groupId>
+      <artifactId>jersey-mvc-jsp</artifactId>
+      <version>${jersey.version}</version>
     </dependency>
   </dependencies>
 </project>

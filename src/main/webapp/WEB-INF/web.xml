@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+<web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 
   <!-- =================================== === General things =================================== -->
 
@@ -12,8 +11,8 @@
 
   <!-- =================================== === SPRING =================================== -->
 
-  <!-- Start the Spring listener that loads the application context when the Web app starts up. It assumes the context is named WEB-INF/applicationContext.xml 
-    unless you set a context param called contextConfigLocation to override it. -->
+  <!-- Start the Spring listener that loads the application context when the Web app starts up. It assumes the context is named WEB-INF/applicationContext.xml unless you set a context param called contextConfigLocation 
+    to override it. -->
   <listener>
     <description>Starts Spring listener to load app context</description>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
@@ -30,6 +29,35 @@
   <listener>
     <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
   </listener>
+
+  <filter>
+    <filter-name>jersey-spring</filter-name>
+    <filter-class>org.glassfish.jersey.servlet.ServletContainer</filter-class>
+    <init-param>
+      <param-name>javax.ws.rs.Application</param-name>
+      <param-value>org.ocha.hdx.rest.MyResourceConfig</param-value>
+    </init-param>
+    <init-param>
+      <description>Base directory for JSP templates to be included</description>
+      <param-name>jersey.config.server.mvc.templateBasePath.jsp</param-name>
+      <param-value>/WEB-INF/jsp</param-value>
+    </init-param>
+
+    <init-param>
+      <param-name>jersey.config.server.provider.classnames</param-name>
+      <param-value>org.glassfish.jersey.server.mvc.jsp.JspMvcFeature</param-value>
+    </init-param>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>jersey-spring</filter-name>
+    <url-pattern>/login/</url-pattern>
+  </filter-mapping>
+
+  <filter-mapping>
+    <filter-name>jersey-spring</filter-name>
+    <url-pattern>/logout/</url-pattern>
+  </filter-mapping>
 
   <!-- =================================== === Error pages =================================== -->
 
