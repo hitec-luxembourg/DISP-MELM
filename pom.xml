@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>lu.hitec.pssu</groupId>
   <artifactId>MELM</artifactId>
@@ -7,6 +6,57 @@
   <packaging>war</packaging>
   <name>Map Element Library Manager</name>
   <description>Map Element Library Manager</description>
+
+  <properties>
+    <schema.file>schema.ddl</schema.file>
+    <schema.dir>resources/db</schema.dir>
+  </properties>
+
+  <profiles>
+    <profile>
+      <id>prod</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+    </profile>
+    <profile>
+      <id>ddl</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>hibernate3-maven-plugin</artifactId>
+            <version>2.2</version>
+            <executions>
+              <execution>
+                <phase>process-classes</phase>
+                <goals>
+                  <goal>hbm2ddl</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <components>
+                <component>
+                  <name>hbm2ddl</name>
+                  <outputDirectory>${schema.dir}</outputDirectory>
+                  <implementation>jpaconfiguration</implementation>
+                </component>
+              </components>
+              <componentProperties>
+                <persistenceunit>melm</persistenceunit>
+                <outputfilename>${schema.file}</outputfilename>
+                <drop>true</drop>
+                <create>true</create>
+                <export>false</export>
+                <format>true</format>
+              </componentProperties>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
   <dependencies>
     <dependency>
@@ -27,7 +77,7 @@
       <version>4.0.3.RELEASE</version>
       <scope>test</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
@@ -56,6 +106,24 @@
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
       <version>2.4</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <version>4.3.4.Final</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
+      <version>4.3.4.Final</version>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <version>1.9</version>
     </dependency>
   </dependencies>
 </project>
