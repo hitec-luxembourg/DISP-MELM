@@ -1,1 +1,1 @@
-melmservice.library.folder = ${project.baseDir}/melmservice/library
+melmservice.library.folder = ${project.build.directory}/melmservice/library

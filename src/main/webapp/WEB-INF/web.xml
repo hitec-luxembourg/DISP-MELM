@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+
+  <!-- =================================== === General things =================================== -->
+
+  <display-name>DISP Map Element Library Manager</display-name>
+
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+  </welcome-file-list>
+
+  <!-- =================================== === SPRING =================================== -->
+
+  <!-- Start the Spring listener that loads the application context when the Web app starts up. It assumes the context is named WEB-INF/applicationContext.xml 
+    unless you set a context param called contextConfigLocation to override it. -->
+  <listener>
+    <description>Starts Spring listener to load app context</description>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>
+      classpath:/ctx-config.xml
+    </param-value>
+  </context-param>
+
+  <!-- Lets the Spring bean definition file specify scopes of request and session. -->
+  <listener>
+    <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+  </listener>
+
+  <!-- =================================== === Error pages =================================== -->
+
+  <error-page>
+    <error-code>404</error-code>
+    <location>/WEB-INF/jsp/404.jsp</location>
+  </error-page>
+</web-app>

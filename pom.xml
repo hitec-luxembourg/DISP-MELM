@@ -2,11 +2,31 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>lu.hitec.pssu</groupId>
-  <artifactId>MELM</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <artifactId>DISP-MELM</artifactId>
+  <version>1.0.0</version>
   <packaging>war</packaging>
   <name>Map Element Library Manager</name>
   <description>Map Element Library Manager</description>
+
+  <!-- Inject maven output directory value in melmservice and also prevent bad copy of zip files -->
+  <build>
+    <testResources>
+      <testResource>
+        <directory>src/test/resources</directory>
+        <filtering>true</filtering>
+        <includes>
+          <include>melmservice</include>
+        </includes>
+      </testResource>
+      <testResource>
+        <directory>src/test/resources</directory>
+        <filtering>false</filtering>
+        <excludes>
+          <exclude>melmservice</exclude>
+        </excludes>
+      </testResource>
+    </testResources>
+  </build>
 
   <dependencies>
     <dependency>
@@ -27,10 +47,16 @@
       <version>4.0.3.RELEASE</version>
       <scope>test</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
+      <version>4.0.3.RELEASE</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-web</artifactId>
       <version>4.0.3.RELEASE</version>
     </dependency>
 
@@ -56,6 +82,26 @@
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
       <version>2.4</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.glassfish.web</groupId>
+      <artifactId>jstl-impl</artifactId>
+      <version>1.2</version>
+      <scope>runtime</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>jsp-api</artifactId>
+          <groupId>javax.servlet.jsp</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.5</version>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 </project>

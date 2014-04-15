@@ -7,9 +7,13 @@ import javax.annotation.Nonnull;
 import lu.hitec.pssu.melm.exceptions.MELMException;
 
 public interface MELMService {
+  File addZipFile(@Nonnull final String name, @Nonnull final String version, @Nonnull final File tmpZipFile) throws MELMException;
+
   String buildArchiveFilename(@Nonnull final String libraryName, @Nonnull final String version);
 
+  void extractZipFile(@Nonnull final File file) throws MELMException;
+
+  File getBaseDirectory();
+
   File getTargetArchiveFile(@Nonnull final String libraryName, @Nonnull final String version) throws MELMException;
-  
-  File addZipFile(@Nonnull final String name, @Nonnull final String version, @Nonnull final File tmpZipFile) throws MELMException;
 }

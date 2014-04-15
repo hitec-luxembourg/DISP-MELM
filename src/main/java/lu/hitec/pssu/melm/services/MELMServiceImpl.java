@@ -2,7 +2,6 @@ package lu.hitec.pssu.melm.services;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -14,6 +13,7 @@ import java.util.zip.ZipFile;
 import javax.annotation.Nonnull;
 
 import lu.hitec.pssu.melm.exceptions.MELMException;
+import lu.hitec.pssu.melm.utils.IOTools;
 import lu.hitec.pssu.melm.utils.LibraryValidator;
 
 import org.apache.commons.io.IOUtils;
@@ -27,38 +27,14 @@ public class MELMServiceImpl implements MELMService {
   /**
    * Base directory for the libraries storage
    */
-  private File baseDirectory = null;
+  private final File baseDirectory;
 
   public MELMServiceImpl(final File baseDirectory) {
-    if (!baseDirectory.isDirectory()) {
+    if (!baseDirectory.isDirectory() && !baseDirectory.mkdirs()) {
       final String msg = String.format("Base directory doesn't exist: %s", baseDirectory.getAbsolutePath());
       throw new IllegalArgumentException(msg);
     }
     this.baseDirectory = baseDirectory;
-  }
-
-  /**
-   * Creates a unique filename from the given name and version format which is used to store files, and to find files back again with the
-   * given information.
-   */
-  public String buildArchiveFilename(@Nonnull final String libraryName, @Nonnull final String version) {
-    assert libraryName != null : "Library name is null";
-    assert version != null : "Version is null";
-    return String.format("%s-%s.zip", libraryName, version);
-  }
-
-  public File getTargetArchiveFile(@Nonnull final String libraryName, @Nonnull final String version) throws MELMException {
-    assert libraryName != null : "Library name is null";
-    assert version != null : "Version is null";
-    final File archiveDirectory = LibraryValidator.buildDirectoryForLibraryVersion(baseDirectory.getAbsolutePath(), libraryName, version);
-    if (archiveDirectory == null) {
-      throw new MELMException("Failed to create target dir. to store new file");
-    }
-
-    final String newArchiveFilename = buildArchiveFilename(libraryName, version);
-    final File targetArchiveFile = new File(archiveDirectory, newArchiveFilename);
-
-    return targetArchiveFile;
   }
 
   public File addZipFile(@Nonnull final String libraryName, @Nonnull final String version, @Nonnull final File tmpZipFile)
@@ -95,29 +71,31 @@ public class MELMServiceImpl implements MELMService {
       }
       throw new MELMException(msg, e);
     } finally {
-      closeQuietly(out);
-      closeQuietly(in);
+      IOTools.closeResource(out);
+      IOTools.closeResource(in);
     }
     return targetArchiveFile;
-    // try {
-    // extractFolder(targetArchiveFile.getAbsolutePath());
-    // } catch (final Exception e) {
-    // final String msg = "Failed to unzip file";
-    // if (LOGGER.isDebugEnabled()) {
-    // LOGGER.debug(msg);
-    // }
-    // throw new MELMException(msg, e);
-    // }
   }
 
-  protected void extractZipFile(@Nonnull final File file) throws MELMException {
-    assert file != null : "Zip file is null";
+  /**
+   * Creates a unique filename from the given name and version format which is used to store files, and to find files back again with the
+   * given information.
+   */
+  public String buildArchiveFilename(@Nonnull final String libraryName, @Nonnull final String version) {
+    assert libraryName != null : "Library name is null";
+    assert version != null : "Version is null";
+    return String.format("%s-%s.zip", libraryName, version);
+  }
+
+  public void extractZipFile(@Nonnull final File file) throws MELMException {
+    assert file != null : "File is null";
+    assert file.exists() : "File is not existing";
     final int buffer = 2048;
 
     ZipFile zipFile = null;
     try {
       zipFile = new ZipFile(file);
-      final String newPath = file.getName().substring(0, file.getName().length() - 4);
+      final String newPath = file.getAbsolutePath().substring(0, file.getAbsolutePath().length() - 4);
 
       if (!new File(newPath).mkdir()) {
         LOGGER.debug(String.format("Failed to perform mkdir for path : %s", newPath));
@@ -128,15 +106,15 @@ public class MELMServiceImpl implements MELMService {
       FileOutputStream fos = null;
       BufferedOutputStream dest = null;
       try {
-        // Process each entry
+        // Process each entry.
         while (zipFileEntries.hasMoreElements()) {
-          // grab a zip file entry
+          // Grab a zip file entry.
           final ZipEntry entry = zipFileEntries.nextElement();
           final String currentEntry = entry.getName();
           final File destFile = new File(newPath, currentEntry);
           final File destinationParent = destFile.getParentFile();
 
-          // create the parent directory structure if needed
+          // Create the parent directory structure if needed.
           if (destinationParent.mkdirs()) {
             LOGGER.debug(String.format("Failed to perform mkdirs for path : %s", destinationParent.getAbsolutePath()));
           }
@@ -144,47 +122,57 @@ public class MELMServiceImpl implements MELMService {
           if (!entry.isDirectory()) {
             is = new BufferedInputStream(zipFile.getInputStream(entry));
             int currentByte;
-            // establish buffer for writing file
+            // Establish buffer for writing file.
             final byte data[] = new byte[buffer];
 
-            // write the current file to disk
+            // Write the current file to disk.
             fos = new FileOutputStream(destFile);
             dest = new BufferedOutputStream(fos, buffer);
 
-            // read and write until last byte is encountered
+            // Read and write until last byte is encountered.
             while ((currentByte = is.read(data, 0, buffer)) != -1) {
               dest.write(data, 0, currentByte);
             }
             dest.flush();
           }
 
-          if (currentEntry.endsWith(".zip")) {
-            // found a zip file, try to open
-            extractZipFile(destFile);
-          }
+          // TODO: it is useful?
+          // if (currentEntry.endsWith(".zip")) {
+          // // Found a zip file, try to open.
+          // extractZipFile(destFile);
+          // }
         }
       } catch (final IOException e) {
         LOGGER.debug(e.toString(), e);
       } finally {
-        closeQuietly(is);
-        closeQuietly(fos);
-        closeQuietly(dest);
+        IOTools.closeResource(is);
+        IOTools.closeResource(fos);
+        IOTools.closeResource(dest);
       }
     } catch (final IOException e) {
       throw new MELMException("Failed to process zip file", e);
     } finally {
-      closeQuietly(zipFile);
+      IOTools.closeResource(zipFile);
     }
   }
 
-  private static void closeQuietly(final Closeable closeableMaybeNull) {
-    if (closeableMaybeNull != null) {
-      try {
-        closeableMaybeNull.close();
-      } catch (final IOException ex) {
-        // ignore
-      }
+  public File getTargetArchiveFile(@Nonnull final String libraryName, @Nonnull final String version) throws MELMException {
+    assert libraryName != null : "Library name is null";
+    assert version != null : "Version is null";
+    final File archiveDirectory = LibraryValidator.buildDirectoryForLibraryVersion(getBaseDirectory().getAbsolutePath(), libraryName,
+        version);
+    if (archiveDirectory == null) {
+      throw new MELMException("Failed to create target dir. to store new file");
     }
+
+    final String newArchiveFilename = buildArchiveFilename(libraryName, version);
+    final File targetArchiveFile = new File(archiveDirectory, newArchiveFilename);
+
+    return targetArchiveFile;
+  }
+
+  public File getBaseDirectory() {
+    return baseDirectory;
   }
 
 }

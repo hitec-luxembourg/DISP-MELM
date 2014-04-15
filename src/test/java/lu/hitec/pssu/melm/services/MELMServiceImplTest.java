@@ -11,6 +11,7 @@ import java.net.URISyntaxException;
 
 import lu.hitec.pssu.melm.exceptions.MELMException;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,7 +27,7 @@ public class MELMServiceImplTest {
 
   @Autowired
   private MELMService melmService;
-
+  
   @Before
   public void setUp() throws Exception {
   }
@@ -41,13 +42,39 @@ public class MELMServiceImplTest {
     final File targetArchiveFile = melmService.addZipFile("emergency.lu", "1.0", archiveFile);
     assertNotNull("Target archive file is null", targetArchiveFile);
     assertTrue("Target archive file should exist", targetArchiveFile.exists());
-    targetArchiveFile.delete();
+    assertEquals(archiveFile.length(), targetArchiveFile.length());
+    final File baseDirectory = melmService.getBaseDirectory();
+    FileUtils.deleteQuietly(baseDirectory);
   }
 
   @Test
   public void testBuildArchiveFilename() {
     final String archiveFilename = melmService.buildArchiveFilename("emergency.lu", "1.1");
     assertEquals("emergency.lu-1.1.zip", archiveFilename);
+  }
+
+  @Test
+  public void testExtractZipFile() throws MELMException, URISyntaxException, IOException {
+    {
+      final File targetArchiveFile = melmService.getTargetArchiveFile("emergency.lu", "1.0");
+      assertNotNull(targetArchiveFile);
+      assertFalse("Target archive file should not exist", targetArchiveFile.exists());
+    }
+    {
+      final File tmpZipFile = new ClassPathResource("sample/zip/emergency.lu-1.0.zip").getFile();
+      final File targetArchiveFile = melmService.addZipFile("emergency.lu", "1.0", tmpZipFile);
+      assertNotNull("Target archive file is null", targetArchiveFile);
+      assertTrue("Target archive file should exist", targetArchiveFile.exists());
+      assertEquals(tmpZipFile.length(), targetArchiveFile.length());
+      melmService.extractZipFile(targetArchiveFile);
+    }
+    {
+      final File targetArchiveFile = melmService.getTargetArchiveFile("emergency.lu", "1.0");
+      assertNotNull(targetArchiveFile);
+      assertTrue("Target archive file should exist", targetArchiveFile.exists());
+      final File baseDirectory = melmService.getBaseDirectory();
+      FileUtils.deleteQuietly(baseDirectory);
+    }
   }
 
   @Test
