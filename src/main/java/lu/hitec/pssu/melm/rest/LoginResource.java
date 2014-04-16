@@ -29,69 +29,69 @@ import org.springframework.stereotype.Component;
 @Path("/")
 @Component
 public class LoginResource {
-  private static final Logger LOGGER = LoggerFactory.getLogger(LoginResource.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(LoginResource.class);
 
-  private static String SESSION_PARAM_UID = "SESSION_PARAM_UID";
+	private static String SESSION_PARAM_UID = "SESSION_PARAM_UID";
 
-  @Autowired
-  private MELMService melmService;
+	@Autowired
+	private MELMService melmService;
 
-  @Context
-  private HttpServletRequest request;
+	@Context
+	private HttpServletRequest request;
 
-  @GET
-  @Produces(MediaType.TEXT_HTML)
-  @Path("login/")
-  @SuppressWarnings("static-method")
-  public Response gotoLogin() {
-    return Response.ok(new Viewable("/login/")).build();
-  }
+	@GET
+	@Produces(MediaType.TEXT_HTML)
+	@Path("login/")
+	@SuppressWarnings("static-method")
+	public Response gotoLogin() {
+		return Response.ok(new Viewable("/login")).build();
+	}
 
-  // @GET
-  // @Produces(MediaType.TEXT_HTML)
-  // public Response defaultPage(@Context final UriInfo uriInfo) {
-  // final URI newURI = uriInfo.getBaseUriBuilder().path("/login/").build();
-  // return Response.seeOther(newURI).build();
-  // }
+	// @GET
+	// @Produces(MediaType.TEXT_HTML)
+	// public Response defaultPage(@Context final UriInfo uriInfo) {
+	// final URI newURI = uriInfo.getBaseUriBuilder().path("/login").build();
+	// return Response.seeOther(newURI).build();
+	// }
 
-  @GET
-  @Produces(MediaType.TEXT_HTML)
-  @Path("logout/")
-  public Response logout(@Context final UriInfo uriInfo) {
-    final HttpSession session = request.getSession(false);
-    session.invalidate();
-    return buildRedirectResponse(uriInfo, "/login/");
-  }
+	@GET
+	@Produces(MediaType.TEXT_HTML)
+	@Path("logout/")
+	public Response logout(@Context final UriInfo uriInfo) {
+		final HttpSession session = request.getSession(false);
+		session.invalidate();
+		return buildRedirectResponse(uriInfo, "/login");
+	}
 
-  @POST
-  @Path("login/")
-  @Produces(MediaType.TEXT_HTML)
-  @SuppressWarnings("unused")
-  public Response performLogin(@FormParam("userId") @Nonnull final String userId, @FormParam("password") @Nonnull final String password,
-      @Context final UriInfo uriInfo, @Context final SecurityContext sc) throws AuthenticationException, URISyntaxException {
-    assert userId != null : "User id is null";
-    assert password != null : "Password is null";
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(String.format("Entering login for user : %s", userId));
-    }
-    if (melmService != null) {
-      final HttpSession session = request.getSession(true);
-      session.setAttribute(SESSION_PARAM_UID, userId);
-      // 1800 seconds = 30 minutes
-      session.setMaxInactiveInterval(1800);
+	@POST
+	@Path("login/")
+	@Produces(MediaType.TEXT_HTML)
+	@SuppressWarnings("unused")
+	public Response performLogin(@FormParam("userId") @Nonnull final String userId, @FormParam("password") @Nonnull final String password, @Context final UriInfo uriInfo,
+			@Context final SecurityContext sc) throws AuthenticationException, URISyntaxException {
+		assert userId != null : "User id is null";
+		assert password != null : "Password is null";
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug(String.format("Entering login for user : %s", userId));
+		}
+		if (melmService != null) {
+			final HttpSession session = request.getSession(true);
+			session.setAttribute(SESSION_PARAM_UID, userId);
+			// 1800 seconds = 30 minutes
+			session.setMaxInactiveInterval(1800);
 
-      // Dummy implementation of authentication.
-      if ("toto".equalsIgnoreCase(userId) && "titi".equalsIgnoreCase(password)) {
-        return buildRedirectResponse(uriInfo, "/start/");
-      } else {
-        return buildRedirectResponse(uriInfo, "/login/");
-      }
-    }
-    throw new AuthenticationException();
-  }
+			// Dummy implementation of authentication.
+			if ("toto".equalsIgnoreCase(userId) && "titi".equalsIgnoreCase(password)) {
+				return buildRedirectResponse(uriInfo, "/start");
+			} else {
+				return buildRedirectResponse(uriInfo, "/login");
+			}
+		}
+		throw new AuthenticationException();
+	}
 
-  private static Response buildRedirectResponse(@Context final UriInfo uriInfo, @Nonnull final String path) {
-    final URI newURI = uriInfo.getBaseUriBuilder().path(path).build();
-    return Response.seeOther(newURI).build();
-  }
+	private static Response buildRedirectResponse(@Context final UriInfo uriInfo, @Nonnull final String path) {
+		final URI newURI = uriInfo.getBaseUriBuilder().path(path).build();
+		return Response.seeOther(newURI).build();
+	}
 }

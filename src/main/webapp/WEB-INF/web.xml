@@ -24,11 +24,6 @@
       classpath:/ctx-config.xml
     </param-value>
   </context-param>
-
-  <!-- Lets the Spring bean definition file specify scopes of request and session. -->
-  <listener>
-    <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
-  </listener>
   
   <filter>
     <filter-name>jersey-spring</filter-name>
