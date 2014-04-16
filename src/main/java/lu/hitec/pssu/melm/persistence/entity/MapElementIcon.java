@@ -24,7 +24,7 @@ public class MapElementIcon {
 	@Column(name = "size_in_bytes", nullable = false, updatable = true)
 	private int sizeInBytes;
 
-	@Column(name = "size_in_bytes", nullable = false, updatable = true)
+	@Column(name = "path", nullable = false, updatable = true)
 	private String path;
 
 }

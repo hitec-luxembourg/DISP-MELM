@@ -13,8 +13,8 @@ import java.util.zip.ZipFile;
 import javax.annotation.Nonnull;
 
 import lu.hitec.pssu.melm.exceptions.MELMException;
-import lu.hitec.pssu.melm.utils.IOTools;
 import lu.hitec.pssu.melm.utils.LibraryValidator;
+import lu.hitec.pssu.melm.utils.MELMUtils;
 
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -37,6 +37,7 @@ public class MELMServiceImpl implements MELMService {
     this.baseDirectory = baseDirectory;
   }
 
+  @Override
   public File addZipFile(@Nonnull final String libraryName, @Nonnull final String version, @Nonnull final File tmpZipFile)
       throws MELMException {
     assert libraryName != null : "Library name is null";
@@ -71,8 +72,8 @@ public class MELMServiceImpl implements MELMService {
       }
       throw new MELMException(msg, e);
     } finally {
-      IOTools.closeResource(out);
-      IOTools.closeResource(in);
+      MELMUtils.closeResource(out);
+      MELMUtils.closeResource(in);
     }
     return targetArchiveFile;
   }
@@ -81,12 +82,14 @@ public class MELMServiceImpl implements MELMService {
    * Creates a unique filename from the given name and version format which is used to store files, and to find files back again with the
    * given information.
    */
+  @Override
   public String buildArchiveFilename(@Nonnull final String libraryName, @Nonnull final String version) {
     assert libraryName != null : "Library name is null";
     assert version != null : "Version is null";
     return String.format("%s-%s.zip", libraryName, version);
   }
 
+  @Override
   public void extractZipFile(@Nonnull final File file) throws MELMException {
     assert file != null : "File is null";
     assert file.exists() : "File is not existing";
@@ -145,17 +148,18 @@ public class MELMServiceImpl implements MELMService {
       } catch (final IOException e) {
         LOGGER.debug(e.toString(), e);
       } finally {
-        IOTools.closeResource(is);
-        IOTools.closeResource(fos);
-        IOTools.closeResource(dest);
+        MELMUtils.closeResource(is);
+        MELMUtils.closeResource(fos);
+        MELMUtils.closeResource(dest);
       }
     } catch (final IOException e) {
       throw new MELMException("Failed to process zip file", e);
     } finally {
-      IOTools.closeResource(zipFile);
+      MELMUtils.closeResource(zipFile);
     }
   }
 
+  @Override
   public File getTargetArchiveFile(@Nonnull final String libraryName, @Nonnull final String version) throws MELMException {
     assert libraryName != null : "Library name is null";
     assert version != null : "Version is null";
@@ -171,6 +175,7 @@ public class MELMServiceImpl implements MELMService {
     return targetArchiveFile;
   }
 
+  @Override
   public File getBaseDirectory() {
     return baseDirectory;
   }
