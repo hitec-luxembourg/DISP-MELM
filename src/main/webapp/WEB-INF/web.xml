@@ -29,19 +29,19 @@
   <listener>
     <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
   </listener>
+  
   <filter>
     <filter-name>jersey-spring</filter-name>
     <filter-class>org.glassfish.jersey.servlet.ServletContainer</filter-class>
-<!--     <init-param> -->
-<!--       <param-name>javax.ws.rs.Application</param-name> -->
-<!--       <param-value>org.ocha.hdx.rest.MyResourceConfig</param-value> -->
-<!--     </init-param> -->
+    <init-param>
+      <param-name>javax.ws.rs.Application</param-name>
+      <param-value>lu.hitec.pssu.melm.rest.MyResourceConfig</param-value>
+    </init-param>
     <init-param>
       <description>Base directory for JSP templates to be included</description>
       <param-name>jersey.config.server.mvc.templateBasePath.jsp</param-name>
       <param-value>/WEB-INF/jsp</param-value>
     </init-param>
-
     <init-param>
       <param-name>jersey.config.server.provider.classnames</param-name>
       <param-value>org.glassfish.jersey.server.mvc.jsp.JspMvcFeature</param-value>
