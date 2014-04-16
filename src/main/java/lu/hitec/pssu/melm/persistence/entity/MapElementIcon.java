@@ -22,7 +22,7 @@ public class MapElementIcon {
 	private String pic100pxMd5;
 
 	@Column(name = "size_in_bytes", nullable = false, updatable = true)
-	private int sizeInBytes;
+	private long sizeInBytes;
 
 	@Column(name = "path", nullable = false, updatable = true)
 	private String path;
@@ -43,11 +43,11 @@ public class MapElementIcon {
 		this.pic100pxMd5 = pic100pxMd5;
 	}
 
-	public int getSizeInBytes() {
+	public long getSizeInBytes() {
 		return sizeInBytes;
 	}
 
-	public void setSizeInBytes(final int sizeInBytes) {
+	public void setSizeInBytes(final long sizeInBytes) {
 		this.sizeInBytes = sizeInBytes;
 	}
 
