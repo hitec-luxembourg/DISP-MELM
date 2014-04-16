@@ -10,5 +10,6 @@ public class MyResourceConfig extends ResourceConfig {
 		register(LogoutResource.class);
 		register(MELMResource.class);
 		register(AuthenticationExceptionMapper.class);
+
 	}
 }

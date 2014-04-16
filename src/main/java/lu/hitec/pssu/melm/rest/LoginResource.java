@@ -30,44 +30,53 @@ import org.springframework.stereotype.Component;
 @Component
 @SuppressWarnings("static-method")
 public class LoginResource {
-  private static final Logger LOGGER = LoggerFactory.getLogger(LoginResource.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(LoginResource.class);
 
-  private static String SESSION_PARAM_UID = "SESSION_PARAM_UID";
+	private static String SESSION_PARAM_UID = "SESSION_PARAM_UID";
 
-  @Autowired
-  private MELMService melmService;
+	@Autowired
+	private MELMService melmService;
 
-  @Context
-  private HttpServletRequest request;
+	@Context
+	private HttpServletRequest request;
 
-  @GET
-  @Produces(MediaType.TEXT_HTML)
-  public Response gotoLogin() {
-    return Response.ok(new Viewable("/login")).build();
-  }
 
-  @SuppressWarnings("unused")
-  @POST
-  @Produces(MediaType.TEXT_HTML)
-  public Response performLogin(@FormParam("userId") @Nonnull final String userId, @FormParam("password") @Nonnull final String password,
-      @Context final UriInfo uriInfo, @Context final SecurityContext sc) throws AuthenticationException, URISyntaxException {
-    assert userId != null : "User id is null";
-    assert password != null : "Password is null";
-    if (melmService != null) {
-      final HttpSession session = request.getSession(true);
-      session.setAttribute(SESSION_PARAM_UID, userId);
-      // 1800 seconds = 30 minutes
-      session.setMaxInactiveInterval(1800);
+	@GET
+	@Produces(MediaType.TEXT_HTML)
+	public Response gotoLogin() {
+		return Response.ok(new Viewable("/login")).build();
+	}
 
-      // Dummy implementation of authentication.
-      if ("toto".equalsIgnoreCase(userId) && "titi".equalsIgnoreCase(password)) {
-        final URI newURI = uriInfo.getBaseUriBuilder().path("/rest/").build();
-        return Response.seeOther(newURI).build();
-      } else {
-        return Response.ok(new Viewable("/login", "error")).build();
-      }
-    }
-    throw new AuthenticationException();
-  }
+
+	@POST
+	@Produces(MediaType.TEXT_HTML)
+	@SuppressWarnings("unused")
+	public Response performLogin(@FormParam("userId") @Nonnull final String userId, @FormParam("password") @Nonnull final String password, @Context final UriInfo uriInfo,
+			@Context final SecurityContext sc) throws AuthenticationException, URISyntaxException {
+		assert userId != null : "User id is null";
+		assert password != null : "Password is null";
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug(String.format("Entering login for user : %s", userId));
+		}
+		if (melmService != null) {
+			final HttpSession session = request.getSession(true);
+			session.setAttribute(SESSION_PARAM_UID, userId);
+			// 1800 seconds = 30 minutes
+			session.setMaxInactiveInterval(1800);
+
+			// Dummy implementation of authentication.
+			if ("toto".equalsIgnoreCase(userId) && "titi".equalsIgnoreCase(password)) {
+				return buildRedirectResponse(uriInfo, "/start");
+			} else {
+				return buildRedirectResponse(uriInfo, "/login");
+			}
+		}
+		throw new AuthenticationException();
+	}
+
+	private static Response buildRedirectResponse(@Context final UriInfo uriInfo, @Nonnull final String path) {
+		final URI newURI = uriInfo.getBaseUriBuilder().path(path).build();
+		return Response.seeOther(newURI).build();
+	}
 
 }

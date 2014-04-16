@@ -24,7 +24,6 @@
       classpath:/ctx-config.xml
     </param-value>
   </context-param>
-
   
   <filter>
     <filter-name>jersey-spring</filter-name>
