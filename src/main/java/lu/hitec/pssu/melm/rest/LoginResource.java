@@ -26,8 +26,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Path("/")
+@Path("/login")
 @Component
+@SuppressWarnings("static-method")
 public class LoginResource {
 	private static final Logger LOGGER = LoggerFactory.getLogger(LoginResource.class);
 
@@ -39,32 +40,15 @@ public class LoginResource {
 	@Context
 	private HttpServletRequest request;
 
+
 	@GET
 	@Produces(MediaType.TEXT_HTML)
-	@Path("login/")
-	@SuppressWarnings("static-method")
 	public Response gotoLogin() {
 		return Response.ok(new Viewable("/login")).build();
 	}
 
-	// @GET
-	// @Produces(MediaType.TEXT_HTML)
-	// public Response defaultPage(@Context final UriInfo uriInfo) {
-	// final URI newURI = uriInfo.getBaseUriBuilder().path("/login").build();
-	// return Response.seeOther(newURI).build();
-	// }
-
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	@Path("logout/")
-	public Response logout(@Context final UriInfo uriInfo) {
-		final HttpSession session = request.getSession(false);
-		session.invalidate();
-		return buildRedirectResponse(uriInfo, "/login");
-	}
 
 	@POST
-	@Path("login/")
 	@Produces(MediaType.TEXT_HTML)
 	@SuppressWarnings("unused")
 	public Response performLogin(@FormParam("userId") @Nonnull final String userId, @FormParam("password") @Nonnull final String password, @Context final UriInfo uriInfo,
@@ -94,4 +78,5 @@ public class LoginResource {
 		final URI newURI = uriInfo.getBaseUriBuilder().path(path).build();
 		return Response.seeOther(newURI).build();
 	}
+
 }

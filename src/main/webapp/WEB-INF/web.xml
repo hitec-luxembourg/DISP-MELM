@@ -46,12 +46,17 @@
 
   <filter-mapping>
     <filter-name>jersey-spring</filter-name>
-    <url-pattern>/login/</url-pattern>
+    <url-pattern>/login/*</url-pattern>
   </filter-mapping>
 
   <filter-mapping>
     <filter-name>jersey-spring</filter-name>
-    <url-pattern>/logout/</url-pattern>
+    <url-pattern>/logout/*</url-pattern>
+  </filter-mapping>
+
+  <filter-mapping>
+    <filter-name>jersey-spring</filter-name>
+    <url-pattern>/rest/*</url-pattern>
   </filter-mapping>
 
   <!-- =================================== === Error pages =================================== -->

@@ -5,32 +5,16 @@
 <c:set value="${pageContext.request.contextPath}" var="ctx" scope="request" />
 <html>
 <head>
-<title>Login page</title>
+<title>Libraries</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-<script type="text/javascript">
-  $(document).ready(function() {
-    $("#userId").focus();
-  });
-</script>
 <link rel="stylesheet" type="text/css" href="${ctx}/css/style.css" />
 </head>
 <body>
   <div id="wrapper">
+    <jsp:include page="header.jsp" />
     <div id="content">
-      <h1>Login page</h1>
-      <c:if test="${not empty it}">
-      <span class="error">Wrong User id or Password!</span>
-      </c:if>
-      <form method="POST" action="">
-        <div style="width: 200px;">
-          <label for="userId">User id</label> <input type="text" name="userId" id="userId" required />
-        </div>
-        <div style="width: 200px;">
-          <label for="password">Password</label> <input type="password" name="password" id="password" required />
-        </div>
-        <button type="submit">Submit</button>
-      </form>
+      <h1>Libraries</h1>
     </div>
     <jsp:include page="footer.jsp" />
   </div>
