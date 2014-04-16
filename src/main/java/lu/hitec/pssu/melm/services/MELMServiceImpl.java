@@ -6,12 +6,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import javax.annotation.Nonnull;
 
+import lu.hitec.pssu.mapelement.library.xml.parser.XMLSelectionPathParser;
+import lu.hitec.pssu.melm.exceptions.LibraryValidatorException;
 import lu.hitec.pssu.melm.exceptions.MELMException;
 import lu.hitec.pssu.melm.utils.LibraryValidator;
 import lu.hitec.pssu.melm.utils.MELMUtils;
@@ -160,6 +163,11 @@ public class MELMServiceImpl implements MELMService {
   }
 
   @Override
+  public File getBaseDirectory() {
+    return baseDirectory;
+  }
+
+  @Override
   public File getTargetArchiveFile(@Nonnull final String libraryName, @Nonnull final String version) throws MELMException {
     assert libraryName != null : "Library name is null";
     assert version != null : "Version is null";
@@ -176,8 +184,35 @@ public class MELMServiceImpl implements MELMService {
   }
 
   @Override
-  public File getBaseDirectory() {
-    return baseDirectory;
+  public XMLSelectionPathParser validateAndParse(@Nonnull final String libraryName, @Nonnull final String version) throws MELMException {
+    assert libraryName != null : "Library name is null";
+    assert version != null : "Version is null";
+
+    final String xsdPath = this.getClass().getResource(LibraryValidator.XSD_PATH).getPath();
+    final File xmlFile;
+    try {
+      xmlFile = LibraryValidator.validateLibrary(xsdPath, baseDirectory.getAbsolutePath(), libraryName, version);
+    } catch (final LibraryValidatorException e) {
+      final String msg = "Failed to validate library xml file";
+      throw new MELMException(msg, e);
+    }
+
+    InputStream in = null;
+    try {
+      in = new FileInputStream(xmlFile);
+      assert in.available() != 0;
+      final XMLSelectionPathParser parser = new XMLSelectionPathParser(in);
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug(String.format("Parse map library: %s, %s", parser.getLibraryName(), parser.getLibraryDisplayName()));
+      }
+      return parser;
+    } catch (final Exception e) {
+      final String msg = "Failed to parse library xml file";
+      LOGGER.error(msg, e);
+    } finally {
+      MELMUtils.closeResource(in);
+    }
+    throw new MELMException("Failed to parse xml file");
   }
 
 }
