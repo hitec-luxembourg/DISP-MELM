@@ -43,8 +43,8 @@ public class LoginResource {
 
 	@GET
 	@Produces(MediaType.TEXT_HTML)
-	public Response gotoLogin() {
-		return Response.ok(new Viewable("/login")).build();
+	public Response gotoLogin(final String msg) {
+		return Response.ok(new Viewable("/login", msg)).build();
 	}
 
 
@@ -66,9 +66,9 @@ public class LoginResource {
 
 			// Dummy implementation of authentication.
 			if ("toto".equalsIgnoreCase(userId) && "titi".equalsIgnoreCase(password)) {
-				return buildRedirectResponse(uriInfo, "/start");
+				return buildRedirectResponse(uriInfo, "/rest/");
 			} else {
-				return buildRedirectResponse(uriInfo, "/login");
+				return gotoLogin("error");
 			}
 		}
 		throw new AuthenticationException();

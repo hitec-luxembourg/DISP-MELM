@@ -14,15 +14,13 @@ import javax.ws.rs.core.UriInfo;
 
 import lu.hitec.pssu.melm.services.MELMService;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Path("/logout")
 @Component
 public class LogoutResource {
-  private static final Logger LOGGER = LoggerFactory.getLogger(LogoutResource.class);
+  // private static final Logger LOGGER = LoggerFactory.getLogger(LogoutResource.class);
 
   @Autowired
   private MELMService melmService;
