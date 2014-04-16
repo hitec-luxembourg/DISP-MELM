@@ -5,7 +5,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Iterator;
+import java.util.Map;
 
+import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -18,6 +21,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import lu.hitec.pssu.mapelement.library.xml.BaseNodeType;
+import lu.hitec.pssu.mapelement.library.xml.parser.XMLSelectionPathParser;
 import lu.hitec.pssu.melm.exceptions.MELMException;
 import lu.hitec.pssu.melm.services.MELMService;
 import lu.hitec.pssu.melm.utils.MELMUtils;
@@ -114,13 +119,21 @@ public class MELMResource {
     }
 
     try {
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug("About to execute melmService.addZipFile");
-      }
       final File zipFile = melmService.addZipFile(libraryUpload.getLibraryName(), libraryUpload.getVersion(), libraryUpload.getZipFile());
       melmService.extractZipFile(zipFile);
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug("After melmService.addZipFile");
+      final XMLSelectionPathParser libraryParser = melmService.validateAndParse(libraryUpload.getLibraryName(), libraryUpload.getVersion());
+
+      // FIXME Move this part in MELMService.
+      System.out.println(String.format("Library Id %s", libraryParser.getLibraryId()));
+      System.out.println(String.format("Library Display Name %s", libraryParser.getLibraryDisplayName()));
+      System.out.println(String.format("Library Type %s", libraryParser.getLibraryType()));
+      System.out.println(String.format("Library Version %s", libraryParser.getLibraryVersion()));
+      System.out.println(String.format("Library icon Path %s", libraryParser.getLibraryIconRelativePath()));
+      final Map<String, BaseNodeType> mapOfNodesByUniqueCode = libraryParser.getMapOfNodesByUniqueCode();
+      final Iterator<Map.Entry<String, BaseNodeType>> iterator = mapOfNodesByUniqueCode.entrySet().iterator();
+      while (iterator.hasNext()) {
+        final Map.Entry<String, BaseNodeType> mapEntry = iterator.next();
+        System.out.println("The key is: " + mapEntry.getKey() + ",value is :" + mapEntry.getValue().getDescription());
       }
     } catch (final MELMException e) {
       if (LOGGER.isDebugEnabled()) {
@@ -129,7 +142,7 @@ public class MELMResource {
       return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
     }
 
-    return Response.seeOther(new URI("/libraries/")).build();
+    return buildRedirectResponse(uriInfo, "/rest/libraries");
   }
 
   private LibraryUpload parseLibraryUpload(@SuppressWarnings("unused") @Context final HttpServletRequest requestParam) {
@@ -172,6 +185,11 @@ public class MELMResource {
       return null;
     }
     return new LibraryUpload(libraryZip, name, version);
+  }
+
+  private static Response buildRedirectResponse(@Context final UriInfo uriInfo, @Nonnull final String path) {
+    final URI newURI = uriInfo.getBaseUriBuilder().path(path).build();
+    return Response.seeOther(newURI).build();
   }
 
   private final class LibraryUpload {
