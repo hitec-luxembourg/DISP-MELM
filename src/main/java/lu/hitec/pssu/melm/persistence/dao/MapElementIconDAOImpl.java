@@ -36,4 +36,10 @@ public class MapElementIconDAOImpl implements MapElementIconDAO {
 
 	}
 
+	@Override
+	public boolean exist(final String hash, final long size) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

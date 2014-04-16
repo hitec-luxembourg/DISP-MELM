@@ -13,4 +13,6 @@ public interface MapElementIconDAO {
 
 	public void delete(long id);
 
+	public boolean exist(String hash, long size);
+
 }
