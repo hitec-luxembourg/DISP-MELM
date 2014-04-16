@@ -4,7 +4,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import javax.annotation.Nonnull;
-import javax.annotation.security.PermitAll;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.FormParam;
@@ -18,6 +17,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 
+import lu.hitec.pssu.melm.exceptions.AuthenticationException;
 import lu.hitec.pssu.melm.services.MELMService;
 
 import org.glassfish.jersey.server.mvc.Viewable;
@@ -26,8 +26,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@PermitAll
-@Produces(MediaType.TEXT_HTML)
 @Path("/")
 @Component
 public class LoginResource {
@@ -42,6 +40,22 @@ public class LoginResource {
   private HttpServletRequest request;
 
   @GET
+  @Produces(MediaType.TEXT_HTML)
+  @Path("login/")
+  @SuppressWarnings("static-method")
+  public Response gotoLogin() {
+    return Response.ok(new Viewable("/login/")).build();
+  }
+
+  // @GET
+  // @Produces(MediaType.TEXT_HTML)
+  // public Response defaultPage(@Context final UriInfo uriInfo) {
+  // final URI newURI = uriInfo.getBaseUriBuilder().path("/login/").build();
+  // return Response.seeOther(newURI).build();
+  // }
+
+  @GET
+  @Produces(MediaType.TEXT_HTML)
   @Path("logout/")
   public Response logout(@Context final UriInfo uriInfo) {
     final HttpSession session = request.getSession(false);
@@ -49,17 +63,12 @@ public class LoginResource {
     return buildRedirectResponse(uriInfo, "/login/");
   }
 
-  // @GET
-  // public Response defaultPage(@Context final UriInfo uriInfo) {
-  // final URI newURI = uriInfo.getBaseUriBuilder().path("/login/").build();
-  // return Response.seeOther(newURI).build();
-  // }
-
   @POST
   @Path("login/")
-  @SuppressWarnings("unused") 
+  @Produces(MediaType.TEXT_HTML)
+  @SuppressWarnings("unused")
   public Response performLogin(@FormParam("userId") @Nonnull final String userId, @FormParam("password") @Nonnull final String password,
-      @Context final UriInfo uriInfo, @Context final SecurityContext sc) throws URISyntaxException {
+      @Context final UriInfo uriInfo, @Context final SecurityContext sc) throws AuthenticationException, URISyntaxException {
     assert userId != null : "User id is null";
     assert password != null : "Password is null";
     if (LOGGER.isDebugEnabled()) {
@@ -78,14 +87,7 @@ public class LoginResource {
         return buildRedirectResponse(uriInfo, "/login/");
       }
     }
-    return buildRedirectResponse(uriInfo, "/login/");
-  }
-
-  @GET
-  @Path("login/")
-  @SuppressWarnings("static-method")
-  public Response gotoLogin() {
-    return Response.ok(new Viewable("/login/")).build();
+    throw new AuthenticationException();
   }
 
   private static Response buildRedirectResponse(@Context final UriInfo uriInfo, @Nonnull final String path) {
