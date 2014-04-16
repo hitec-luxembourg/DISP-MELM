@@ -22,6 +22,7 @@
     <param-name>contextConfigLocation</param-name>
     <param-value>
       classpath:/ctx-config.xml
+      classpath:/ctx-dao.xml
     </param-value>
   </context-param>
   

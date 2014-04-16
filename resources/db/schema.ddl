@@ -21,7 +21,7 @@
         id int8 not null,
         path varchar(255) not null,
         pic_100px_md5 varchar(255) not null,
-        size_in_bytes int4 not null,
+        size_in_bytes int8 not null,
         primary key (id)
     );
 
