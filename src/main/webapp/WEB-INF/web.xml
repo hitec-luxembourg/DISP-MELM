@@ -25,11 +25,6 @@
     </param-value>
   </context-param>
 
-  <!-- Lets the Spring bean definition file specify scopes of request and session. -->
-  <listener>
-    <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
-  </listener>
-  
   <filter>
     <filter-name>jersey-spring</filter-name>
     <filter-class>org.glassfish.jersey.servlet.ServletContainer</filter-class>
@@ -50,12 +45,17 @@
 
   <filter-mapping>
     <filter-name>jersey-spring</filter-name>
-    <url-pattern>/login/</url-pattern>
+    <url-pattern>/login/*</url-pattern>
   </filter-mapping>
 
   <filter-mapping>
     <filter-name>jersey-spring</filter-name>
-    <url-pattern>/logout/</url-pattern>
+    <url-pattern>/logout/*</url-pattern>
+  </filter-mapping>
+
+  <filter-mapping>
+    <filter-name>jersey-spring</filter-name>
+    <url-pattern>/rest/*</url-pattern>
   </filter-mapping>
 
   <!-- =================================== === Error pages =================================== -->

@@ -14,7 +14,15 @@
   <div id="wrapper">
     <jsp:include page="header.jsp" />
     <div id="content">
-      <h3>Start page</h3>
+      <h1>Start page</h1>
+      <h2>Libraries</h2>
+      <a href="${ctx}/rest/libraries">List</a>
+      <br/>
+      <a href="${ctx}/rest/libraries/import">Import</a>
+      <h2>Icons</h2>
+      <a href="${ctx}/rest/icons">List</a>
+      <br/>
+      <a href="${ctx}/rest/icons/import">Import</a>
     </div>
     <jsp:include page="footer.jsp" />
   </div>

@@ -7,6 +7,8 @@ public class MyResourceConfig extends ResourceConfig {
 	public MyResourceConfig() {
 		super();
 		register(LoginResource.class);
-    register(AuthenticationExceptionMapper.class);
+		register(LogoutResource.class);
+		register(MELMResource.class);
+		register(AuthenticationExceptionMapper.class);
 	}
 }

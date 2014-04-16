@@ -26,8 +26,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Path("/")
+@Path("/login")
 @Component
+@SuppressWarnings("static-method")
 public class LoginResource {
   private static final Logger LOGGER = LoggerFactory.getLogger(LoginResource.class);
 
@@ -41,39 +42,17 @@ public class LoginResource {
 
   @GET
   @Produces(MediaType.TEXT_HTML)
-  @Path("login/")
-  @SuppressWarnings("static-method")
   public Response gotoLogin() {
-    return Response.ok(new Viewable("/login/")).build();
+    return Response.ok(new Viewable("/login")).build();
   }
 
-  // @GET
-  // @Produces(MediaType.TEXT_HTML)
-  // public Response defaultPage(@Context final UriInfo uriInfo) {
-  // final URI newURI = uriInfo.getBaseUriBuilder().path("/login/").build();
-  // return Response.seeOther(newURI).build();
-  // }
-
-  @GET
-  @Produces(MediaType.TEXT_HTML)
-  @Path("logout/")
-  public Response logout(@Context final UriInfo uriInfo) {
-    final HttpSession session = request.getSession(false);
-    session.invalidate();
-    return buildRedirectResponse(uriInfo, "/login/");
-  }
-
-  @POST
-  @Path("login/")
-  @Produces(MediaType.TEXT_HTML)
   @SuppressWarnings("unused")
+  @POST
+  @Produces(MediaType.TEXT_HTML)
   public Response performLogin(@FormParam("userId") @Nonnull final String userId, @FormParam("password") @Nonnull final String password,
       @Context final UriInfo uriInfo, @Context final SecurityContext sc) throws AuthenticationException, URISyntaxException {
     assert userId != null : "User id is null";
     assert password != null : "Password is null";
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(String.format("Entering login for user : %s", userId));
-    }
     if (melmService != null) {
       final HttpSession session = request.getSession(true);
       session.setAttribute(SESSION_PARAM_UID, userId);
@@ -82,16 +61,13 @@ public class LoginResource {
 
       // Dummy implementation of authentication.
       if ("toto".equalsIgnoreCase(userId) && "titi".equalsIgnoreCase(password)) {
-        return buildRedirectResponse(uriInfo, "/start/");
+        final URI newURI = uriInfo.getBaseUriBuilder().path("/rest/").build();
+        return Response.seeOther(newURI).build();
       } else {
-        return buildRedirectResponse(uriInfo, "/login/");
+        return Response.ok(new Viewable("/login", "error")).build();
       }
     }
     throw new AuthenticationException();
   }
 
-  private static Response buildRedirectResponse(@Context final UriInfo uriInfo, @Nonnull final String path) {
-    final URI newURI = uriInfo.getBaseUriBuilder().path(path).build();
-    return Response.seeOther(newURI).build();
-  }
 }
