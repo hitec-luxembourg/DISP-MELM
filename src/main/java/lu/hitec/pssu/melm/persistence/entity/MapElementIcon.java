@@ -27,4 +27,36 @@ public class MapElementIcon {
 	@Column(name = "path", nullable = false, updatable = true)
 	private String path;
 
+	public long getId() {
+		return id;
+	}
+
+	public void setId(final long id) {
+		this.id = id;
+	}
+
+	public String getPic100pxMd5() {
+		return pic100pxMd5;
+	}
+
+	public void setPic100pxMd5(final String pic100pxMd5) {
+		this.pic100pxMd5 = pic100pxMd5;
+	}
+
+	public int getSizeInBytes() {
+		return sizeInBytes;
+	}
+
+	public void setSizeInBytes(final int sizeInBytes) {
+		this.sizeInBytes = sizeInBytes;
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(final String path) {
+		this.path = path;
+	}
+
 }

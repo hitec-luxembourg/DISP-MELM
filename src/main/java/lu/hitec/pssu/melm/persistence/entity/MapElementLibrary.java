@@ -27,4 +27,36 @@ public class MapElementLibrary {
 	@Column(name = "minor_version", nullable = false, updatable = false)
 	private int minorVersion;
 
+	public long getId() {
+		return id;
+	}
+
+	public void setId(final long id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(final String name) {
+		this.name = name;
+	}
+
+	public int getMajorVersion() {
+		return majorVersion;
+	}
+
+	public void setMajorVersion(final int majorVersion) {
+		this.majorVersion = majorVersion;
+	}
+
+	public int getMinorVersion() {
+		return minorVersion;
+	}
+
+	public void setMinorVersion(final int minorVersion) {
+		this.minorVersion = minorVersion;
+	}
+
 }
