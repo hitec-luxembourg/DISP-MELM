@@ -11,4 +11,6 @@ public interface MapElementIconDAO {
 
 	public void addMapElementIcon(File icon);
 
+	public void delete(long id);
+
 }

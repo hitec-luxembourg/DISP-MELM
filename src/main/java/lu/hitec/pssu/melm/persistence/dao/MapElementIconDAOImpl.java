@@ -3,10 +3,6 @@ package lu.hitec.pssu.melm.persistence.dao;
 import java.io.File;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-
 import lu.hitec.pssu.melm.persistence.entity.MapElementIcon;
 
 public class MapElementIconDAOImpl implements MapElementIconDAO {
@@ -27,6 +23,12 @@ public class MapElementIconDAOImpl implements MapElementIconDAO {
 		mapElementIcon.setPic100pxMd5(icon.getName());
 		mapElementIcon.setSizeInBytes(icon.length());
 		em.persist(mapElementIcon);
+
+	}
+
+	@Override
+	public void delete(final long id) {
+		// TODO Auto-generated method stub
 
 	}
 
