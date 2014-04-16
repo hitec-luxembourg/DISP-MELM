@@ -3,6 +3,10 @@ package lu.hitec.pssu.melm.persistence.dao;
 import java.io.File;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+
 import lu.hitec.pssu.melm.persistence.entity.MapElementIcon;
 
 public class MapElementIconDAOImpl implements MapElementIconDAO {
