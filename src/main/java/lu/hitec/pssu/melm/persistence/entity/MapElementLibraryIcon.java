@@ -10,6 +10,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.ForeignKey;
+
 @Entity
 @Table(name = "map_element_library_icon")
 @SequenceGenerator(name = "map_element_library_icon_seq", sequenceName = "map_element_library_icon_seq")
@@ -21,10 +23,12 @@ public class MapElementLibraryIcon {
 	private long id;
 
 	@ManyToOne
+	@ForeignKey(name = "fk_meli_to_ibrary")
 	@JoinColumn(name = "library_id", nullable = false)
 	private MapElementLibrary library;
 
 	@ManyToOne
+	@ForeignKey(name = "fk_meli_to_icon")
 	@JoinColumn(name = "icon_id", nullable = false)
 	private MapElementIcon icon;
 
