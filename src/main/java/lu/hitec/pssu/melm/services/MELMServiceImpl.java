@@ -11,6 +11,7 @@ import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 
 import lu.hitec.pssu.mapelement.library.xml.parser.XMLSelectionPathParser;
@@ -19,6 +20,7 @@ import lu.hitec.pssu.melm.exceptions.MELMException;
 import lu.hitec.pssu.melm.utils.LibraryValidator;
 import lu.hitec.pssu.melm.utils.MELMUtils;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,17 +29,32 @@ public class MELMServiceImpl implements MELMService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MELMServiceImpl.class);
 
-  /**
-   * Base directory for the libraries storage
-   */
-  private final File baseDirectory;
+  private static final String[] ICON_SIZES = { "20px", "40px", "60px", "100px" };
 
-  public MELMServiceImpl(final File baseDirectory) {
-    if (!baseDirectory.isDirectory() && !baseDirectory.mkdirs()) {
-      final String msg = String.format("Base directory doesn't exist: %s", baseDirectory.getAbsolutePath());
+  private final File iconsDirectory;
+
+  private final File iconsImportedDirectory;
+
+  private final File librariesDirectory;
+
+  private final File librariesImportedDirectory;
+
+  // @Autowired
+  // private MapElementIconDAO mapElementIconDAO;
+
+  public MELMServiceImpl(final File librariesDirectory, final File iconsDirectory) {
+    if (!librariesDirectory.isDirectory() && !librariesDirectory.mkdirs()) {
+      final String msg = String.format("Libraries directory doesn't exist: %s", librariesDirectory.getAbsolutePath());
       throw new IllegalArgumentException(msg);
     }
-    this.baseDirectory = baseDirectory;
+    if (!iconsDirectory.isDirectory() && !iconsDirectory.mkdirs()) {
+      final String msg = String.format("Icons directory doesn't exist: %s", iconsDirectory.getAbsolutePath());
+      throw new IllegalArgumentException(msg);
+    }
+    this.librariesDirectory = librariesDirectory;
+    librariesImportedDirectory = new File(librariesDirectory, "imported");
+    this.iconsDirectory = iconsDirectory;
+    iconsImportedDirectory = new File(iconsDirectory, "imported");
   }
 
   @Override
@@ -85,6 +102,7 @@ public class MELMServiceImpl implements MELMService {
    * Creates a unique filename from the given name and version format which is used to store files, and to find files back again with the
    * given information.
    */
+  @Nonnull
   @Override
   public String buildArchiveFilename(@Nonnull final String libraryName, @Nonnull final String version) {
     assert libraryName != null : "Library name is null";
@@ -93,17 +111,42 @@ public class MELMServiceImpl implements MELMService {
   }
 
   @Override
-  public void extractZipFile(@Nonnull final File file) throws MELMException {
+  public void copyImportedIcons(@Nonnull final File libraryFolder) throws MELMException {
+    try {
+      for (final String iconSize : ICON_SIZES) {
+        final File iconFolder = new File(libraryFolder, iconSize);
+        final File[] iconFiles = iconFolder.listFiles();
+        for (final File sourceIconFile : iconFiles) {
+          final String hashForFile = MELMUtils.getHashForFile(sourceIconFile);
+          // FIXME test with DAO and if not existing then insert in DB.
+          System.out.println(hashForFile);
+          // if (!mapElementIconDAO.exist(hashForFile, iconFile.length())) {
+          final File targetIconFile = new File(iconsImportedDirectory, String.format("%s.png", hashForFile));
+          FileUtils.copyFile(sourceIconFile, targetIconFile);
+          // }
+        }
+      }
+    } catch (final IOException e) {
+      final String msg = "Failed to compute the hash";
+      throw new MELMException(msg, e);
+    }
+  }
+
+  @CheckReturnValue
+  @Override
+  public File extractZipFile(@Nonnull final File file) throws MELMException {
     assert file != null : "File is null";
     assert file.exists() : "File is not existing";
     final int buffer = 2048;
 
+    File libraryRootFolder = null;
     ZipFile zipFile = null;
     try {
       zipFile = new ZipFile(file);
       final String newPath = file.getAbsolutePath().substring(0, file.getAbsolutePath().length() - 4);
 
-      if (!new File(newPath).mkdir()) {
+      libraryRootFolder = new File(newPath);
+      if (!libraryRootFolder.mkdirs()) {
         LOGGER.debug(String.format("Failed to perform mkdir for path : %s", newPath));
       }
       final Enumeration<? extends ZipEntry> zipFileEntries = zipFile.entries();
@@ -149,32 +192,48 @@ public class MELMServiceImpl implements MELMService {
           // }
         }
       } catch (final IOException e) {
-        LOGGER.debug(e.toString(), e);
+        final String msg = "Failed to process zip entry";
+        if (LOGGER.isDebugEnabled()) {
+          LOGGER.debug(msg, e);
+        }
+        throw new MELMException(msg, e);
       } finally {
         MELMUtils.closeResource(is);
         MELMUtils.closeResource(fos);
         MELMUtils.closeResource(dest);
       }
     } catch (final IOException e) {
-      throw new MELMException("Failed to process zip file", e);
+      final String msg = "Failed to process zip file";
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug(msg, e);
+      }
+      throw new MELMException(msg, e);
     } finally {
       MELMUtils.closeResource(zipFile);
     }
+    return libraryRootFolder;
   }
 
+  @Nonnull
   @Override
-  public File getBaseDirectory() {
-    return baseDirectory;
+  public File getIconsDirectory() {
+    return iconsDirectory;
+  }
+
+  @Nonnull
+  @Override
+  public File getLibrariesDirectory() {
+    return librariesDirectory;
   }
 
   @Override
   public File getTargetArchiveFile(@Nonnull final String libraryName, @Nonnull final String version) throws MELMException {
     assert libraryName != null : "Library name is null";
     assert version != null : "Version is null";
-    final File archiveDirectory = LibraryValidator.buildDirectoryForLibraryVersion(getBaseDirectory().getAbsolutePath(), libraryName,
-        version);
+    final File archiveDirectory = LibraryValidator.buildDirectoryForLibraryVersion(librariesImportedDirectory.getAbsolutePath(),
+        libraryName, version);
     if (archiveDirectory == null) {
-      throw new MELMException("Failed to create target dir. to store new file");
+      throw new MELMException("Failed to create target folder to store new file");
     }
 
     final String newArchiveFilename = buildArchiveFilename(libraryName, version);
@@ -191,7 +250,7 @@ public class MELMServiceImpl implements MELMService {
     final String xsdPath = this.getClass().getResource(LibraryValidator.XSD_PATH).getPath();
     final File xmlFile;
     try {
-      xmlFile = LibraryValidator.validateLibrary(xsdPath, baseDirectory.getAbsolutePath(), libraryName, version);
+      xmlFile = LibraryValidator.validateLibrary(xsdPath, librariesImportedDirectory.getAbsolutePath(), libraryName, version);
     } catch (final LibraryValidatorException e) {
       final String msg = "Failed to validate library xml file";
       throw new MELMException(msg, e);

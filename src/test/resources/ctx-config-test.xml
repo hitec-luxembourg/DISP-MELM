@@ -18,7 +18,12 @@
   <bean id="melmService" class="lu.hitec.pssu.melm.services.MELMServiceImpl">
     <constructor-arg>
       <bean class="java.io.File">
-        <constructor-arg value="${melmservice.library.folder}" />
+        <constructor-arg value="${melmservice.libraries.folder}" />
+      </bean>
+    </constructor-arg>
+    <constructor-arg>
+      <bean class="java.io.File">
+        <constructor-arg value="${melmservice.icons.folder}" />
       </bean>
     </constructor-arg>
   </bean>

@@ -1,1 +1,3 @@
-melmservice.library.folder = ${project.build.directory}/melmservice/library
+melmservice.root.folder = ${project.build.directory}/melmservice
+melmservice.libraries.folder = ${melmservice.root.folder}/libraries
+melmservice.icons.folder = ${melmservice.root.folder}/icons

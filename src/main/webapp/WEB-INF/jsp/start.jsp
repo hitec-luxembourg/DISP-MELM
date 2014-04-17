@@ -22,7 +22,7 @@
       <h2>Icons</h2>
       <a href="${ctx}/rest/icons">List</a>
       <br/>
-      <a href="${ctx}/rest/icons/import">Import</a>
+      <a href="${ctx}/rest/icons/add">Add</a>
     </div>
     <jsp:include page="footer.jsp" />
   </div>

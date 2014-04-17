@@ -5,7 +5,7 @@
       <li><a href="${ctx}/rest/libraries">List Libraries</a></li>
       <li><a href="${ctx}/rest/libraries/import">Import Library</a></li>
       <li><a href="${ctx}/rest/icons">List Icons</a></li>
-      <li><a href="${ctx}/rest/icons/import">Import Icon</a></li>
+      <li><a href="${ctx}/rest/icons/add">Add Icon</a></li>
       <li><a href="${ctx}/logout">Logout</a></li>
     </ul>
   </div>

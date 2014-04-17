@@ -15,6 +15,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -44,16 +45,33 @@ import org.springframework.stereotype.Component;
 @Component
 @SuppressWarnings("static-method")
 public class MELMResource {
+  private static final String DEFAULT_MEDIA_TYPE = "image/png";
+
   private static final Logger LOGGER = LoggerFactory.getLogger(MELMResource.class);
 
   // Limit in bytes for file upload (overidden by services limits)
-  private final int maxFileSize = 8 * 1024 * 1024;
+  private static final int MAX_FILE_SIZE = 8 * 1024 * 1024;
 
   @Autowired
   private MELMService melmService;
 
   @Context
   private HttpServletRequest request;
+
+  /**
+   * Annotation PathParam is not working here. 
+   */
+  @GET
+  @Path("/icons/file")
+  @Produces("image/*")
+  public Response getIconFile(@QueryParam("path") @Nonnull final String pathInIconsFolderEncoded) throws URISyntaxException {
+    assert pathInIconsFolderEncoded != null : "Path in icons folder encoded is null";
+    final File file = new File(melmService.getIconsDirectory(), new URI(pathInIconsFolderEncoded).getPath());
+    if (!file.exists()) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    return Response.ok(file, DEFAULT_MEDIA_TYPE).build();
+  }
 
   @SuppressWarnings("unused")
   @GET
@@ -67,9 +85,9 @@ public class MELMResource {
   @SuppressWarnings("unused")
   @GET
   @Produces(MediaType.TEXT_HTML)
-  @Path("/icons/import")
-  public Response gotoImportIcon(@Context final UriInfo uriInfo, @Context final HttpServletRequest requestParam) throws URISyntaxException {
-    return Response.ok(new Viewable("/importIcon")).build();
+  @Path("/icons/add")
+  public Response gotoAddIcon(@Context final UriInfo uriInfo, @Context final HttpServletRequest requestParam) throws URISyntaxException {
+    return Response.ok(new Viewable("/addIcon")).build();
   }
 
   @SuppressWarnings("unused")
@@ -120,20 +138,25 @@ public class MELMResource {
 
     try {
       final File zipFile = melmService.addZipFile(libraryUpload.getLibraryName(), libraryUpload.getVersion(), libraryUpload.getZipFile());
-      melmService.extractZipFile(zipFile);
-      final XMLSelectionPathParser libraryParser = melmService.validateAndParse(libraryUpload.getLibraryName(), libraryUpload.getVersion());
+      final File libraryFolder = melmService.extractZipFile(zipFile);
+      if (libraryFolder != null) {
+        final XMLSelectionPathParser libraryParser = melmService.validateAndParse(libraryUpload.getLibraryName(),
+            libraryUpload.getVersion());
+        melmService.copyImportedIcons(libraryFolder);
+        
+        // FIXME Move this part in MELMService.
+        System.out.println(String.format("Library Id %s", libraryParser.getLibraryId()));
+        System.out.println(String.format("Library Display Name %s", libraryParser.getLibraryDisplayName()));
+        System.out.println(String.format("Library Type %s", libraryParser.getLibraryType()));
+        System.out.println(String.format("Library Version %s", libraryParser.getLibraryVersion()));
+        System.out.println(String.format("Library icon Path %s", libraryParser.getLibraryIconRelativePath()));
+        final Map<String, BaseNodeType> mapOfNodesByUniqueCode = libraryParser.getMapOfNodesByUniqueCode();
+        final Iterator<Map.Entry<String, BaseNodeType>> iterator = mapOfNodesByUniqueCode.entrySet().iterator();
+        while (iterator.hasNext()) {
+          final Map.Entry<String, BaseNodeType> mapEntry = iterator.next();
+          System.out.println("The key is: " + mapEntry.getKey() + ",value is :" + mapEntry.getValue().getDescription());
+        }
 
-      // FIXME Move this part in MELMService.
-      System.out.println(String.format("Library Id %s", libraryParser.getLibraryId()));
-      System.out.println(String.format("Library Display Name %s", libraryParser.getLibraryDisplayName()));
-      System.out.println(String.format("Library Type %s", libraryParser.getLibraryType()));
-      System.out.println(String.format("Library Version %s", libraryParser.getLibraryVersion()));
-      System.out.println(String.format("Library icon Path %s", libraryParser.getLibraryIconRelativePath()));
-      final Map<String, BaseNodeType> mapOfNodesByUniqueCode = libraryParser.getMapOfNodesByUniqueCode();
-      final Iterator<Map.Entry<String, BaseNodeType>> iterator = mapOfNodesByUniqueCode.entrySet().iterator();
-      while (iterator.hasNext()) {
-        final Map.Entry<String, BaseNodeType> mapEntry = iterator.next();
-        System.out.println("The key is: " + mapEntry.getKey() + ",value is :" + mapEntry.getValue().getDescription());
       }
     } catch (final MELMException e) {
       if (LOGGER.isDebugEnabled()) {
@@ -151,7 +174,7 @@ public class MELMResource {
     String version = null;
 
     final ServletFileUpload upload = new ServletFileUpload();
-    upload.setFileSizeMax(maxFileSize);
+    upload.setFileSizeMax(MAX_FILE_SIZE);
 
     InputStream stream = null;
     try {

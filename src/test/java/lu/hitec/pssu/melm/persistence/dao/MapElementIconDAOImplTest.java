@@ -1,6 +1,7 @@
 package lu.hitec.pssu.melm.persistence.dao;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +16,9 @@ public class MapElementIconDAOImplTest {
 	private MapElementIconDAO mapElementIconDAO;
 
 	@Test
+	@Ignore
 	public void test() {
 		Assert.assertEquals(0, mapElementIconDAO.listAllIcons().size());
-		;
 	}
 
 }

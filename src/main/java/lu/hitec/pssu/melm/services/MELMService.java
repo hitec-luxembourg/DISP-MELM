@@ -2,6 +2,7 @@ package lu.hitec.pssu.melm.services;
 
 import java.io.File;
 
+import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 
 import lu.hitec.pssu.mapelement.library.xml.parser.XMLSelectionPathParser;
@@ -12,11 +13,19 @@ public interface MELMService {
 
   String buildArchiveFilename(@Nonnull final String libraryName, @Nonnull final String version);
 
-  void extractZipFile(@Nonnull final File file) throws MELMException;
+  void copyImportedIcons(@Nonnull final File libraryFolder) throws MELMException;
 
-  File getBaseDirectory();
+  @CheckReturnValue
+  File extractZipFile(@Nonnull final File file) throws MELMException;
+
+  @Nonnull
+  File getIconsDirectory();
+
+  @Nonnull
+  File getLibrariesDirectory();
 
   File getTargetArchiveFile(@Nonnull final String libraryName, @Nonnull final String version) throws MELMException;
 
   XMLSelectionPathParser validateAndParse(@Nonnull final String libraryName, @Nonnull final String version) throws MELMException;
+
 }

@@ -5,7 +5,7 @@
 <c:set value="${pageContext.request.contextPath}" var="ctx" scope="request" />
 <html>
 <head>
-<title>Import icon</title>
+<title>Add icon</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 <link rel="stylesheet" type="text/css" href="${ctx}/css/style.css" />
@@ -14,7 +14,7 @@
   <div id="wrapper">
     <jsp:include page="header.jsp" />
     <div id="content">
-      <h1>Import icon</h1>
+      <h1>Add icon</h1>
       <div>
       </div>
     </div>
