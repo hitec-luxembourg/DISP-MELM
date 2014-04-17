@@ -35,6 +35,7 @@
     <spring.version>3.2.4.RELEASE</spring.version>
     <hibernate.version>4.3.4.Final</hibernate.version>
     <slf4j.version>1.7.6</slf4j.version>
+    <derby.version>10.10.1.1</derby.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.7</maven.compiler.source>
     <maven.compiler.target>1.7</maven.compiler.target>
@@ -221,6 +222,20 @@
       <groupId>lu.hitec.common</groupId>
       <artifactId>mapelementservice-dto</artifactId>
       <version>1.12.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.derby</groupId>
+      <artifactId>derby</artifactId>
+      <version>${derby.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>
