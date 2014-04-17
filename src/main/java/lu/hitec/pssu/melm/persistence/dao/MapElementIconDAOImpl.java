@@ -23,20 +23,26 @@ public class MapElementIconDAOImpl implements MapElementIconDAO {
 
 	@Override
 	@Transactional
-	public void addMapElementIcon(final String path, final String hash, final long length) {
+	public void addMapElementIcon(final String path, final String hash, final long length, final String displayName) {
 		final MapElementIcon mapElementIcon = new MapElementIcon();
 		mapElementIcon.setPath(path);
 		mapElementIcon.setPic100pxMd5(hash);
 		mapElementIcon.setSizeInBytes(length);
+		mapElementIcon.setDisplayName(displayName);
 		this.em.persist(mapElementIcon);
+
+	}
+
+	@Override
+	public MapElementIcon getMapElementIcon(final long id) {
+		return this.em.find(MapElementIcon.class, id);
 
 	}
 
 	@Override
 	@Transactional
 	public void delete(final long id) {
-		final MapElementIcon icon = this.em.find(MapElementIcon.class, id);
-		this.em.remove(icon);
+		this.em.remove(getMapElementIcon(id));
 
 	}
 
@@ -48,4 +54,5 @@ public class MapElementIconDAOImpl implements MapElementIconDAO {
 
 		return query.getResultList().size() > 0;
 	}
+
 }

@@ -29,8 +29,11 @@ public class MapElementIcon {
 	@Column(name = "path", nullable = false, updatable = true)
 	private String path;
 
+	@Column(name = "display_name", nullable = false, updatable = true)
+	private String displayName;
+
 	public long getId() {
-		return id;
+		return this.id;
 	}
 
 	public void setId(final long id) {
@@ -38,7 +41,7 @@ public class MapElementIcon {
 	}
 
 	public String getPic100pxMd5() {
-		return pic100pxMd5;
+		return this.pic100pxMd5;
 	}
 
 	public void setPic100pxMd5(final String pic100pxMd5) {
@@ -46,7 +49,7 @@ public class MapElementIcon {
 	}
 
 	public long getSizeInBytes() {
-		return sizeInBytes;
+		return this.sizeInBytes;
 	}
 
 	public void setSizeInBytes(final long sizeInBytes) {
@@ -54,15 +57,23 @@ public class MapElementIcon {
 	}
 
 	public String getPath() {
-		return path;
+		return this.path;
 	}
 
 	public void setPath(final String path) {
 		this.path = path;
 	}
-	
-	public String getFilePath(final IconSize iconSize){
-		return String.format("%s%s%s.png", path, pic100pxMd5, iconSize.getSuffix()).toString();
+
+	public String getDisplayName() {
+		return this.displayName;
+	}
+
+	public void setDisplayName(final String displayName) {
+		this.displayName = displayName;
+	}
+
+	public String getFilePath(final IconSize iconSize) {
+		return String.format("%s%s%s.png", this.path, this.pic100pxMd5, iconSize.getSuffix()).toString();
 	}
 
 }
