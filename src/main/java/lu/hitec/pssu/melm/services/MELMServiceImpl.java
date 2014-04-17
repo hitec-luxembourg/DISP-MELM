@@ -25,6 +25,7 @@ import lu.hitec.pssu.melm.utils.LibraryValidator;
 import lu.hitec.pssu.melm.utils.MELMUtils;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +60,8 @@ public class MELMServiceImpl implements MELMService {
     this.iconsDirectory = iconsDirectory;
     iconsImportedDirectory = new File(iconsDirectory, "imported");
   }
-
+  
+  @Override
   public void addIconAndFiles(@Nonnull final String albumName, @Nonnull final String displayName, @Nonnull final File iconLargeFile,
       @Nonnull final File iconMediumFile, @Nonnull final File iconSmallFile, @Nonnull final File iconTinyFile) throws MELMException {
     String hashForLargeFile;
@@ -69,11 +71,16 @@ public class MELMServiceImpl implements MELMService {
       final String msg = "Failed to compute hash";
       throw new MELMException(msg, e);
     }
+    mapElementIconDAO.addMapElementIcon(iconsImportedDirectory.getAbsolutePath(), hashForLargeFile, iconLargeFile.length(),
+        FilenameUtils.getBaseName(iconLargeFile.getName()));
+    
+    // FIXME this albumFolder is not yet used. All images are created in imported folder for the moment.
     final File albumFolder = new File(iconsDirectory, albumName);
     if (!albumFolder.exists() && !albumFolder.mkdirs()) {
       final String msg = String.format("Failed to create album with name %s", albumName);
-      throw new MELMException(msg);
+      LOGGER.error(msg);
     }
+    
     try {
       copyFile(hashForLargeFile, iconLargeFile, IconSize.LARGE);
       copyFile(hashForLargeFile, iconMediumFile, IconSize.MEDIUM);
@@ -81,9 +88,8 @@ public class MELMServiceImpl implements MELMService {
       copyFile(hashForLargeFile, iconTinyFile, IconSize.TINY);
     } catch (final IOException e) {
       final String msg = "Failed to copy a file";
-      throw new MELMException(msg, e);
+      LOGGER.error(msg, e);
     }
-    mapElementIconDAO.addMapElementIcon(iconsImportedDirectory.getAbsolutePath(), hashForLargeFile, iconLargeFile.length());
   }
 
   @Override
@@ -151,7 +157,8 @@ public class MELMServiceImpl implements MELMService {
           moveFile(hashForLargeFile, libraryFolder, sourceIconLargeFile.getName(), IconSize.MEDIUM);
           moveFile(hashForLargeFile, libraryFolder, sourceIconLargeFile.getName(), IconSize.SMALL);
           moveFile(hashForLargeFile, libraryFolder, sourceIconLargeFile.getName(), IconSize.TINY);
-          mapElementIconDAO.addMapElementIcon(iconsImportedDirectory.getAbsolutePath(), hashForLargeFile, sourceIconLargeFile.length());
+          mapElementIconDAO.addMapElementIcon(iconsImportedDirectory.getAbsolutePath(), hashForLargeFile, sourceIconLargeFile.length(),
+              FilenameUtils.getBaseName(sourceIconLargeFile.getName()));
         }
       }
     } catch (final IOException e) {
@@ -163,11 +170,12 @@ public class MELMServiceImpl implements MELMService {
   @Override
   @Transactional
   public void deleteIconAndFiles(final long id) {
+    mapElementIconDAO.delete(id);
+    
     // copyFile(hashForLargeFile, libraryFolder, sourceIconLargeFile.getName(), IconSize.LARGE);
     // copyFile(hashForLargeFile, libraryFolder, sourceIconLargeFile.getName(), IconSize.MEDIUM);
     // copyFile(hashForLargeFile, libraryFolder, sourceIconLargeFile.getName(), IconSize.SMALL);
     // copyFile(hashForLargeFile, libraryFolder, sourceIconLargeFile.getName(), IconSize.TINY);
-    mapElementIconDAO.delete(id);
   }
 
   @CheckReturnValue

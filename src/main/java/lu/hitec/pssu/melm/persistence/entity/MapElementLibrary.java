@@ -27,8 +27,19 @@ public class MapElementLibrary {
 	@Column(name = "minor_version", nullable = false, updatable = false)
 	private int minorVersion;
 
+	public MapElementLibrary(final String name, final int majorVersion, final int minorVersion) {
+		super();
+		this.name = name;
+		this.majorVersion = majorVersion;
+		this.minorVersion = minorVersion;
+	}
+
+	public MapElementLibrary() {
+		super();
+	}
+
 	public long getId() {
-		return id;
+		return this.id;
 	}
 
 	public void setId(final long id) {
@@ -36,7 +47,7 @@ public class MapElementLibrary {
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public void setName(final String name) {
@@ -44,7 +55,7 @@ public class MapElementLibrary {
 	}
 
 	public int getMajorVersion() {
-		return majorVersion;
+		return this.majorVersion;
 	}
 
 	public void setMajorVersion(final int majorVersion) {
@@ -52,7 +63,7 @@ public class MapElementLibrary {
 	}
 
 	public int getMinorVersion() {
-		return minorVersion;
+		return this.minorVersion;
 	}
 
 	public void setMinorVersion(final int minorVersion) {
