@@ -35,8 +35,11 @@ public class MapElementLibraryIcon {
 	@Column(name = "icon_name_in_library", nullable = false, updatable = true)
 	private String iconNameInLibrary;
 
+	@Column(name = "icon_name_in_library", nullable = false, updatable = true)
+	private String iconDescriptionInLibrary;
+
 	public long getId() {
-		return id;
+		return this.id;
 	}
 
 	public void setId(final long id) {
@@ -44,7 +47,7 @@ public class MapElementLibraryIcon {
 	}
 
 	public MapElementLibrary getLibrary() {
-		return library;
+		return this.library;
 	}
 
 	public void setLibrary(final MapElementLibrary library) {
@@ -52,7 +55,7 @@ public class MapElementLibraryIcon {
 	}
 
 	public MapElementIcon getIcon() {
-		return icon;
+		return this.icon;
 	}
 
 	public void setIcon(final MapElementIcon icon) {
@@ -60,11 +63,19 @@ public class MapElementLibraryIcon {
 	}
 
 	public String getIconNameInLibrary() {
-		return iconNameInLibrary;
+		return this.iconNameInLibrary;
 	}
 
 	public void setIconNameInLibrary(final String iconNameInLibrary) {
 		this.iconNameInLibrary = iconNameInLibrary;
+	}
+
+	public String getIconDescriptionInLibrary() {
+		return this.iconDescriptionInLibrary;
+	}
+
+	public void setIconDescriptionInLibrary(final String iconDescriptionInLibrary) {
+		this.iconDescriptionInLibrary = iconDescriptionInLibrary;
 	}
 
 }
