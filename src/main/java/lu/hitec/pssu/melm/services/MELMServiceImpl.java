@@ -112,18 +112,17 @@ public class MELMServiceImpl implements MELMService {
 
   @Override
   public void copyImportedIcons(@Nonnull final File libraryFolder) throws MELMException {
+    final File largeFileFolder = new File(libraryFolder, IconSize.LARGE.getSize());
     try {
-      for (final IconSize iconSize : IconSize.values()) {
-        final File iconFolder = new File(libraryFolder, iconSize.getSize());
-        final File[] iconFiles = iconFolder.listFiles();
-        for (final File sourceIconFile : iconFiles) {
-          final String hashForFile = MELMUtils.getHashForFile(sourceIconFile);
-          // FIXME test with DAO and if not existing then insert in DB.
-          System.out.println(hashForFile);
-          // if (!mapElementIconDAO.exist(hashForFile, iconFile.length())) {
-          final File targetIconFile = new File(iconsImportedDirectory, String.format("%s.png", hashForFile));
-          FileUtils.copyFile(sourceIconFile, targetIconFile);
-          // }
+      final File[] iconFiles = largeFileFolder.listFiles();
+      for (final File sourceIconLargeFile : iconFiles) {
+        final String hashForLargeFile = MELMUtils.getHashForFile(sourceIconLargeFile);
+        if (!mapElementIconDAO.exist(hashForLargeFile, sourceIconLargeFile.length())) {
+          copyFile(hashForLargeFile, libraryFolder, sourceIconLargeFile.getName(), IconSize.LARGE);
+          copyFile(hashForLargeFile, libraryFolder, sourceIconLargeFile.getName(), IconSize.MEDIUM);
+          copyFile(hashForLargeFile, libraryFolder, sourceIconLargeFile.getName(), IconSize.SMALL);
+          copyFile(hashForLargeFile, libraryFolder, sourceIconLargeFile.getName(), IconSize.TINY);
+          mapElementIconDAO.addMapElementIcon(iconsImportedDirectory.getAbsolutePath(), hashForLargeFile, sourceIconLargeFile.length());
         }
       }
     } catch (final IOException e) {
@@ -279,6 +278,18 @@ public class MELMServiceImpl implements MELMService {
       MELMUtils.closeResource(in);
     }
     throw new MELMException("Failed to parse xml file");
+  }
+
+  private void copyFile(@Nonnull final String hashForLargeFile, @Nonnull final File libraryFolder,
+      @Nonnull final String fileNameWithExtension, @Nonnull final IconSize size) throws IOException {
+    assert hashForLargeFile != null : "Hash for large file is null";
+    assert libraryFolder != null : "Library folder is null";
+    assert fileNameWithExtension != null : "File name with extension is null";
+    assert size != null : "Size is null";
+    final File sourceIconFolder = new File(libraryFolder, size.getSize());
+    final File sourceIconFile = new File(sourceIconFolder, fileNameWithExtension);
+    final File targetIconFile = new File(iconsImportedDirectory, String.format("%s%s.png", hashForLargeFile, size.getSuffix()));
+    FileUtils.copyFile(sourceIconFile, targetIconFile);
   }
 
   public enum IconSize {

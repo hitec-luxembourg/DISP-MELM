@@ -1,3 +1,6 @@
 melmservice.root.folder = D:/opt/pssu/melmservice
 melmservice.libraries.folder = ${melmservice.root.folder}/libraries
 melmservice.icons.folder = ${melmservice.root.folder}/icons
+
+db.username=disp-melm-user
+db.password=changeThis
