@@ -15,8 +15,11 @@ public class MapElementIconDAOImplTest {
 	private MapElementIconDAO mapElementIconDAO;
 
 	@Test
-	public void test() {
-		Assert.assertEquals(0, mapElementIconDAO.listAllIcons().size());
+	public void test1() {
+		Assert.assertEquals(0, this.mapElementIconDAO.listAllIcons().size());
+		this.mapElementIconDAO.addMapElementIcon("folder1/folder2", "14522dgdg22544dfgdfg225", 1264);
+
+		Assert.assertEquals(1, this.mapElementIconDAO.listAllIcons().size());
 	}
 
 }

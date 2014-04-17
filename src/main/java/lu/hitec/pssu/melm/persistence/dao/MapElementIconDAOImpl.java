@@ -8,6 +8,8 @@ import javax.persistence.TypedQuery;
 
 import lu.hitec.pssu.melm.persistence.entity.MapElementIcon;
 
+import org.springframework.transaction.annotation.Transactional;
+
 public class MapElementIconDAOImpl implements MapElementIconDAO {
 
 	@PersistenceContext
@@ -20,6 +22,7 @@ public class MapElementIconDAOImpl implements MapElementIconDAO {
 	}
 
 	@Override
+	@Transactional
 	public void addMapElementIcon(final String path, final String hash, final long length) {
 		final MapElementIcon mapElementIcon = new MapElementIcon();
 		mapElementIcon.setPath(path);
@@ -37,8 +40,10 @@ public class MapElementIconDAOImpl implements MapElementIconDAO {
 
 	@Override
 	public boolean exist(final String hash, final long size) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+		final TypedQuery<MapElementIcon> query = this.em
+				.createQuery("SELECT mei FROM MapElementIcon mei WHERE mei.pic100pxMd5 = :hash AND sizeInBytes = :size", MapElementIcon.class).setParameter("hash", hash)
+				.setParameter("size", size);
 
+		return query.getResultList().size() > 0;
+	}
 }
