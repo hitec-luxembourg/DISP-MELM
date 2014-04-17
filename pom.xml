@@ -73,7 +73,7 @@
                 </component>
               </components>
               <componentProperties>
-                <persistenceunit>melm</persistenceunit>
+                <persistenceunit>DISP-MELM</persistenceunit>
                 <outputfilename>${schema.file}</outputfilename>
                 <drop>true</drop>
                 <create>true</create>
