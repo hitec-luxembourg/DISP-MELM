@@ -14,8 +14,8 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -59,18 +59,27 @@ public class MELMResource {
   private HttpServletRequest request;
 
   /**
-   * Annotation PathParam is not working here. 
+   * It is better to use the id of icon and the size than the path of icon for security issues.
+   * Because someone could access file system.
    */
   @GET
-  @Path("/icons/file")
+  @Path("/icons/{id}/{size}")
   @Produces("image/*")
-  public Response getIconFile(@QueryParam("path") @Nonnull final String pathInIconsFolderEncoded) throws URISyntaxException {
-    assert pathInIconsFolderEncoded != null : "Path in icons folder encoded is null";
-    final File file = new File(melmService.getIconsDirectory(), new URI(pathInIconsFolderEncoded).getPath());
+  public Response getIconFile(@PathParam("id") @Nonnull final String id, @PathParam("size") final int size) throws URISyntaxException {
+    assert id != null : "Id is null";
+    final File file = new File(melmService.getIconsDirectory(), null);
     if (!file.exists()) {
       return Response.status(Status.NOT_FOUND).build();
     }
     return Response.ok(file, DEFAULT_MEDIA_TYPE).build();
+  }
+
+  @SuppressWarnings("unused")
+  @GET
+  @Produces(MediaType.TEXT_HTML)
+  @Path("/icons/add")
+  public Response gotoAddIcon(@Context final UriInfo uriInfo, @Context final HttpServletRequest requestParam) throws URISyntaxException {
+    return Response.ok(new Viewable("/addIcon")).build();
   }
 
   @SuppressWarnings("unused")
@@ -80,14 +89,6 @@ public class MELMResource {
   @Path("/icons")
   public Response gotoIcons(@Context final UriInfo uriInfo, @Context final HttpServletRequest requestParam) throws URISyntaxException {
     return Response.ok(new Viewable("/icons")).build();
-  }
-
-  @SuppressWarnings("unused")
-  @GET
-  @Produces(MediaType.TEXT_HTML)
-  @Path("/icons/add")
-  public Response gotoAddIcon(@Context final UriInfo uriInfo, @Context final HttpServletRequest requestParam) throws URISyntaxException {
-    return Response.ok(new Viewable("/addIcon")).build();
   }
 
   @SuppressWarnings("unused")
@@ -143,7 +144,7 @@ public class MELMResource {
         final XMLSelectionPathParser libraryParser = melmService.validateAndParse(libraryUpload.getLibraryName(),
             libraryUpload.getVersion());
         melmService.copyImportedIcons(libraryFolder);
-        
+
         // FIXME Move this part in MELMService.
         System.out.println(String.format("Library Id %s", libraryParser.getLibraryId()));
         System.out.println(String.format("Library Display Name %s", libraryParser.getLibraryDisplayName()));
@@ -154,9 +155,8 @@ public class MELMResource {
         final Iterator<Map.Entry<String, BaseNodeType>> iterator = mapOfNodesByUniqueCode.entrySet().iterator();
         while (iterator.hasNext()) {
           final Map.Entry<String, BaseNodeType> mapEntry = iterator.next();
-          System.out.println("The key is: " + mapEntry.getKey() + ",value is :" + mapEntry.getValue().getDescription());
+          System.out.println(String.format("The key is: %s ,value is : %s", mapEntry.getKey(), mapEntry.getValue().getDescription()));
         }
-
       }
     } catch (final MELMException e) {
       if (LOGGER.isDebugEnabled()) {

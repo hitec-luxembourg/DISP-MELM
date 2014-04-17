@@ -17,6 +17,7 @@ import javax.annotation.Nonnull;
 import lu.hitec.pssu.mapelement.library.xml.parser.XMLSelectionPathParser;
 import lu.hitec.pssu.melm.exceptions.LibraryValidatorException;
 import lu.hitec.pssu.melm.exceptions.MELMException;
+import lu.hitec.pssu.melm.persistence.dao.MapElementIconDAO;
 import lu.hitec.pssu.melm.utils.LibraryValidator;
 import lu.hitec.pssu.melm.utils.MELMUtils;
 
@@ -24,6 +25,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class MELMServiceImpl implements MELMService {
 
@@ -39,8 +41,15 @@ public class MELMServiceImpl implements MELMService {
 
   private final File librariesImportedDirectory;
 
-  // @Autowired
-  // private MapElementIconDAO mapElementIconDAO;
+  @Autowired
+  private MapElementIconDAO mapElementIconDAO;
+
+  @CheckReturnValue
+  @Override
+  public File getIconFile(@Nonnull final String id, final int size) {
+    assert id != null : "Id is null";
+    return new File("");
+  }
 
   public MELMServiceImpl(final File librariesDirectory, final File iconsDirectory) {
     if (!librariesDirectory.isDirectory() && !librariesDirectory.mkdirs()) {

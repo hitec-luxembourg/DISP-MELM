@@ -18,6 +18,9 @@ public interface MELMService {
   @CheckReturnValue
   File extractZipFile(@Nonnull final File file) throws MELMException;
 
+  @CheckReturnValue
+  File getIconFile(@Nonnull final String id, int size);
+
   @Nonnull
   File getIconsDirectory();
 
