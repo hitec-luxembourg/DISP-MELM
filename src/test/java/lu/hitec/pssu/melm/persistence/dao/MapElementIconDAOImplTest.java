@@ -20,6 +20,21 @@ public class MapElementIconDAOImplTest {
 		this.mapElementIconDAO.addMapElementIcon("folder1/folder2", "14522dgdg22544dfgdfg225", 1264);
 
 		Assert.assertEquals(1, this.mapElementIconDAO.listAllIcons().size());
+
+		Assert.assertTrue(this.mapElementIconDAO.exist("14522dgdg22544dfgdfg225", 1264));
+		Assert.assertFalse(this.mapElementIconDAO.exist("14522dgdg22544dfgdfg225", 1263));
+		Assert.assertFalse(this.mapElementIconDAO.exist("jdjdjdfjdfjdfg", 1264));
+		Assert.assertFalse(this.mapElementIconDAO.exist("jdjdjdfjdfjdfg", 1263));
+
+		final long theId = this.mapElementIconDAO.listAllIcons().get(0).getId();
+
+		this.mapElementIconDAO.delete(theId);
+
+		Assert.assertEquals(0, this.mapElementIconDAO.listAllIcons().size());
+		Assert.assertFalse(this.mapElementIconDAO.exist("14522dgdg22544dfgdfg225", 1264));
+		Assert.assertFalse(this.mapElementIconDAO.exist("14522dgdg22544dfgdfg225", 1263));
+		Assert.assertFalse(this.mapElementIconDAO.exist("jdjdjdfjdfjdfg", 1264));
+		Assert.assertFalse(this.mapElementIconDAO.exist("jdjdjdfjdfjdfg", 1263));
 	}
 
 }

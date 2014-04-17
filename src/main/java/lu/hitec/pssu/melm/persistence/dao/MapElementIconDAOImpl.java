@@ -33,8 +33,10 @@ public class MapElementIconDAOImpl implements MapElementIconDAO {
 	}
 
 	@Override
+	@Transactional
 	public void delete(final long id) {
-		// TODO Auto-generated method stub
+		final MapElementIcon icon = this.em.find(MapElementIcon.class, id);
+		this.em.remove(icon);
 
 	}
 
