@@ -1,6 +1,5 @@
 package lu.hitec.pssu.melm.persistence.dao;
 
-import java.io.File;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -16,17 +15,17 @@ public class MapElementIconDAOImpl implements MapElementIconDAO {
 
 	@Override
 	public List<MapElementIcon> listAllIcons() {
-		final TypedQuery<MapElementIcon> query = em.createQuery("SELECT mei FROM MapElementIcon mei ORDER BY mei.id", MapElementIcon.class);
+		final TypedQuery<MapElementIcon> query = this.em.createQuery("SELECT mei FROM MapElementIcon mei ORDER BY mei.id", MapElementIcon.class);
 		return query.getResultList();
 	}
 
 	@Override
-	public void addMapElementIcon(final File icon) {
+	public void addMapElementIcon(final String path, final String hash, final long length) {
 		final MapElementIcon mapElementIcon = new MapElementIcon();
-		mapElementIcon.setPath(icon.getAbsolutePath());
-		mapElementIcon.setPic100pxMd5(icon.getName());
-		mapElementIcon.setSizeInBytes(icon.length());
-		em.persist(mapElementIcon);
+		mapElementIcon.setPath(path);
+		mapElementIcon.setPic100pxMd5(hash);
+		mapElementIcon.setSizeInBytes(length);
+		this.em.persist(mapElementIcon);
 
 	}
 

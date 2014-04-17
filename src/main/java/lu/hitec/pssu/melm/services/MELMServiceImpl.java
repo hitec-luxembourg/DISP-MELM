@@ -28,10 +28,22 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class MELMServiceImpl implements MELMService {
+	
+	public enum IconSize {
+		TINY("-20px"), SMALL("-40px"), MEDIUM("-60px"), LARGE("-100px");
+		
+		private final String suffix;
+
+		private IconSize(final String suffix) {
+			this.suffix = suffix;
+		}
+
+		public String getSuffix() {
+			return this.suffix;
+		}
+	}
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MELMServiceImpl.class);
-
-  private static final String[] ICON_SIZES = { "20px", "40px", "60px", "100px" };
 
   private final File iconsDirectory;
 
@@ -122,8 +134,8 @@ public class MELMServiceImpl implements MELMService {
   @Override
   public void copyImportedIcons(@Nonnull final File libraryFolder) throws MELMException {
     try {
-      for (final String iconSize : ICON_SIZES) {
-        final File iconFolder = new File(libraryFolder, iconSize);
+      for (final IconSize iconSize : IconSize.values()) {
+        final File iconFolder = new File(libraryFolder, iconSize.getSuffix());
         final File[] iconFiles = iconFolder.listFiles();
         for (final File sourceIconFile : iconFiles) {
           final String hashForFile = MELMUtils.getHashForFile(sourceIconFile);

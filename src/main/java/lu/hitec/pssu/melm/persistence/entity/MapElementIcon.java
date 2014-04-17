@@ -8,6 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import lu.hitec.pssu.melm.services.MELMServiceImpl.IconSize;
+
 @Entity
 @Table(name = "map_element_icon")
 @SequenceGenerator(name = "map_element_icon_seq", sequenceName = "map_element_icon_seq")
@@ -57,6 +59,10 @@ public class MapElementIcon {
 
 	public void setPath(final String path) {
 		this.path = path;
+	}
+	
+	public String getFilePath(final IconSize iconSize){
+		return String.format("%s%s%s.png", path, pic100pxMd5, iconSize.getSuffix()).toString();
 	}
 
 }
