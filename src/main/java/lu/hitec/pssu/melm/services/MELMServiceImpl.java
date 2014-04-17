@@ -28,20 +28,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class MELMServiceImpl implements MELMService {
-	
-	public enum IconSize {
-		TINY("-20px"), SMALL("-40px"), MEDIUM("-60px"), LARGE("-100px");
-		
-		private final String suffix;
-
-		private IconSize(final String suffix) {
-			this.suffix = suffix;
-		}
-
-		public String getSuffix() {
-			return this.suffix;
-		}
-	}
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MELMServiceImpl.class);
 
@@ -55,13 +41,6 @@ public class MELMServiceImpl implements MELMService {
 
   @Autowired
   private MapElementIconDAO mapElementIconDAO;
-
-  @CheckReturnValue
-  @Override
-  public File getIconFile(@Nonnull final String id, final int size) {
-    assert id != null : "Id is null";
-    return new File("");
-  }
 
   public MELMServiceImpl(final File librariesDirectory, final File iconsDirectory) {
     if (!librariesDirectory.isDirectory() && !librariesDirectory.mkdirs()) {
@@ -135,7 +114,7 @@ public class MELMServiceImpl implements MELMService {
   public void copyImportedIcons(@Nonnull final File libraryFolder) throws MELMException {
     try {
       for (final IconSize iconSize : IconSize.values()) {
-        final File iconFolder = new File(libraryFolder, iconSize.getSuffix());
+        final File iconFolder = new File(libraryFolder, iconSize.getSize());
         final File[] iconFiles = iconFolder.listFiles();
         for (final File sourceIconFile : iconFiles) {
           final String hashForFile = MELMUtils.getHashForFile(sourceIconFile);
@@ -235,6 +214,13 @@ public class MELMServiceImpl implements MELMService {
     return libraryRootFolder;
   }
 
+  @CheckReturnValue
+  @Override
+  public File getIconFile(@Nonnull final String id, final int size) {
+    assert id != null : "Id is null";
+    return new File("");
+  }
+
   @Nonnull
   @Override
   public File getIconsDirectory() {
@@ -293,6 +279,30 @@ public class MELMServiceImpl implements MELMService {
       MELMUtils.closeResource(in);
     }
     throw new MELMException("Failed to parse xml file");
+  }
+
+  public enum IconSize {
+    LARGE("100px"),
+
+    MEDIUM("60px"),
+
+    SMALL("40px"),
+
+    TINY("20px");
+
+    private final String size;
+
+    private IconSize(final String size) {
+      this.size = size;
+    }
+
+    public String getSize() {
+      return size;
+    }
+
+    public String getSuffix() {
+      return String.format("-%s", size);
+    }
   }
 
 }
