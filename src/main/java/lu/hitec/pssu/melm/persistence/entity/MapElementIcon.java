@@ -16,56 +16,57 @@ import lu.hitec.pssu.melm.services.MELMServiceImpl.IconSize;
 @SequenceGenerator(name = "map_element_icon_seq", sequenceName = "map_element_icon_seq")
 public class MapElementIcon {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "map_element_icon_seq")
-	@Column(name = "id", nullable = false)
-	private long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO, generator = "map_element_icon_seq")
+  @Column(name = "id", nullable = false)
+  private long id;
 
-	@Column(name = "pic_100px_md5", nullable = false, updatable = true)
-	private String pic100pxMd5;
+  @Column(name = "pic_100px_md5", nullable = false, updatable = true)
+  private String pic100pxMd5;
 
-	@Column(name = "size_in_bytes", nullable = false, updatable = true)
-	private long sizeInBytes;
+  @Column(name = "size_in_bytes", nullable = false, updatable = true)
+  private long sizeInBytes;
 
-	@Column(name = "display_name", nullable = false, updatable = true)
-	private String displayName;
+  @Column(name = "display_name", nullable = false, updatable = true)
+  private String displayName;
 
-	public long getId() {
-		return this.id;
-	}
+  public long getId() {
+    return id;
+  }
 
-	public void setId(final long id) {
-		this.id = id;
-	}
+  public void setId(final long id) {
+    this.id = id;
+  }
 
-	public String getPic100pxMd5() {
-		return this.pic100pxMd5;
-	}
+  public String getPic100pxMd5() {
+    return pic100pxMd5;
+  }
 
-	public void setPic100pxMd5(final String pic100pxMd5) {
-		this.pic100pxMd5 = pic100pxMd5;
-	}
+  public void setPic100pxMd5(final String pic100pxMd5) {
+    this.pic100pxMd5 = pic100pxMd5;
+  }
 
-	public long getSizeInBytes() {
-		return this.sizeInBytes;
-	}
+  public long getSizeInBytes() {
+    return sizeInBytes;
+  }
 
-	public void setSizeInBytes(final long sizeInBytes) {
-		this.sizeInBytes = sizeInBytes;
-	}
+  public void setSizeInBytes(final long sizeInBytes) {
+    this.sizeInBytes = sizeInBytes;
+  }
 
-	public String getDisplayName() {
-		return this.displayName;
-	}
+  public String getDisplayName() {
+    return displayName;
+  }
 
-	public void setDisplayName(final String displayName) {
-		this.displayName = displayName;
-	}
+  public void setDisplayName(final String displayName) {
+    this.displayName = displayName;
+  }
 
-	public String getFilePath(final IconSize iconSize) {
-		// we store the file in a 2 levels folders hierarchy, taking the first and second char of the hash
-		// so the typical path we be something like /b/e/bejdfgjdfgjdfgj-20px:png
-		return String.format("%s/%s/%s%s.png", this.pic100pxMd5, iconSize.getSuffix()).toString();
-	}
+  public String getFilePath(final IconSize iconSize) {
+    // we store the file in a 2 levels folders hierarchy, taking the first and second char of the hash
+    // so the typical path we be something like /b/e/bejdfgjdfgjdfgj-20px:png
+    return String.format("%s/%s/%s%s.png", pic100pxMd5.substring(0, 1), pic100pxMd5.substring(1, 2), pic100pxMd5, iconSize.getSuffix())
+        .toString();
+  }
 
 }

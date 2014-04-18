@@ -21,7 +21,6 @@ function notYetImplemented(){
     <div id="content">
       <h1>Icon details</h1>
       <h3>${it.displayName}</h3>
-      <h3>${it.albumName}</h3>
       <table width="50%">
         <tr>
           <td>LARGE</td>

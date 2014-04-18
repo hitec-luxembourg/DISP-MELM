@@ -20,7 +20,6 @@
     create table map_element_icon (
         id int8 not null,
         display_name varchar(255) not null,
-        path varchar(255) not null,
         pic_100px_md5 varchar(255) not null,
         size_in_bytes int8 not null,
         primary key (id),
@@ -38,7 +37,9 @@
 
     create table map_element_library_icon (
         id int8 not null,
+        icon_description_in_library varchar(255) not null,
         icon_name_in_library varchar(255) not null,
+        index_of_icon_in_library int4 not null,
         icon_id int8 not null,
         library_id int8 not null,
         primary key (id)

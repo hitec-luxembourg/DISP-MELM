@@ -18,14 +18,12 @@
       <table>
         <tr>
           <td></td>
-          <td align="center">Album</td>
           <td align="center">Name</td>
           <td>Preview</td>
         </tr>
         <c:forEach var="icon" items="${it.icons}">
           <tr>
             <td><a href="${ctx}/rest/icons/delete/${icon.id}">delete</a></td>
-            <td align="center">${icon.albumName}</td>
             <td align="center">${icon.displayName}</td>
             <td><a href="${ctx}/rest/icons/details/${icon.id}"><img src="${ctx}/rest/icons/file/${icon.id}/MEDIUM"></a></td>
           </tr>

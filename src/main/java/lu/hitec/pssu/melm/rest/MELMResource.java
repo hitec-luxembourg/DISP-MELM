@@ -58,7 +58,7 @@ public class MELMResource {
 	@Path("/icons/delete/{id}")
 	@Produces(MediaType.TEXT_HTML)
 	public Response deleteIcon(@PathParam("id") final long id) {
-		this.melmService.deleteIconAndFiles(id);
+		melmService.deleteIconAndFiles(id);
 		return gotoListIcons();
 	}
 
@@ -66,7 +66,7 @@ public class MELMResource {
 	@Path("/icons/details/{id}")
 	@Produces(MediaType.TEXT_HTML)
 	public Response getIconDetails(@PathParam("id") final long id) {
-		return Response.ok(new Viewable("/iconDetails", this.melmService.getIcon(id))).build();
+		return Response.ok(new Viewable("/iconDetails", melmService.getIcon(id))).build();
 	}
 
 	/**
@@ -77,7 +77,7 @@ public class MELMResource {
 	@Produces("image/*")
 	public Response getIconFile(@PathParam("id") final long id, @PathParam("size") @Nonnull final String size) {
 		assert size != null : "Size is null";
-		final File file = this.melmService.getIconFile(id, size);
+		final File file = melmService.getIconFile(id, size);
 		if (!file.exists()) {
 			return Response.status(Status.NOT_FOUND).build();
 		}
@@ -102,7 +102,7 @@ public class MELMResource {
 	@Produces(MediaType.TEXT_HTML)
 	@Path("/icons")
 	public Response gotoListIcons() {
-		return Response.ok(new Viewable("/icons", new IconsModel(this.melmService.listAllIcons()))).build();
+		return Response.ok(new Viewable("/icons", new IconsModel(melmService.listAllIcons()))).build();
 	}
 
 	@GET
@@ -126,7 +126,7 @@ public class MELMResource {
 		if (uriInfo != null) {
 			LOGGER.debug(String.format("URI Info %s", uriInfo));
 		}
-		if (!ServletFileUpload.isMultipartContent(this.request)) {
+		if (!ServletFileUpload.isMultipartContent(request)) {
 			LOGGER.warn("Got invalid request, no multipart content");
 			return Response.status(Status.BAD_REQUEST).entity("Invalid request, no multipart content").build();
 		}
@@ -140,7 +140,7 @@ public class MELMResource {
 		}
 
 		try {
-			this.melmService.addIconAndFiles(iconUpload.getDisplayName(), iconUpload.getLargeIconFile());
+			melmService.addIconAndFiles(iconUpload.getDisplayName(), iconUpload.getLargeIconFile());
 		} catch (final MELMException e) {
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER.debug("Error in performAddIcon", e);
@@ -159,7 +159,7 @@ public class MELMResource {
 		if (uriInfo != null) {
 			LOGGER.debug(String.format("URI Info %s", uriInfo));
 		}
-		if (!ServletFileUpload.isMultipartContent(this.request)) {
+		if (!ServletFileUpload.isMultipartContent(request)) {
 			LOGGER.warn("Got invalid request, no multipart content");
 			return Response.status(Status.BAD_REQUEST).entity("Invalid request, no multipart content").build();
 		}
@@ -173,11 +173,11 @@ public class MELMResource {
 		}
 
 		try {
-			final File zipFile = this.melmService.importLibrary(libraryUpload.getLibraryName(), libraryUpload.getVersion(), libraryUpload.getZipFile());
-			final File libraryFolder = this.melmService.extractImportedLibrary(zipFile);
+			final File zipFile = melmService.importLibrary(libraryUpload.getLibraryName(), libraryUpload.getVersion(), libraryUpload.getZipFile());
+			final File libraryFolder = melmService.extractImportedLibrary(zipFile);
 			if (libraryFolder != null) {
-				final XMLSelectionPathParser libraryParser = this.melmService.validateAndParseImportedLibrary(libraryUpload.getLibraryName(), libraryUpload.getVersion());
-				this.melmService.moveImportedIcons(libraryFolder);
+				final XMLSelectionPathParser libraryParser = melmService.validateAndParseImportedLibrary(libraryUpload.getLibraryName(), libraryUpload.getVersion());
+				melmService.moveImportedIcons(libraryFolder);
 
 				// FIXME Move this part in MELMService.
 				// System.out.println(String.format("Library Id %s", libraryParser.getLibraryId()));
@@ -211,7 +211,7 @@ public class MELMResource {
 
 		InputStream stream = null;
 		try {
-			final FileItemIterator iter = upload.getItemIterator(this.request);
+			final FileItemIterator iter = upload.getItemIterator(request);
 			while (iter.hasNext()) {
 				final FileItemStream item = iter.next();
 				stream = item.openStream();
@@ -247,7 +247,7 @@ public class MELMResource {
 
 		InputStream stream = null;
 		try {
-			final FileItemIterator iter = upload.getItemIterator(this.request);
+			final FileItemIterator iter = upload.getItemIterator(request);
 			while (iter.hasNext()) {
 				final FileItemStream item = iter.next();
 				stream = item.openStream();
@@ -290,11 +290,11 @@ public class MELMResource {
 		}
 
 		public String getDisplayName() {
-			return this.displayName;
+			return displayName;
 		}
 
 		public File getLargeIconFile() {
-			return this.largeIconFile;
+			return largeIconFile;
 		}
 
 	}
@@ -311,15 +311,15 @@ public class MELMResource {
 		}
 
 		public String getLibraryName() {
-			return this.libraryName;
+			return libraryName;
 		}
 
 		public String getVersion() {
-			return this.version;
+			return version;
 		}
 
 		public File getZipFile() {
-			return this.zipFile;
+			return zipFile;
 		}
 	}
 }

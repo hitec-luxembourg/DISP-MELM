@@ -17,37 +17,37 @@ public class MapElementIconDAOImpl implements MapElementIconDAO {
 
 	@Override
 	public List<MapElementIcon> listAllIcons() {
-		final TypedQuery<MapElementIcon> query = this.em.createQuery("SELECT mei FROM MapElementIcon mei ORDER BY mei.id", MapElementIcon.class);
+		final TypedQuery<MapElementIcon> query = em.createQuery("SELECT mei FROM MapElementIcon mei ORDER BY mei.id", MapElementIcon.class);
 		return query.getResultList();
 	}
 
 	@Override
 	@Transactional
-	public void addMapElementIcon(final String hash, final long length, final String displayName) {
+	public MapElementIcon addMapElementIcon(final String hash, final long length, final String displayName) {
 		final MapElementIcon mapElementIcon = new MapElementIcon();
 		mapElementIcon.setPic100pxMd5(hash);
 		mapElementIcon.setSizeInBytes(length);
 		mapElementIcon.setDisplayName(displayName);
-		this.em.persist(mapElementIcon);
-
+		em.persist(mapElementIcon);
+		return mapElementIcon;
 	}
 
 	@Override
 	public MapElementIcon getMapElementIcon(final long id) {
-		return this.em.find(MapElementIcon.class, id);
+		return em.find(MapElementIcon.class, id);
 
 	}
 
 	@Override
 	@Transactional
 	public void delete(final long id) {
-		this.em.remove(getMapElementIcon(id));
+		em.remove(getMapElementIcon(id));
 
 	}
 
 	@Override
 	public boolean exist(final String hash, final long size) {
-		final TypedQuery<MapElementIcon> query = this.em
+		final TypedQuery<MapElementIcon> query = em
 				.createQuery("SELECT mei FROM MapElementIcon mei WHERE mei.pic100pxMd5 = :hash AND sizeInBytes = :size", MapElementIcon.class).setParameter("hash", hash)
 				.setParameter("size", size);
 
