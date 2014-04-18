@@ -1,5 +1,7 @@
 package lu.hitec.pssu.melm.persistence.entity;
 
+import java.io.File;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -7,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import lu.hitec.pssu.melm.services.MELMServiceImpl.IconSize;
 
@@ -15,65 +18,71 @@ import lu.hitec.pssu.melm.services.MELMServiceImpl.IconSize;
 @SequenceGenerator(name = "map_element_icon_seq", sequenceName = "map_element_icon_seq")
 public class MapElementIcon {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "map_element_icon_seq")
-	@Column(name = "id", nullable = false)
-	private long id;
+  @Column(name = "display_name", nullable = false, updatable = true)
+  private String displayName;
 
-	@Column(name = "pic_100px_md5", nullable = false, updatable = true)
-	private String pic100pxMd5;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO, generator = "map_element_icon_seq")
+  @Column(name = "id", nullable = false)
+  private long id;
 
-	@Column(name = "size_in_bytes", nullable = false, updatable = true)
-	private long sizeInBytes;
+  @Column(name = "path", nullable = false, updatable = true)
+  private String path;
 
-	@Column(name = "path", nullable = false, updatable = true)
-	private String path;
+  @Column(name = "pic_100px_md5", nullable = false, updatable = true)
+  private String pic100pxMd5;
 
-	@Column(name = "display_name", nullable = false, updatable = true)
-	private String displayName;
+  @Column(name = "size_in_bytes", nullable = false, updatable = true)
+  private long sizeInBytes;
 
-	public long getId() {
-		return this.id;
-	}
+  @Transient
+  public String getAlbumName() {
+    return new File(path).getName();
+  }
 
-	public void setId(final long id) {
-		this.id = id;
-	}
+  public String getDisplayName() {
+    return displayName;
+  }
 
-	public String getPic100pxMd5() {
-		return this.pic100pxMd5;
-	}
+  @Transient
+  public String getFilePath(final IconSize iconSize) {
+    return String.format("%s/%s%s.png", path, pic100pxMd5, iconSize.getSuffix()).toString();
+  }
 
-	public void setPic100pxMd5(final String pic100pxMd5) {
-		this.pic100pxMd5 = pic100pxMd5;
-	}
+  public long getId() {
+    return id;
+  }
 
-	public long getSizeInBytes() {
-		return this.sizeInBytes;
-	}
+  public String getPath() {
+    return path;
+  }
 
-	public void setSizeInBytes(final long sizeInBytes) {
-		this.sizeInBytes = sizeInBytes;
-	}
+  public String getPic100pxMd5() {
+    return pic100pxMd5;
+  }
 
-	public String getPath() {
-		return this.path;
-	}
+  public long getSizeInBytes() {
+    return sizeInBytes;
+  }
 
-	public void setPath(final String path) {
-		this.path = path;
-	}
+  public void setDisplayName(final String displayName) {
+    this.displayName = displayName;
+  }
 
-	public String getDisplayName() {
-		return this.displayName;
-	}
+  public void setId(final long id) {
+    this.id = id;
+  }
 
-	public void setDisplayName(final String displayName) {
-		this.displayName = displayName;
-	}
+  public void setPath(final String path) {
+    this.path = path;
+  }
 
-	public String getFilePath(final IconSize iconSize) {
-		return String.format("%s%s%s.png", this.path, this.pic100pxMd5, iconSize.getSuffix()).toString();
-	}
+  public void setPic100pxMd5(final String pic100pxMd5) {
+    this.pic100pxMd5 = pic100pxMd5;
+  }
+
+  public void setSizeInBytes(final long sizeInBytes) {
+    this.sizeInBytes = sizeInBytes;
+  }
 
 }

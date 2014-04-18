@@ -60,77 +60,53 @@ public class MELMServiceImpl implements MELMService {
     this.iconsDirectory = iconsDirectory;
     iconsImportedDirectory = new File(iconsDirectory, "imported");
   }
-  
+
   @Override
-  public void addIconAndFiles(@Nonnull final String albumName, @Nonnull final String displayName, @Nonnull final File iconLargeFile,
-      @Nonnull final File iconMediumFile, @Nonnull final File iconSmallFile, @Nonnull final File iconTinyFile) throws MELMException {
+  @Transactional
+  public void addIconAndFiles(@Nonnull final String displayName, @Nonnull final String albumName, @Nonnull final File largeIconFile)
+      throws MELMException {
+    assert displayName != null : "Display name is null";
+    assert albumName != null : "Album name is null";
+    assert largeIconFile != null : "Large icon is null";
     String hashForLargeFile;
     try {
-      hashForLargeFile = MELMUtils.getHashForFile(iconLargeFile);
+      hashForLargeFile = MELMUtils.getHashForFile(largeIconFile);
     } catch (final IOException e) {
       final String msg = "Failed to compute hash";
       throw new MELMException(msg, e);
     }
-    mapElementIconDAO.addMapElementIcon(iconsImportedDirectory.getAbsolutePath(), hashForLargeFile, iconLargeFile.length(),
-        FilenameUtils.getBaseName(iconLargeFile.getName()));
-    
-    // FIXME this albumFolder is not yet used. All images are created in imported folder for the moment.
+    if (mapElementIconDAO.exist(hashForLargeFile, largeIconFile.length())) {
+      final String msg = "Adding icon and files aborted because the icon exists";
+      LOGGER.warn(msg);
+      throw new MELMException(msg);
+    }
     final File albumFolder = new File(iconsDirectory, albumName);
     if (!albumFolder.exists() && !albumFolder.mkdirs()) {
       final String msg = String.format("Failed to create album with name %s", albumName);
-      LOGGER.error(msg);
+      throw new MELMException(msg);
     }
-    
+    mapElementIconDAO.addMapElementIcon(albumFolder.getAbsolutePath(), hashForLargeFile, largeIconFile.length(), displayName);
+
+    FileInputStream fileInputStream = null;
     try {
-      copyFile(hashForLargeFile, iconLargeFile, IconSize.LARGE);
-      copyFile(hashForLargeFile, iconMediumFile, IconSize.MEDIUM);
-      copyFile(hashForLargeFile, iconSmallFile, IconSize.SMALL);
-      copyFile(hashForLargeFile, iconTinyFile, IconSize.TINY);
+      copyFile(albumFolder, hashForLargeFile, largeIconFile, IconSize.LARGE);
+      fileInputStream = new FileInputStream(largeIconFile);
+      final byte[] fileData = IOUtils.toByteArray(fileInputStream);
+      final File mediumIconFile = File.createTempFile("fromUpload", null);
+      FileUtils.writeByteArrayToFile(mediumIconFile, MELMUtils.scaleImage(fileData, 60, 60));
+      copyFile(albumFolder, hashForLargeFile, mediumIconFile, IconSize.MEDIUM);
+      final File smallIconFile = File.createTempFile("fromUpload", null);
+      FileUtils.writeByteArrayToFile(smallIconFile, MELMUtils.scaleImage(fileData, 40, 40));
+      copyFile(albumFolder, hashForLargeFile, smallIconFile, IconSize.SMALL);
+      final File tinyIconFile = File.createTempFile("fromUpload", null);
+      FileUtils.writeByteArrayToFile(tinyIconFile, MELMUtils.scaleImage(fileData, 20, 20));
+      copyFile(albumFolder, hashForLargeFile, tinyIconFile, IconSize.TINY);
     } catch (final IOException e) {
       final String msg = "Failed to copy a file";
-      LOGGER.error(msg, e);
-    }
-  }
-
-  @Override
-  public File addZipFile(@Nonnull final String libraryName, @Nonnull final String version, @Nonnull final File tmpZipFile)
-      throws MELMException {
-    assert libraryName != null : "Library name is null";
-    assert version != null : "Version is null";
-    assert tmpZipFile != null : "Tmp zip file is null";
-    final File targetArchiveFile = getTargetArchiveFile(libraryName, version);
-
-    if (targetArchiveFile.isFile()) {
-      LOGGER.warn(String.format("Target file for picture : %s exists, will be overwritten", targetArchiveFile.getName()));
-      if (!targetArchiveFile.delete()) {
-        LOGGER.debug(String.format("Could not delete file : %s", targetArchiveFile.getAbsolutePath()));
-      }
-    }
-
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(String.format("About to copy tmp. archive file %s to %s", tmpZipFile.getAbsolutePath(),
-          targetArchiveFile.getAbsolutePath()));
-    }
-    FileOutputStream out = null;
-    FileInputStream in = null;
-    try {
-      in = new FileInputStream(tmpZipFile);
-      out = new FileOutputStream(targetArchiveFile);
-      IOUtils.copy(in, out);
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(String.format("Copied tmp. archive file %s to %s", tmpZipFile.getAbsolutePath(), targetArchiveFile.getAbsolutePath()));
-      }
-    } catch (final Exception e) {
-      final String msg = String.format("Failed copying archive to target location %s", targetArchiveFile.getName());
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(msg);
-      }
       throw new MELMException(msg, e);
     } finally {
-      MELMUtils.closeResource(out);
-      MELMUtils.closeResource(in);
+      MELMUtils.closeResource(fileInputStream);
     }
-    return targetArchiveFile;
   }
 
   /**
@@ -146,41 +122,21 @@ public class MELMServiceImpl implements MELMService {
   }
 
   @Override
-  public void copyImportedIcons(@Nonnull final File libraryFolder) throws MELMException {
-    final File largeFileFolder = new File(libraryFolder, IconSize.LARGE.getSize());
-    try {
-      final File[] iconFiles = largeFileFolder.listFiles();
-      for (final File sourceIconLargeFile : iconFiles) {
-        final String hashForLargeFile = MELMUtils.getHashForFile(sourceIconLargeFile);
-        if (!mapElementIconDAO.exist(hashForLargeFile, sourceIconLargeFile.length())) {
-          moveFile(hashForLargeFile, libraryFolder, sourceIconLargeFile.getName(), IconSize.LARGE);
-          moveFile(hashForLargeFile, libraryFolder, sourceIconLargeFile.getName(), IconSize.MEDIUM);
-          moveFile(hashForLargeFile, libraryFolder, sourceIconLargeFile.getName(), IconSize.SMALL);
-          moveFile(hashForLargeFile, libraryFolder, sourceIconLargeFile.getName(), IconSize.TINY);
-          mapElementIconDAO.addMapElementIcon(iconsImportedDirectory.getAbsolutePath(), hashForLargeFile, sourceIconLargeFile.length(),
-              FilenameUtils.getBaseName(sourceIconLargeFile.getName()));
-        }
-      }
-    } catch (final IOException e) {
-      final String msg = "Failed to compute the hash";
-      throw new MELMException(msg, e);
-    }
-  }
-
-  @Override
   @Transactional
   public void deleteIconAndFiles(final long id) {
+    final MapElementIcon mapElementIcon = mapElementIconDAO.getMapElementIcon(id);
+    final String hash = mapElementIcon.getPic100pxMd5();
+    final String path = mapElementIcon.getPath();
     mapElementIconDAO.delete(id);
-    
-    // copyFile(hashForLargeFile, libraryFolder, sourceIconLargeFile.getName(), IconSize.LARGE);
-    // copyFile(hashForLargeFile, libraryFolder, sourceIconLargeFile.getName(), IconSize.MEDIUM);
-    // copyFile(hashForLargeFile, libraryFolder, sourceIconLargeFile.getName(), IconSize.SMALL);
-    // copyFile(hashForLargeFile, libraryFolder, sourceIconLargeFile.getName(), IconSize.TINY);
+    deleteFile(path, hash, IconSize.LARGE);
+    deleteFile(path, hash, IconSize.MEDIUM);
+    deleteFile(path, hash, IconSize.SMALL);
+    deleteFile(path, hash, IconSize.TINY);
   }
 
   @CheckReturnValue
   @Override
-  public File extractZipFile(@Nonnull final File file) throws MELMException {
+  public File extractImportedLibrary(@Nonnull final File file) throws MELMException {
     assert file != null : "File is null";
     assert file.exists() : "File is not existing";
     final int buffer = 2048;
@@ -260,11 +216,17 @@ public class MELMServiceImpl implements MELMService {
     return libraryRootFolder;
   }
 
-  @CheckReturnValue
   @Override
-  public File getIconFile(@Nonnull final String id, final int size) {
-    assert id != null : "Id is null";
-    return new File("");
+  public MapElementIcon getIcon(final long id) {
+    return mapElementIconDAO.getMapElementIcon(id);
+  }
+
+  @Override
+  public File getIconFile(final long id, @Nonnull final String size) {
+    assert size != null : "size is null";
+    final MapElementIcon mapElementIcon = getIcon(id);
+    final String filePath = mapElementIcon.getFilePath(IconSize.valueOf(size));
+    return new File(filePath);
   }
 
   @Nonnull
@@ -296,12 +258,77 @@ public class MELMServiceImpl implements MELMService {
   }
 
   @Override
+  public File importLibrary(@Nonnull final String libraryName, @Nonnull final String version, @Nonnull final File libraryFile)
+      throws MELMException {
+    assert libraryName != null : "Library name is null";
+    assert version != null : "Version is null";
+    assert libraryFile != null : "Library file is null";
+    final File targetArchiveFile = getTargetArchiveFile(libraryName, version);
+
+    if (targetArchiveFile.isFile()) {
+      LOGGER.warn(String.format("Target file for picture : %s exists, will be overwritten", targetArchiveFile.getName()));
+      if (!targetArchiveFile.delete()) {
+        LOGGER.debug(String.format("Could not delete file : %s", targetArchiveFile.getAbsolutePath()));
+      }
+    }
+
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug(String.format("About to copy tmp. archive file %s to %s", libraryFile.getAbsolutePath(),
+          targetArchiveFile.getAbsolutePath()));
+    }
+    FileOutputStream out = null;
+    FileInputStream in = null;
+    try {
+      in = new FileInputStream(libraryFile);
+      out = new FileOutputStream(targetArchiveFile);
+      IOUtils.copy(in, out);
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER
+            .debug(String.format("Copied tmp. archive file %s to %s", libraryFile.getAbsolutePath(), targetArchiveFile.getAbsolutePath()));
+      }
+    } catch (final Exception e) {
+      final String msg = String.format("Failed copying archive to target location %s", targetArchiveFile.getName());
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug(msg);
+      }
+      throw new MELMException(msg, e);
+    } finally {
+      MELMUtils.closeResource(out);
+      MELMUtils.closeResource(in);
+    }
+    return targetArchiveFile;
+  }
+
+  @Override
   public List<MapElementIcon> listAllIcons() {
     return mapElementIconDAO.listAllIcons();
   }
 
   @Override
-  public XMLSelectionPathParser validateAndParse(@Nonnull final String libraryName, @Nonnull final String version) throws MELMException {
+  public void moveImportedIcons(@Nonnull final File libraryFolder) throws MELMException {
+    final File largeFileFolder = new File(libraryFolder, IconSize.LARGE.getSize());
+    try {
+      final File[] iconFiles = largeFileFolder.listFiles();
+      for (final File sourceIconLargeFile : iconFiles) {
+        final String hashForLargeFile = MELMUtils.getHashForFile(sourceIconLargeFile);
+        if (!mapElementIconDAO.exist(hashForLargeFile, sourceIconLargeFile.length())) {
+          moveImportedFile(hashForLargeFile, libraryFolder, sourceIconLargeFile.getName(), IconSize.LARGE);
+          moveImportedFile(hashForLargeFile, libraryFolder, sourceIconLargeFile.getName(), IconSize.MEDIUM);
+          moveImportedFile(hashForLargeFile, libraryFolder, sourceIconLargeFile.getName(), IconSize.SMALL);
+          moveImportedFile(hashForLargeFile, libraryFolder, sourceIconLargeFile.getName(), IconSize.TINY);
+          mapElementIconDAO.addMapElementIcon(iconsImportedDirectory.getAbsolutePath(), hashForLargeFile, sourceIconLargeFile.length(),
+              FilenameUtils.getBaseName(sourceIconLargeFile.getName()));
+        }
+      }
+    } catch (final IOException e) {
+      final String msg = "Failed to compute the hash";
+      throw new MELMException(msg, e);
+    }
+  }
+
+  @Override
+  public XMLSelectionPathParser validateAndParseImportedLibrary(@Nonnull final String libraryName, @Nonnull final String version)
+      throws MELMException {
     assert libraryName != null : "Library name is null";
     assert version != null : "Version is null";
 
@@ -332,15 +359,7 @@ public class MELMServiceImpl implements MELMService {
     throw new MELMException("Failed to parse xml file");
   }
 
-  private void copyFile(@Nonnull final String hashForLargeFile, @Nonnull final File file, @Nonnull final IconSize size) throws IOException {
-    assert hashForLargeFile != null : "Hash for large file is null";
-    assert file != null : "File is null";
-    assert size != null : "Size is null";
-    final File targetIconFile = new File(iconsImportedDirectory, String.format("%s%s.png", hashForLargeFile, size.getSuffix()));
-    FileUtils.copyFile(file, targetIconFile);
-  }
-
-  private void moveFile(@Nonnull final String hashForLargeFile, @Nonnull final File libraryFolder,
+  private void moveImportedFile(@Nonnull final String hashForLargeFile, @Nonnull final File libraryFolder,
       @Nonnull final String fileNameWithExtension, @Nonnull final IconSize size) throws IOException {
     assert hashForLargeFile != null : "Hash for large file is null";
     assert libraryFolder != null : "Library folder is null";
@@ -350,6 +369,26 @@ public class MELMServiceImpl implements MELMService {
     final File sourceIconFile = new File(sourceIconFolder, fileNameWithExtension);
     final File targetIconFile = new File(iconsImportedDirectory, String.format("%s%s.png", hashForLargeFile, size.getSuffix()));
     FileUtils.copyFile(sourceIconFile, targetIconFile);
+  }
+
+  private static void copyFile(@Nonnull final File albumFolder, @Nonnull final String hashForLargeFile, @Nonnull final File file,
+      @Nonnull final IconSize size) throws IOException {
+    assert albumFolder != null : "Album name is null";
+    assert hashForLargeFile != null : "Hash for large file is null";
+    assert file != null : "File is null";
+    assert size != null : "Size is null";
+    final File targetIconFile = new File(albumFolder, String.format("%s%s.png", hashForLargeFile, size.getSuffix()));
+    FileUtils.copyFile(file, targetIconFile);
+  }
+
+  private static void deleteFile(@Nonnull final String path, @Nonnull final String hash, @Nonnull final IconSize size) {
+    assert path != null : "Path is null";
+    assert hash != null : "Hash is null";
+    assert size != null : "Size is null";
+    final File folder = new File(path);
+    final String fileName = String.format("%s%s.png", hash, size.getSuffix());
+    final File file = new File(folder, fileName);
+    FileUtils.deleteQuietly(file);
   }
 
   public enum IconSize {

@@ -19,6 +19,7 @@
 
     create table map_element_icon (
         id int8 not null,
+        display_name varchar(255) not null,
         path varchar(255) not null,
         pic_100px_md5 varchar(255) not null,
         size_in_bytes int8 not null,

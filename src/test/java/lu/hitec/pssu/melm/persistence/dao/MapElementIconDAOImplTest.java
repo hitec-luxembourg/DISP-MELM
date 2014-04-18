@@ -1,6 +1,10 @@
 package lu.hitec.pssu.melm.persistence.dao;
 
-import org.junit.Assert;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import lu.hitec.pssu.melm.persistence.entity.MapElementIcon;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,25 +20,34 @@ public class MapElementIconDAOImplTest {
 
 	@Test
 	public void test1() {
-		Assert.assertEquals(0, this.mapElementIconDAO.listAllIcons().size());
-		this.mapElementIconDAO.addMapElementIcon("folder1/folder2", "14522dgdg22544dfgdfg225", 1264, "myDisplayName");
+		assertEquals(0, mapElementIconDAO.listAllIcons().size());
+		mapElementIconDAO.addMapElementIcon("folder1/folder2", "14522dgdg22544dfgdfg225", 1264, "myDisplayName");
+		assertEquals(1, mapElementIconDAO.listAllIcons().size());
 
-		Assert.assertEquals(1, this.mapElementIconDAO.listAllIcons().size());
+		assertTrue(mapElementIconDAO.exist("14522dgdg22544dfgdfg225", 1264));
+		assertFalse(mapElementIconDAO.exist("14522dgdg22544dfgdfg225", 1263));
+		assertFalse(mapElementIconDAO.exist("jdjdjdfjdfjdfg", 1264));
+		assertFalse(mapElementIconDAO.exist("jdjdjdfjdfjdfg", 1263));
 
-		Assert.assertTrue(this.mapElementIconDAO.exist("14522dgdg22544dfgdfg225", 1264));
-		Assert.assertFalse(this.mapElementIconDAO.exist("14522dgdg22544dfgdfg225", 1263));
-		Assert.assertFalse(this.mapElementIconDAO.exist("jdjdjdfjdfjdfg", 1264));
-		Assert.assertFalse(this.mapElementIconDAO.exist("jdjdjdfjdfjdfg", 1263));
+		final long theId = mapElementIconDAO.listAllIcons().get(0).getId();
+		mapElementIconDAO.delete(theId);
 
-		final long theId = this.mapElementIconDAO.listAllIcons().get(0).getId();
+		assertEquals(0, mapElementIconDAO.listAllIcons().size());
+		assertFalse(mapElementIconDAO.exist("14522dgdg22544dfgdfg225", 1264));
+		assertFalse(mapElementIconDAO.exist("14522dgdg22544dfgdfg225", 1263));
+		assertFalse(mapElementIconDAO.exist("jdjdjdfjdfjdfg", 1264));
+		assertFalse(mapElementIconDAO.exist("jdjdjdfjdfjdfg", 1263));
+	}
 
-		this.mapElementIconDAO.delete(theId);
-
-		Assert.assertEquals(0, this.mapElementIconDAO.listAllIcons().size());
-		Assert.assertFalse(this.mapElementIconDAO.exist("14522dgdg22544dfgdfg225", 1264));
-		Assert.assertFalse(this.mapElementIconDAO.exist("14522dgdg22544dfgdfg225", 1263));
-		Assert.assertFalse(this.mapElementIconDAO.exist("jdjdjdfjdfjdfg", 1264));
-		Assert.assertFalse(this.mapElementIconDAO.exist("jdjdjdfjdfjdfg", 1263));
+  @Test
+	public void testGetAlbumName(){
+    assertEquals(0, mapElementIconDAO.listAllIcons().size());
+    mapElementIconDAO.addMapElementIcon("D:\\opt\\pssu\\melmservice\\icons\\imported", "14522dgdg22544dfgdfg225", 1264, "myDisplayName");
+    assertEquals(1, mapElementIconDAO.listAllIcons().size());
+    final MapElementIcon mapElementIcon = mapElementIconDAO.listAllIcons().get(0);
+    assertEquals("imported", mapElementIcon.getAlbumName());
+    final long theId = mapElementIcon.getId();
+    mapElementIconDAO.delete(theId);
 	}
 
 }

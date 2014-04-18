@@ -19,13 +19,12 @@ public class MapElementLibraryDAOImpl implements MapElementLibraryDAO {
 	@Transactional
 	public void addMapElementLibrary(final String name, final int majorVersion, final int minorVersion) {
 		final MapElementLibrary mapElementLibrary = new MapElementLibrary(name, majorVersion, minorVersion);
-		this.em.persist(mapElementLibrary);
-
+		em.persist(mapElementLibrary);
 	}
 
 	@Override
 	public List<MapElementLibrary> listAllLibraries() {
-		final TypedQuery<MapElementLibrary> query = this.em.createQuery("SELECT mel FROM MapElementLibrary mel ORDER BY mel.id", MapElementLibrary.class);
+		final TypedQuery<MapElementLibrary> query = em.createQuery("SELECT mel FROM MapElementLibrary mel ORDER BY mel.id", MapElementLibrary.class);
 		return query.getResultList();
 	}
 }
