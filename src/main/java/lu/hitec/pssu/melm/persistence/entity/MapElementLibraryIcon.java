@@ -32,6 +32,9 @@ public class MapElementLibraryIcon {
 	@JoinColumn(name = "icon_id", nullable = false)
 	private MapElementIcon icon;
 
+	@Column(name = "index_of_icon_in_library", nullable = false, updatable = true)
+	private int indexOfIconInLibrary;
+
 	@Column(name = "icon_name_in_library", nullable = false, updatable = true)
 	private String iconNameInLibrary;
 
@@ -60,6 +63,14 @@ public class MapElementLibraryIcon {
 
 	public void setIcon(final MapElementIcon icon) {
 		this.icon = icon;
+	}
+
+	public int getIndexOfIconInLibrary() {
+		return this.indexOfIconInLibrary;
+	}
+
+	public void setIndexOfIconInLibrary(final int indexOfIconInLibrary) {
+		this.indexOfIconInLibrary = indexOfIconInLibrary;
 	}
 
 	public String getIconNameInLibrary() {

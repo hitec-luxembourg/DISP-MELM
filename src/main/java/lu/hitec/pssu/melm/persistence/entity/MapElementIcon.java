@@ -27,9 +27,6 @@ public class MapElementIcon {
 	@Column(name = "size_in_bytes", nullable = false, updatable = true)
 	private long sizeInBytes;
 
-	@Column(name = "path", nullable = false, updatable = true)
-	private String path;
-
 	@Column(name = "display_name", nullable = false, updatable = true)
 	private String displayName;
 
@@ -57,14 +54,6 @@ public class MapElementIcon {
 		this.sizeInBytes = sizeInBytes;
 	}
 
-	public String getPath() {
-		return this.path;
-	}
-
-	public void setPath(final String path) {
-		this.path = path;
-	}
-
 	public String getDisplayName() {
 		return this.displayName;
 	}
@@ -74,7 +63,9 @@ public class MapElementIcon {
 	}
 
 	public String getFilePath(final IconSize iconSize) {
-		return String.format("%s%s%s.png", this.path, this.pic100pxMd5, iconSize.getSuffix()).toString();
+		// we store the file in a 2 levels folders hierarchy, taking the first and second char of the hash
+		// so the typical path we be something like /b/e/bejdfgjdfgjdfgj-20px:png
+		return String.format("%s/%s/%s%s.png", this.pic100pxMd5, iconSize.getSuffix()).toString();
 	}
 
 }

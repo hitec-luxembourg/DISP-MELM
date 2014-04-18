@@ -121,8 +121,7 @@ public class MELMServiceImpl implements MELMService {
 					copyFile(hashForLargeFile, libraryFolder, sourceIconLargeFile.getName(), IconSize.MEDIUM);
 					copyFile(hashForLargeFile, libraryFolder, sourceIconLargeFile.getName(), IconSize.SMALL);
 					copyFile(hashForLargeFile, libraryFolder, sourceIconLargeFile.getName(), IconSize.TINY);
-					this.mapElementIconDAO.addMapElementIcon(this.iconsImportedDirectory.getAbsolutePath(), hashForLargeFile, sourceIconLargeFile.length(),
-							FilenameUtils.getBaseName(largeFileFolder.getName()));
+					this.mapElementIconDAO.addMapElementIcon(hashForLargeFile, sourceIconLargeFile.length(), FilenameUtils.getBaseName(largeFileFolder.getName()));
 				}
 			}
 		} catch (final IOException e) {

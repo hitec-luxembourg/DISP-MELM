@@ -8,7 +8,7 @@ public interface MapElementIconDAO {
 
 	public List<MapElementIcon> listAllIcons();
 
-	public void addMapElementIcon(final String path, final String hash, final long length, final String displayName);
+	public void addMapElementIcon(final String hash, final long length, final String displayName);
 
 	public MapElementIcon getMapElementIcon(long id);
 
