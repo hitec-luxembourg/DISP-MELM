@@ -1,6 +1,7 @@
 package lu.hitec.pssu.melm.persistence.dao;
 
-import org.junit.Assert;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +17,8 @@ public class MapElementLibraryDAOImplTest {
 
 	@Test
 	public void testAddMapElementLibrary() {
-		Assert.assertEquals(0, this.mapElementLibraryDAO.listAllLibraries().size());
-
-		this.mapElementLibraryDAO.addMapElementLibrary("emergency.lu", 1, 0);
-
-		Assert.assertEquals(1, this.mapElementLibraryDAO.listAllLibraries().size());
+		assertEquals(0, mapElementLibraryDAO.listAllLibraries().size());
+		mapElementLibraryDAO.addMapElementLibrary("emergency.lu", 1, 0);
+		assertEquals(1, mapElementLibraryDAO.listAllLibraries().size());
 	}
 }

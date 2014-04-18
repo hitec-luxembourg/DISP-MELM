@@ -10,8 +10,8 @@
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 <script>
 $( document ).ready(function() {
-  $("#file").on("change", function() {
-      var fileName = $("#file").val().split('\\').pop();
+  $("#libraryFile").on("change", function() {
+      var fileName = $("#libraryFile").val().split('\\').pop();
       var split = fileName.split("-");
       var libraryName = split[0];
       var secondPart = split[1];
@@ -32,15 +32,16 @@ $( document ).ready(function() {
         <form method="POST" action="${ctx}/rest/libraries/import" enctype='multipart/form-data'>
           <fieldset>
             <legend>Import library</legend>
-            <label for="file">File</label> 
-            <input name="file" id="file" type='file' size='20' maxlength='1000000' accept='application/zip' />
-            <input value="Save" type="submit" /> 
-            <br /> 
             <label for="libraryName" class="readonly">Detected Name</label> 
             <input name="libraryName" id="libraryName" type="text" /> 
             <br /> 
             <label for="version" class="readonly">Detected Version</label> 
             <input name="version" id="version" type="text" />
+            <br /> 
+            <label for="libraryFile">File</label> 
+            <input name="libraryFile" id="libraryFile" type='file' size='20' maxlength='1000000' accept='application/zip' />
+            <br /> 
+            <input value="Save" type="submit" /> 
           </fieldset>
         </form>
       </div>

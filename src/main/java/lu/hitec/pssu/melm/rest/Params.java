@@ -1,13 +1,17 @@
 package lu.hitec.pssu.melm.rest;
 
-public final class Params {
+final class Params {
 
-  // Library Upload params
-  public static final String FILE = "file";
-  public static final String NAME = "libraryName";
-  public static final String VERSION = "version";
+	// Library Upload params
+	static final String NAME = "libraryName";
+	static final String VERSION = "version";
+	static final String FILE = "libraryFile";
 
-  private Params() {
-  }
+	// Icon Upload params
+	static final String DISPLAY_NAME = "displayName";
+	static final String LARGE_FILE = "largeIconFile";
+
+	private Params() {
+	}
 
 }

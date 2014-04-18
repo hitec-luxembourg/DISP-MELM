@@ -20,8 +20,6 @@ import org.springframework.stereotype.Component;
 @Path("/logout")
 @Component
 public class LogoutResource {
-  // private static final Logger LOGGER = LoggerFactory.getLogger(LogoutResource.class);
-
   @Autowired
   private MELMService melmService;
 
@@ -32,7 +30,9 @@ public class LogoutResource {
   @Produces(MediaType.TEXT_HTML)
   public Response logout(@Context final UriInfo uriInfo) {
     final HttpSession session = request.getSession(false);
-    session.invalidate();
+    if (session != null) {
+      session.invalidate();
+    }
     final URI newURI = uriInfo.getBaseUriBuilder().path("/login/").build();
     return Response.seeOther(newURI).build();
   }

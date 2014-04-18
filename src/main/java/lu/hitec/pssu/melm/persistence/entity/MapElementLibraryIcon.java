@@ -38,7 +38,7 @@ public class MapElementLibraryIcon {
 	@Column(name = "icon_name_in_library", nullable = false, updatable = true)
 	private String iconNameInLibrary;
 
-	@Column(name = "icon_name_in_library", nullable = false, updatable = true)
+	@Column(name = "icon_description_in_library", nullable = false, updatable = true)
 	private String iconDescriptionInLibrary;
 
 	public long getId() {

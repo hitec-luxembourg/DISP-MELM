@@ -16,6 +16,21 @@
     <div id="content">
       <h1>Add icon</h1>
       <div>
+        <form method="POST" action="${ctx}/rest/icons/add" enctype='multipart/form-data'>
+          <fieldset>
+            <legend>Add icon</legend>
+            <label for="displayName" class="readonly">Display Name</label> 
+            <input name="displayName" id="displayName" type="text" /> 
+            <br /> 
+            <label for="albumName" class="readonly">Album Name</label> 
+            <input name="albumName" id="albumName" type="text" /> 
+            <br /> 
+            <label for="largeIconFile">Large Icon File</label> 
+            <input name="largeIconFile" id="largeIconFile" type='file' size='20' maxlength='1000000' accept='image/png' />
+            <br /> 
+            <input value="Save" type="submit" /> 
+          </fieldset>
+        </form>
       </div>
     </div>
     <jsp:include page="footer.jsp" />
