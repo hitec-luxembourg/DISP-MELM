@@ -9,6 +9,7 @@
   <context:annotation-config />
 
   <bean id="mapElementIconDAO" class="lu.hitec.pssu.melm.persistence.dao.MapElementIconDAOImpl" />
-   <bean id="mapElementLibraryDAO" class="lu.hitec.pssu.melm.persistence.dao.MapElementLibraryDAOImpl" />
+  <bean id="mapElementLibraryDAO" class="lu.hitec.pssu.melm.persistence.dao.MapElementLibraryDAOImpl" />
+  <bean id="mapElementLibraryIconDAO" class="lu.hitec.pssu.melm.persistence.dao.MapElementLibraryIconDAOImpl" />
 
 </beans>

@@ -11,7 +11,7 @@ public interface MapElementLibraryIconDAO {
 	public void addIconToLibrary(final MapElementLibrary library, final MapElementIcon icon, final int indexOfIconInLibrary, final String iconNameInLibrary,
 			final String iconDescriptionInLibrary);
 
-	public void removeIconFromLibrary(final MapElementLibrary library, final MapElementIcon icon, final int indexOfIconInLibrary);
+	public void removeIconFromLibrary(final MapElementLibrary library, final MapElementIcon icon);
 
 	public List<MapElementLibraryIcon> getIconsInLibrary(final MapElementLibrary library);
 }

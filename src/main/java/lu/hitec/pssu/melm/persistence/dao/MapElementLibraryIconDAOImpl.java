@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import lu.hitec.pssu.melm.persistence.entity.MapElementIcon;
 import lu.hitec.pssu.melm.persistence.entity.MapElementLibrary;
@@ -31,15 +33,20 @@ public class MapElementLibraryIconDAOImpl implements MapElementLibraryIconDAO {
 
 	@Override
 	@Transactional
-	public void removeIconFromLibrary(final MapElementLibrary library, final MapElementIcon icon, final int indexOfIconInLibrary) {
-		// TODO Auto-generated method stub
+	public void removeIconFromLibrary(final MapElementLibrary library, final MapElementIcon icon) {
+		final Query query = this.em.createQuery("DELETE FROM MapElementLibraryIcon meli WHERE meli.library = :library AND meli.icon = :icon");
+		query.setParameter("library", library);
+		query.setParameter("icon", icon);
+		query.executeUpdate();
 
 	}
 
 	@Override
 	public List<MapElementLibraryIcon> getIconsInLibrary(final MapElementLibrary library) {
-		// TODO Auto-generated method stub
-		return null;
+		final TypedQuery<MapElementLibraryIcon> query = this.em.createQuery(
+				"SELECT meli FROM MapElementLibraryIcon meli WHERE meli.library = :library ORDER BY meli.indexOfIconInLibrary", MapElementLibraryIcon.class);
+		query.setParameter("library", library);
+		return query.getResultList();
 	}
 
 }

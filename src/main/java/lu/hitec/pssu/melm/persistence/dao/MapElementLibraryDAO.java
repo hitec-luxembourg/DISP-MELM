@@ -6,8 +6,12 @@ import lu.hitec.pssu.melm.persistence.entity.MapElementLibrary;
 
 public interface MapElementLibraryDAO {
 
-	List<MapElementLibrary> listAllLibraries();
+	public List<MapElementLibrary> listAllLibraries();
 
-	void addMapElementLibrary(final String name, final int majorVersion, final int minorVersion);
+	public MapElementLibrary addMapElementLibrary(final String name, final int majorVersion, final int minorVersion);
+
+	public MapElementLibrary getMapElementLibrary(final String name, final int majorVersion, final int minorVersion);
+
+	public void deleteMapElementLibrary(final String name, final int majorVersion, final int minorVersion);
 
 }
