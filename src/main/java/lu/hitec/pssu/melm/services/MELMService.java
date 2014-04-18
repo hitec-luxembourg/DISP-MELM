@@ -12,7 +12,7 @@ import lu.hitec.pssu.melm.exceptions.MELMException;
 import lu.hitec.pssu.melm.persistence.entity.MapElementIcon;
 
 public interface MELMService {
-	void addIconAndFiles(@Nonnull final String displayName, @Nonnull final File iconLargeFile) throws MELMException;
+	MapElementIcon addIconAndFiles(@Nonnull final String displayName, @Nonnull final File iconLargeFile) throws MELMException;
 
 	String buildArchiveFilename(@Nonnull final String libraryName, @Nonnull final String version);
 
