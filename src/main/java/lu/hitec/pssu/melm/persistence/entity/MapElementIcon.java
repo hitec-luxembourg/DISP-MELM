@@ -7,11 +7,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import lu.hitec.pssu.melm.services.MELMServiceImpl.IconSize;
 
 @Entity
-@Table(name = "map_element_icon")
+@Table(name = "map_element_icon", uniqueConstraints = @UniqueConstraint(columnNames = { "pic_100px_md5", "size_in_bytes" }))
 @SequenceGenerator(name = "map_element_icon_seq", sequenceName = "map_element_icon_seq")
 public class MapElementIcon {
 
