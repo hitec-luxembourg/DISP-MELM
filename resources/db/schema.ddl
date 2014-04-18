@@ -23,7 +23,8 @@
         path varchar(255) not null,
         pic_100px_md5 varchar(255) not null,
         size_in_bytes int8 not null,
-        primary key (id)
+        primary key (id),
+        unique (pic_100px_md5, size_in_bytes)
     );
 
     create table map_element_library (
@@ -31,7 +32,8 @@
         major_version int4 not null,
         minor_version int4 not null,
         name varchar(255) not null,
-        primary key (id)
+        primary key (id),
+        unique (name, major_version, minor_version)
     );
 
     create table map_element_library_icon (

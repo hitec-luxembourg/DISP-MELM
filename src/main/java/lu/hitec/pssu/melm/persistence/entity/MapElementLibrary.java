@@ -7,9 +7,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "map_element_library")
+@Table(name = "map_element_library", uniqueConstraints = @UniqueConstraint(columnNames = { "name", "major_version", "minor_version" }))
 @SequenceGenerator(name = "map_element_library_seq", sequenceName = "map_element_library_seq")
 public class MapElementLibrary {
 
