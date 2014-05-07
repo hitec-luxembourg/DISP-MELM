@@ -5,7 +5,7 @@
 <c:set value="${pageContext.request.contextPath}" var="ctx" scope="request" />
 <html>
 <head>
-<title>Start page</title>
+<title>Add library</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 <link rel="stylesheet" type="text/css" href="${ctx}/css/style.css" />
@@ -14,17 +14,21 @@
   <div id="wrapper">
     <jsp:include page="header.jsp" />
     <div id="content">
-      <h1>Start page</h1>
-      <h2>Libraries</h2>
-      <a href="${ctx}/rest/libraries">List</a>
-      <br/>
-      <a href="${ctx}/rest/libraries/import">Import</a>
-      <br/>
-      <a href="${ctx}/rest/libraries/add">Add</a>
-      <h2>Icons</h2>
-      <a href="${ctx}/rest/icons">List</a>
-      <br/>
-      <a href="${ctx}/rest/icons/add">Add</a>
+      <h1>Add library</h1>
+      <div>
+        <form method="POST" action="${ctx}/rest/libraries/add" enctype='multipart/form-data'>
+          <fieldset>
+            <legend>Add library</legend>
+            <label for="libraryName">Library Name</label> 
+            <input name="libraryName" id="libraryName" type="text" /> 
+            <br /> 
+            <label for="version">Version</label> 
+            <input name="version" id="version" type="text" />
+            <br /> 
+            <input value="Save" type="submit" /> 
+          </fieldset>
+        </form>
+      </div>
     </div>
     <jsp:include page="footer.jsp" />
   </div>

@@ -13,64 +13,65 @@ import org.springframework.transaction.annotation.Transactional;
 
 public class MapElementIconDAOImpl implements MapElementIconDAO {
 
-	@PersistenceContext
-	private EntityManager em;
+  @PersistenceContext
+  private EntityManager em;
 
-	@Override
-	public List<MapElementIcon> listAllIcons() {
-		final TypedQuery<MapElementIcon> query = this.em.createQuery("SELECT mei FROM MapElementIcon mei ORDER BY mei.id", MapElementIcon.class);
-		return query.getResultList();
-	}
+  @Override
+  public List<MapElementIcon> listAllIcons() {
+    final TypedQuery<MapElementIcon> query = em
+        .createQuery("SELECT mei FROM MapElementIcon mei ORDER BY mei.id", MapElementIcon.class);
+    return query.getResultList();
+  }
 
-	@Override
-	@Transactional
-	public MapElementIcon addMapElementIcon(final String hash, final long size, final String displayName) {
-		final MapElementIcon mapElementIcon = new MapElementIcon();
-		mapElementIcon.setPic100pxMd5(hash);
-		mapElementIcon.setSizeInBytes(size);
-		mapElementIcon.setDisplayName(displayName);
-		this.em.persist(mapElementIcon);
-		return mapElementIcon;
-	}
+  @Override
+  @Transactional
+  public MapElementIcon addMapElementIcon(final String hash, final long size, final String displayName) {
+    final MapElementIcon mapElementIcon = new MapElementIcon();
+    mapElementIcon.setPic100pxMd5(hash);
+    mapElementIcon.setSizeInBytes(size);
+    mapElementIcon.setDisplayName(displayName);
+    em.persist(mapElementIcon);
+    return mapElementIcon;
+  }
 
-	@Override
-	public MapElementIcon getMapElementIcon(final String hash, final long size) {
-		final TypedQuery<MapElementIcon> query = this.em.createQuery("SELECT mei FROM MapElementIcon mei WHERE mei.pic100pxMd5 = :hash AND sizeInBytes = :size",
-				MapElementIcon.class);
-		query.setParameter("hash", hash);
-		query.setParameter("size", size);
-		return query.getSingleResult();
-	}
+  @Override
+  public MapElementIcon getMapElementIcon(final String hash, final long size) {
+    final TypedQuery<MapElementIcon> query = em.createQuery(
+        "SELECT mei FROM MapElementIcon mei WHERE mei.pic100pxMd5 = :hash AND sizeInBytes = :size", MapElementIcon.class);
+    query.setParameter("hash", hash);
+    query.setParameter("size", size);
+    return query.getSingleResult();
+  }
 
-	@Override
-	@Transactional
-	public void deleteMapElementIcon(final String hash, final long size) {
-		final Query query = this.em.createQuery("DELETE FROM MapElementIcon mei WHERE mei.pic100pxMd5 = :hash AND sizeInBytes = :size");
-		query.setParameter("hash", hash);
-		query.setParameter("size", size);
-		query.executeUpdate();
-	}
+  @Override
+  @Transactional
+  public void deleteMapElementIcon(final String hash, final long size) {
+    final Query query = em.createQuery("DELETE FROM MapElementIcon mei WHERE mei.pic100pxMd5 = :hash AND sizeInBytes = :size");
+    query.setParameter("hash", hash);
+    query.setParameter("size", size);
+    query.executeUpdate();
+  }
 
-	@Override
-	public MapElementIcon getMapElementIcon(final long id) {
-		return this.em.find(MapElementIcon.class, id);
+  @Override
+  public MapElementIcon getMapElementIcon(final long id) {
+    return em.find(MapElementIcon.class, id);
 
-	}
+  }
 
-	@Override
-	@Transactional
-	public void delete(final long id) {
-		this.em.remove(getMapElementIcon(id));
+  @Override
+  @Transactional
+  public void delete(final long id) {
+    em.remove(getMapElementIcon(id));
 
-	}
+  }
 
-	@Override
-	public boolean exist(final String hash, final long size) {
-		final TypedQuery<MapElementIcon> query = this.em
-				.createQuery("SELECT mei FROM MapElementIcon mei WHERE mei.pic100pxMd5 = :hash AND sizeInBytes = :size", MapElementIcon.class).setParameter("hash", hash)
-				.setParameter("size", size);
+  @Override
+  public boolean exist(final String hash, final long size) {
+    final TypedQuery<MapElementIcon> query = em
+        .createQuery("SELECT mei FROM MapElementIcon mei WHERE mei.pic100pxMd5 = :hash AND sizeInBytes = :size", MapElementIcon.class)
+        .setParameter("hash", hash).setParameter("size", size);
 
-		return query.getResultList().size() > 0;
-	}
+    return query.getResultList().size() > 0;
+  }
 
 }

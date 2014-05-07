@@ -97,4 +97,14 @@ public final class MELMUtils {
     return image.getType() != 0 ? image : null;
   }
 
+  public static int getMajorVersion(@Nonnull final String version) {
+    final String majorVersion = version.substring(0, version.indexOf('.'));
+    return Integer.parseInt(majorVersion);
+  }
+
+  public static int getMinorVersion(@Nonnull final String version) {
+    final String minorVersion = version.substring(version.indexOf('.') + 1);
+    return Integer.parseInt(minorVersion);
+  }
+
 }

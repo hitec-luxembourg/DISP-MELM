@@ -5,7 +5,7 @@
 <c:set value="${pageContext.request.contextPath}" var="ctx" scope="request" />
 <html>
 <head>
-<title>List Libraries</title>
+<title>List Library Icons</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 <script>
@@ -19,29 +19,30 @@ function notYetImplemented(){
   <div id="wrapper">
     <jsp:include page="header.jsp" />
     <div id="content">
-      <h1>List Libraries</h1>
+      <h1>List library Icons</h1>
+      <h3>${it.library.name}-${it.library.majorVersion}.${it.library.minorVersion}</h3>
       <table>
         <tr>
           <td></td>
           <td></td>
-          <td></td>
-          <td></td>
-          <td align="center">Name</td>
-          <td align="center">Version</td>
-          <td align="center">Icon</td>
+          <td align="center">Icon Index</td>
+          <td align="center">Icon Name</td>
+          <td align="center">Icon Description</td>
+          <td>Preview</td>
         </tr>
-        <c:forEach var="library" items="${it.libraries}">
+        <c:forEach var="icon" items="${it.icons}">
           <tr>
-            <td><a href="${ctx}/rest/libraries/delete/${library.name}/${library.majorVersion}/${library.minorVersion}">delete</a></td>
-            <td><a href="${ctx}/rest/libraries/icons/${library.name}/${library.majorVersion}/${library.minorVersion}">icons</a></td>
+            <td><a href="${ctx}/rest/libraries/icons/delete/${icon.library.name}/${it.library.majorVersion}/${it.library.minorVersion}/${icon.icon.id}">delete</a></td>
             <td><a href="javascript:void(0)" onclick="notYetImplemented();">update</a></td>
-            <td><a href="javascript:void(0)" onclick="notYetImplemented();">zip</a></td>
-            <td align="center">${library.name}</td>
-            <td align="center">${library.majorVersion}.${library.minorVersion}</td>
-            <td>N/A</td>
+            <td align="center">${icon.indexOfIconInLibrary}</td>
+            <td align="center">${icon.iconNameInLibrary}</td>
+            <td align="center">${icon.iconDescriptionInLibrary}</td>
+            <td><img src="${ctx}/rest/icons/file/${icon.icon.id}/MEDIUM"></td>
           </tr>
         </c:forEach>
       </table>
+      <hr/>
+      <a href="${ctx}/rest/libraries/icons/add/${it.library.name}/${it.library.majorVersion}/${it.library.minorVersion}">add</a>
     </div>
     <jsp:include page="footer.jsp" />
   </div>
