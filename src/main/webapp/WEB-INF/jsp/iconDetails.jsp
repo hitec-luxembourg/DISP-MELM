@@ -34,12 +34,12 @@ function notYetImplemented(){
           <td><img src="${ctx}/rest/icons/file/${it.id}/SMALL"></td>
           <td><img src="${ctx}/rest/icons/file/${it.id}/TINY"></td>
         </tr>
-        <tr>
-          <td><a href="javascript:void(0)" onclick="notYetImplemented();">update</a></td>
-          <td><a href="javascript:void(0)" onclick="notYetImplemented();">update</a></td>
-          <td><a href="javascript:void(0)" onclick="notYetImplemented();">update</a></td>
-          <td><a href="javascript:void(0)" onclick="notYetImplemented();">update</a></td>
-        </tr>
+<!--         <tr> -->
+<!--           <td><a href="javascript:void(0)" onclick="notYetImplemented();">update</a></td> -->
+<!--           <td><a href="javascript:void(0)" onclick="notYetImplemented();">update</a></td> -->
+<!--           <td><a href="javascript:void(0)" onclick="notYetImplemented();">update</a></td> -->
+<!--           <td><a href="javascript:void(0)" onclick="notYetImplemented();">update</a></td> -->
+<!--         </tr> -->
       </table>
     </div>
     <jsp:include page="footer.jsp" />

@@ -8,11 +8,6 @@
 <title>List Libraries</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-<script>
-function notYetImplemented(){
-  alert("Not yet implemented");
-}
-</script>
 <link rel="stylesheet" type="text/css" href="${ctx}/css/style.css" />
 </head>
 <body>
@@ -35,7 +30,7 @@ function notYetImplemented(){
             <td><a href="${ctx}/rest/libraries/delete/${library.name}/${library.majorVersion}/${library.minorVersion}">delete</a></td>
             <td><a href="${ctx}/rest/libraries/icons/${library.name}/${library.majorVersion}/${library.minorVersion}">icons</a></td>
             <td><a href="${ctx}/rest/libraries/update/${library.name}/${library.majorVersion}/${library.minorVersion}">update</a></td>
-            <td><a href="javascript:void(0)" onclick="notYetImplemented();">zip</a></td>
+            <td><a href="${ctx}/rest/libraries/zip/${library.name}-${library.majorVersion}.${library.minorVersion}.zip">zip</a></td>
             <td align="center">${library.name}</td>
             <td align="center">${library.majorVersion}.${library.minorVersion}</td>
             <td><img src="${ctx}/rest/libraries/icon/file/${library.name}/${library.majorVersion}/${library.minorVersion}"></td>

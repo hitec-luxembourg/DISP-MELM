@@ -88,18 +88,6 @@ public class MELMResource {
 
   @GET
   @Produces(MediaType.TEXT_HTML)
-  @Path("/libraries/icons/{name}/{majorVersion}/{minorVersion}")
-  public Response getLibraryIcons(@PathParam("name") @Nonnull final String name, @PathParam("majorVersion") final int majorVersion,
-      @PathParam("minorVersion") final int minorVersion) {
-    assert name != null : "name is null";
-    final MapElementLibrary library = melmService.getLibrary(name, majorVersion, minorVersion);
-    return Response.ok(
-        new Viewable("/libraryIcons", new LibraryIconsModel(library, melmService.getLibraryIcons(name, majorVersion, minorVersion))))
-        .build();
-  }
-
-  @GET
-  @Produces(MediaType.TEXT_HTML)
   @Path("/icons/details/{id}")
   public Response getIconDetails(@PathParam("id") final long id) {
     return Response.ok(new Viewable("/iconDetails", melmService.getIcon(id))).build();
@@ -138,6 +126,18 @@ public class MELMResource {
 
   @GET
   @Produces(MediaType.TEXT_HTML)
+  @Path("/libraries/icons/{name}/{majorVersion}/{minorVersion}")
+  public Response getLibraryIcons(@PathParam("name") @Nonnull final String name, @PathParam("majorVersion") final int majorVersion,
+      @PathParam("minorVersion") final int minorVersion) {
+    assert name != null : "name is null";
+    final MapElementLibrary library = melmService.getLibrary(name, majorVersion, minorVersion);
+    return Response.ok(
+        new Viewable("/libraryIcons", new LibraryIconsModel(library, melmService.getLibraryIcons(name, majorVersion, minorVersion))))
+        .build();
+  }
+
+  @GET
+  @Produces(MediaType.TEXT_HTML)
   @Path("/icons/add")
   public Response gotoAddIcon() {
     return Response.ok(new Viewable("/addIcon")).build();
@@ -148,16 +148,6 @@ public class MELMResource {
   @Path("/libraries/add")
   public Response gotoAddLibrary() {
     return Response.ok(new Viewable("/addLibrary")).build();
-  }
-
-  @GET
-  @Produces(MediaType.TEXT_HTML)
-  @Path("/libraries/update/{name}/{majorVersion}/{minorVersion}")
-  public Response gotoUpdateLibrary(@PathParam("name") @Nonnull final String name, @PathParam("majorVersion") final int majorVersion,
-      @PathParam("minorVersion") final int minorVersion) {
-    assert name != null : "name is null";
-    final MapElementLibrary library = melmService.getLibrary(name, majorVersion, minorVersion);
-    return Response.ok(new Viewable("/updateLibrary", library)).build();
   }
 
   @GET
@@ -195,6 +185,16 @@ public class MELMResource {
   @Produces(MediaType.TEXT_HTML)
   public Response gotoStart() {
     return Response.ok(new Viewable("/start")).build();
+  }
+
+  @GET
+  @Produces(MediaType.TEXT_HTML)
+  @Path("/libraries/update/{name}/{majorVersion}/{minorVersion}")
+  public Response gotoUpdateLibrary(@PathParam("name") @Nonnull final String name, @PathParam("majorVersion") final int majorVersion,
+      @PathParam("minorVersion") final int minorVersion) {
+    assert name != null : "name is null";
+    final MapElementLibrary library = melmService.getLibrary(name, majorVersion, minorVersion);
+    return Response.ok(new Viewable("/updateLibrary", library)).build();
   }
 
   @POST
@@ -237,31 +237,6 @@ public class MELMResource {
       melmService.addLibrary(libraryUpload.getLibraryName(), libraryUpload.getVersion(), hashForFile);
     } catch (final MELMException e) {
       LOGGER.warn("Error in performAddLibrary", e);
-      return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
-    }
-    return gotoListLibraries();
-  }
-
-  @POST
-  @Consumes(MediaType.MULTIPART_FORM_DATA)
-  @Produces(MediaType.TEXT_HTML)
-  @Path("/libraries/update")
-  public Response performUpdateLibrary() throws MELMException {
-    if (!ServletFileUpload.isMultipartContent(request)) {
-      LOGGER.warn("Got invalid request, no multipart content");
-      return Response.status(Status.BAD_REQUEST).entity("Invalid request, no multipart content").build();
-    }
-
-    try {
-      final LibraryUpload libraryUpload = parseLibraryUpload();
-      if (libraryUpload.getIconFile().length() != 0) {
-        final String hashForFile = melmService.addLibraryIcon(libraryUpload.getIconFile());
-        melmService.updateLibrary(libraryUpload.getId(), libraryUpload.getLibraryName(), libraryUpload.getVersion(), hashForFile);
-      } else {
-        melmService.updateLibrary(libraryUpload.getId(), libraryUpload.getLibraryName(), libraryUpload.getVersion(), null);
-      }
-    } catch (final MELMException e) {
-      LOGGER.warn("Error in performUpdateLibrary", e);
       return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
     }
     return gotoListLibraries();
@@ -323,6 +298,42 @@ public class MELMResource {
     return gotoListLibraries();
   }
 
+  @POST
+  @Consumes(MediaType.MULTIPART_FORM_DATA)
+  @Produces(MediaType.TEXT_HTML)
+  @Path("/libraries/update")
+  public Response performUpdateLibrary() throws MELMException {
+    if (!ServletFileUpload.isMultipartContent(request)) {
+      LOGGER.warn("Got invalid request, no multipart content");
+      return Response.status(Status.BAD_REQUEST).entity("Invalid request, no multipart content").build();
+    }
+
+    try {
+      final LibraryUpload libraryUpload = parseLibraryUpload();
+      if (libraryUpload.getIconFile().length() != 0) {
+        final String hashForFile = melmService.addLibraryIcon(libraryUpload.getIconFile());
+        melmService.updateLibrary(libraryUpload.getId(), libraryUpload.getLibraryName(), libraryUpload.getVersion(), hashForFile);
+      } else {
+        melmService.updateLibrary(libraryUpload.getId(), libraryUpload.getLibraryName(), libraryUpload.getVersion(), null);
+      }
+    } catch (final MELMException e) {
+      LOGGER.warn("Error in performUpdateLibrary", e);
+      return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+    }
+    return gotoListLibraries();
+  }
+
+  @GET
+  @Produces("application/zip")
+  @Path("/libraries/zip/{name}-{majorVersion}.{minorVersion}.zip")
+  public Response performZipLibrary(@PathParam("name") @Nonnull final String name, @PathParam("majorVersion") final int majorVersion,
+      @PathParam("minorVersion") final int minorVersion) throws MELMException {
+    assert name != null : "name is null";
+    final File zipFolder = melmService.prepareZipFile(name, majorVersion, minorVersion);
+    final File zipFile = melmService.generateZipFile(zipFolder);
+    return Response.ok(zipFile).build();
+  }
+
   private IconUpload parseIconUpload() {
     File largeIconFile = null;
     String displayName = null;
@@ -356,52 +367,6 @@ public class MELMResource {
       return null;
     }
     return new IconUpload(displayName, largeIconFile);
-  }
-
-  private LibraryUpload parseLibraryUpload() {
-    String id = null;
-    String name = null;
-    String version = null;
-    File libraryZipMaybeNull = null;
-    File libraryIconMaybeNull = null;
-
-    final ServletFileUpload upload = new ServletFileUpload();
-    upload.setFileSizeMax(MAX_FILE_SIZE);
-
-    InputStream stream = null;
-    try {
-      final FileItemIterator iter = upload.getItemIterator(request);
-      while (iter.hasNext()) {
-        final FileItemStream item = iter.next();
-        stream = item.openStream();
-        final String fieldName = item.getFieldName();
-        if (Params.ID.equalsIgnoreCase(fieldName)) {
-          id = Streams.asString(stream);
-        } else if (Params.NAME.equalsIgnoreCase(fieldName)) {
-          name = Streams.asString(stream);
-        } else if (Params.VERSION.equalsIgnoreCase(fieldName)) {
-          version = Streams.asString(stream);
-        } else if (Params.FILE.equalsIgnoreCase(fieldName)) {
-          // We are using temp dir because we don't know by advance the name and the version as we are inside a loop.
-          libraryZipMaybeNull = File.createTempFile("fromUpload", null);
-          FileUtils.writeByteArrayToFile(libraryZipMaybeNull, IOUtils.toByteArray(stream));
-        } else if (Params.FILE_ICON.equalsIgnoreCase(fieldName)) {
-          // We are using temp dir because we don't know by advance the name and the version as we are inside a loop.
-          libraryIconMaybeNull = File.createTempFile("fromUpload", null);
-          FileUtils.writeByteArrayToFile(libraryIconMaybeNull, IOUtils.toByteArray(stream));
-        }
-      }
-    } catch (final IOException e) {
-      return null;
-    } catch (final FileUploadException e) {
-      return null;
-    } finally {
-      MELMUtils.closeResource(stream);
-    }
-    if ((name == null) || (version == null)) {
-      return null;
-    }
-    return new LibraryUpload(id, name, version, libraryZipMaybeNull, libraryIconMaybeNull);
   }
 
   private LibraryIconUpload parseLibraryIconUpload() {
@@ -453,6 +418,52 @@ public class MELMResource {
     return new LibraryIconUpload(name, majorVersion, minorVersion, iconIndex, iconName, iconDescription, iconId);
   }
 
+  private LibraryUpload parseLibraryUpload() {
+    String id = null;
+    String name = null;
+    String version = null;
+    File libraryZipMaybeNull = null;
+    File libraryIconMaybeNull = null;
+
+    final ServletFileUpload upload = new ServletFileUpload();
+    upload.setFileSizeMax(MAX_FILE_SIZE);
+
+    InputStream stream = null;
+    try {
+      final FileItemIterator iter = upload.getItemIterator(request);
+      while (iter.hasNext()) {
+        final FileItemStream item = iter.next();
+        stream = item.openStream();
+        final String fieldName = item.getFieldName();
+        if (Params.ID.equalsIgnoreCase(fieldName)) {
+          id = Streams.asString(stream);
+        } else if (Params.NAME.equalsIgnoreCase(fieldName)) {
+          name = Streams.asString(stream);
+        } else if (Params.VERSION.equalsIgnoreCase(fieldName)) {
+          version = Streams.asString(stream);
+        } else if (Params.FILE.equalsIgnoreCase(fieldName)) {
+          // We are using temp dir because we don't know by advance the name and the version as we are inside a loop.
+          libraryZipMaybeNull = File.createTempFile("fromUpload", null);
+          FileUtils.writeByteArrayToFile(libraryZipMaybeNull, IOUtils.toByteArray(stream));
+        } else if (Params.FILE_ICON.equalsIgnoreCase(fieldName)) {
+          // We are using temp dir because we don't know by advance the name and the version as we are inside a loop.
+          libraryIconMaybeNull = File.createTempFile("fromUpload", null);
+          FileUtils.writeByteArrayToFile(libraryIconMaybeNull, IOUtils.toByteArray(stream));
+        }
+      }
+    } catch (final IOException e) {
+      return null;
+    } catch (final FileUploadException e) {
+      return null;
+    } finally {
+      MELMUtils.closeResource(stream);
+    }
+    if ((name == null) || (version == null)) {
+      return null;
+    }
+    return new LibraryUpload(id, name, version, libraryZipMaybeNull, libraryIconMaybeNull);
+  }
+
   private final class IconUpload {
     private final String displayName;
     private final File largeIconFile;
@@ -471,50 +482,14 @@ public class MELMResource {
     }
   }
 
-  private final class LibraryUpload {
-    private final String id;
-    private final String libraryName;
-    private final String version;
-    private final File zipFile;
-    private final File iconFile;
-
-    public LibraryUpload(final String id, final String libraryName, final String version, final File zipFile, final File iconFile) {
-      this.id = id;
-      this.libraryName = libraryName;
-      this.version = version;
-      this.zipFile = zipFile;
-      this.iconFile = iconFile;
-    }
-
-    public String getLibraryName() {
-      return libraryName;
-    }
-
-    public String getVersion() {
-      return version;
-    }
-
-    public File getZipFile() {
-      return zipFile;
-    }
-
-    public File getIconFile() {
-      return iconFile;
-    }
-
-    public String getId() {
-      return id;
-    }
-  }
-
   private final class LibraryIconUpload {
+    private final String iconDescription;
+    private final String iconId;
+    private final String iconIndex;
+    private final String iconName;
     private final String libraryName;
     private final String majorVersion;
     private final String minorVersion;
-    private final String iconIndex;
-    private final String iconName;
-    private final String iconDescription;
-    private final String iconId;
 
     public LibraryIconUpload(final String libraryName, final String majorVersion, final String minorVersion, final String iconIndex,
         final String iconName, final String iconDescription, final String iconId) {
@@ -525,6 +500,22 @@ public class MELMResource {
       this.iconName = iconName;
       this.iconDescription = iconDescription;
       this.iconId = iconId;
+    }
+
+    public String getIconDescription() {
+      return iconDescription;
+    }
+
+    public String getIconId() {
+      return iconId;
+    }
+
+    public String getIconIndex() {
+      return iconIndex;
+    }
+
+    public String getIconName() {
+      return iconName;
     }
 
     public String getLibraryName() {
@@ -539,21 +530,41 @@ public class MELMResource {
       return minorVersion;
     }
 
-    public String getIconIndex() {
-      return iconIndex;
+  }
+
+  private final class LibraryUpload {
+    private final File iconFile;
+    private final String id;
+    private final String libraryName;
+    private final String version;
+    private final File zipFile;
+
+    public LibraryUpload(final String id, final String libraryName, final String version, final File zipFile, final File iconFile) {
+      this.id = id;
+      this.libraryName = libraryName;
+      this.version = version;
+      this.zipFile = zipFile;
+      this.iconFile = iconFile;
     }
 
-    public String getIconName() {
-      return iconName;
+    public File getIconFile() {
+      return iconFile;
     }
 
-    public String getIconDescription() {
-      return iconDescription;
+    public String getId() {
+      return id;
     }
 
-    public String getIconId() {
-      return iconId;
+    public String getLibraryName() {
+      return libraryName;
     }
 
+    public String getVersion() {
+      return version;
+    }
+
+    public File getZipFile() {
+      return zipFile;
+    }
   }
 }
