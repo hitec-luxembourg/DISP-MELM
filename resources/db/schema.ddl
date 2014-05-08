@@ -28,6 +28,7 @@
 
     create table map_element_library (
         id int8 not null,
+        icon_md5 varchar(255) not null,
         major_version int4 not null,
         minor_version int4 not null,
         name varchar(255) not null,

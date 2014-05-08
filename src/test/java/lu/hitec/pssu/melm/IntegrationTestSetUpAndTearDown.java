@@ -7,20 +7,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class IntegrationTestSetUpAndTearDown {
 
-	@Autowired
-	private MapElementLibraryDAO mapElementLibraryDAO;
+  @Autowired
+  private MapElementLibraryDAO mapElementLibraryDAO;
 
-	@Autowired
-	private MapElementIconDAO mapElementIconDAO;
+  @Autowired
+  private MapElementIconDAO mapElementIconDAO;
 
-	public void setUp() {
-		this.mapElementLibraryDAO.addMapElementLibrary("IntegrationTest", 1, 0);
-		this.mapElementIconDAO.addMapElementIcon("IntegrationTestHash", 100, "IntegrationTestName");
+  public void setUp() {
+    mapElementLibraryDAO.addMapElementLibrary("IntegrationTest", 1, 0, "");
+    mapElementIconDAO.addMapElementIcon("IntegrationTestHash", 100, "IntegrationTestName");
+  }
 
-	}
-
-	public void tearDown() {
-		this.mapElementLibraryDAO.deleteMapElementLibrary("IntegrationTest", 1, 0);
-		this.mapElementIconDAO.deleteMapElementIcon("IntegrationTestHash", 100);
-	}
+  public void tearDown() {
+    mapElementLibraryDAO.deleteMapElementLibrary("IntegrationTest", 1, 0);
+    mapElementIconDAO.deleteMapElementIcon("IntegrationTestHash", 100);
+  }
 }

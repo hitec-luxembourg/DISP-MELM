@@ -3,9 +3,11 @@ package lu.hitec.pssu.melm.rest;
 final class Params {
 
   // Library Upload params
+  static final String ID = "id";
   static final String NAME = "libraryName";
   static final String VERSION = "version";
   static final String FILE = "libraryFile";
+  static final String FILE_ICON = "libraryIconFile";
 
   // Icon Upload params
   static final String DISPLAY_NAME = "displayName";

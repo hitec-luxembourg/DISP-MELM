@@ -80,7 +80,7 @@ public class MELMServiceImplTest {
     final File targetArchiveFile = melmService.importLibrary("emergency.lu", "1.1", tmpZipFile);
     final File libraryFolder = melmService.extractImportedLibrary(targetArchiveFile);
     final XMLSelectionPathParser libraryParser = melmService.validateAndParseImportedLibrary("emergency.lu", "1.1");
-    final MapElementLibrary mapElementLibrary = melmService.addLibrary("emergency.lu", "1.1");
+    final MapElementLibrary mapElementLibrary = melmService.addLibrary("emergency.lu", "1.1", "");
     melmService.moveImportedIcons(mapElementLibrary, libraryParser, libraryFolder);
   }
 

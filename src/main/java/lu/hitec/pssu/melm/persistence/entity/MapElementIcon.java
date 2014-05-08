@@ -64,9 +64,8 @@ public class MapElementIcon {
 
   public String getFilePath(final IconSize iconSize) {
     // we store the file in a 2 levels folders hierarchy, taking the first and second char of the hash
-    // so the typical path we be something like /b/e/bejdfgjdfgjdfgj-20px:png
-    return String.format("%s/%s/%s%s.png", pic100pxMd5.substring(0, 1), pic100pxMd5.substring(1, 2), pic100pxMd5, iconSize.getSuffix())
-        .toString();
+    // so the typical path we be something like /b/e/bejdfgjdfgjdfgj-20px.png
+    return String.format("%s/%s/%s%s.png", pic100pxMd5.substring(0, 1), pic100pxMd5.substring(1, 2), pic100pxMd5, iconSize.getSuffix());
   }
 
 }

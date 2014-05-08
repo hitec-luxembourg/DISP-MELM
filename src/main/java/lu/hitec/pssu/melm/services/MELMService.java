@@ -20,10 +20,10 @@ public interface MELMService {
 
   @Transactional
   void deleteIconAndFiles(final long id) throws MELMException;
-  
+
   @Transactional
   void deleteLibrary(@Nonnull final String libraryName, final int majorVersion, final int minorVersion);
-  
+
   List<MapElementLibraryIcon> getLibraryIcons(@Nonnull final String libraryName, final int majorVersion, final int minorVersion);
 
   @CheckReturnValue
@@ -32,6 +32,8 @@ public interface MELMService {
   MapElementIcon getIcon(long id);
 
   File getIconFile(final long id, @Nonnull final String size);
+  
+  File getLibraryIconFile(@Nonnull final String libraryName, final int majorVersion, final int minorVersion);
 
   @Nonnull
   File getIconsDirectory();
@@ -45,19 +47,28 @@ public interface MELMService {
 
   List<MapElementIcon> listAllIcons();
 
-  void moveImportedIcons(@Nonnull final MapElementLibrary mapElementLibrary, @Nonnull final XMLSelectionPathParser libraryParser, @Nonnull final File libraryFolder) throws MELMException;
+  String moveImportedLibraryIcon(@Nonnull final XMLSelectionPathParser libraryParserlibraryIconRelativePath, @Nonnull final File libraryFolder) throws MELMException;
+
+  void moveImportedIcons(@Nonnull final MapElementLibrary mapElementLibrary, @Nonnull final XMLSelectionPathParser libraryParser,
+      @Nonnull final File libraryFolder) throws MELMException;
 
   XMLSelectionPathParser validateAndParseImportedLibrary(@Nonnull final String libraryName, @Nonnull final String version)
       throws MELMException;
 
-  MapElementLibrary addLibrary(@Nonnull final String libraryName, @Nonnull final String version) throws MELMException;
+  MapElementLibrary addLibrary(@Nonnull final String libraryName, @Nonnull final String version, @Nonnull final String iconMd5) throws MELMException;
   
-  void addLibraryIcon(@Nonnull final String libraryName, @Nonnull final String majorVersion, @Nonnull final String minorVersion, @Nonnull final String iconIndex, @Nonnull final String iconName, @Nonnull final String iconDescription, @Nonnull final String iconId) throws MELMException;
+  void updateLibrary(@Nonnull final String id, @Nonnull final String libraryName, @Nonnull final String version, final String iconMd5MaybeNull) throws MELMException;
+
+  void addLibraryIcon(@Nonnull final String libraryName, @Nonnull final String majorVersion, @Nonnull final String minorVersion,
+      @Nonnull final String iconIndex, @Nonnull final String iconName, @Nonnull final String iconDescription, @Nonnull final String iconId)
+      throws MELMException;
 
   List<MapElementLibrary> listAllLibraries();
 
   MapElementLibrary getLibrary(@Nonnull final String libraryName, final int majorVersion, final int minorVersion);
 
   void deleteLibraryIcon(@Nonnull final String libraryName, final int majorVersion, final int minorVersion, final long iconId);
+
+  String addLibraryIcon(@Nonnull final File sourceIconFile) throws MELMException;
 
 }

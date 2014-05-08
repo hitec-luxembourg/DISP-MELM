@@ -20,7 +20,7 @@ public class MapElementLibraryDAOImplTest {
   public void testAddMapElementLibrary() {
     assertEquals(0, mapElementLibraryDAO.listAllLibraries().size());
 
-    mapElementLibraryDAO.addMapElementLibrary("emergency.lu", 1, 0);
+    mapElementLibraryDAO.addMapElementLibrary("emergency.lu", 1, 0, "");
 
     assertEquals(1, mapElementLibraryDAO.listAllLibraries().size());
 

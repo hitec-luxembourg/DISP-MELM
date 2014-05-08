@@ -14,61 +14,77 @@ import javax.persistence.UniqueConstraint;
 @SequenceGenerator(name = "map_element_library_seq", sequenceName = "map_element_library_seq")
 public class MapElementLibrary {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "map_element_library_seq")
-	@Column(name = "id", nullable = false)
-	private long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO, generator = "map_element_library_seq")
+  @Column(name = "id", nullable = false)
+  private long id;
 
-	@Column(name = "name", nullable = false, updatable = false)
-	private String name;
+  @Column(name = "name", nullable = false, updatable = true)
+  private String name;
 
-	@Column(name = "major_version", nullable = false, updatable = false)
-	private int majorVersion;
+  @Column(name = "major_version", nullable = false, updatable = true)
+  private int majorVersion;
 
-	@Column(name = "minor_version", nullable = false, updatable = false)
-	private int minorVersion;
+  @Column(name = "minor_version", nullable = false, updatable = true)
+  private int minorVersion;
 
-	public MapElementLibrary(final String name, final int majorVersion, final int minorVersion) {
-		super();
-		this.name = name;
-		this.majorVersion = majorVersion;
-		this.minorVersion = minorVersion;
-	}
+  @Column(name = "icon_md5", nullable = false, updatable = true)
+  private String iconMd5;
 
-	public MapElementLibrary() {
-		super();
-	}
+  public MapElementLibrary(final String name, final int majorVersion, final int minorVersion, final String iconMd5) {
+    this.name = name;
+    this.majorVersion = majorVersion;
+    this.minorVersion = minorVersion;
+    this.iconMd5 = iconMd5;
+  }
 
-	public long getId() {
-		return this.id;
-	}
+  public MapElementLibrary() {
+  }
 
-	public void setId(final long id) {
-		this.id = id;
-	}
+  public String getIconMd5() {
+    return iconMd5;
+  }
 
-	public String getName() {
-		return this.name;
-	}
+  public void setIconMd5(final String iconMd5) {
+    this.iconMd5 = iconMd5;
+  }
 
-	public void setName(final String name) {
-		this.name = name;
-	}
+  public long getId() {
+    return id;
+  }
 
-	public int getMajorVersion() {
-		return this.majorVersion;
-	}
+  public void setId(final long id) {
+    this.id = id;
+  }
 
-	public void setMajorVersion(final int majorVersion) {
-		this.majorVersion = majorVersion;
-	}
+  public String getName() {
+    return name;
+  }
 
-	public int getMinorVersion() {
-		return this.minorVersion;
-	}
+  public void setName(final String name) {
+    this.name = name;
+  }
 
-	public void setMinorVersion(final int minorVersion) {
-		this.minorVersion = minorVersion;
-	}
+  public int getMajorVersion() {
+    return majorVersion;
+  }
+
+  public void setMajorVersion(final int majorVersion) {
+    this.majorVersion = majorVersion;
+  }
+
+  public int getMinorVersion() {
+    return minorVersion;
+  }
+
+  public void setMinorVersion(final int minorVersion) {
+    this.minorVersion = minorVersion;
+  }
+
+  public String getIconPath() {
+    // we store the file in a 2 levels folders hierarchy, taking the first and second char of the hash
+    // so the typical path we be something like /b/e/bejdfgjdfgjdfgj.png
+    return String.format("%s/%s/%s.png", iconMd5.substring(0, 1), iconMd5.substring(1, 2), iconMd5);
+  }
 
 }

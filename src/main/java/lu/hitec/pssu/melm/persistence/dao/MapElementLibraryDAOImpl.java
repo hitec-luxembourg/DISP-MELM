@@ -2,6 +2,7 @@ package lu.hitec.pssu.melm.persistence.dao;
 
 import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -25,10 +26,24 @@ public class MapElementLibraryDAOImpl implements MapElementLibraryDAO {
 
   @Override
   @Transactional
-  public MapElementLibrary addMapElementLibrary(final String name, final int majorVersion, final int minorVersion) {
-    final MapElementLibrary mapElementLibrary = new MapElementLibrary(name, majorVersion, minorVersion);
+  public MapElementLibrary addMapElementLibrary(final String name, final int majorVersion, final int minorVersion, final String iconMd5) {
+    final MapElementLibrary mapElementLibrary = new MapElementLibrary(name, majorVersion, minorVersion, iconMd5);
     em.persist(mapElementLibrary);
     return getMapElementLibrary(name, majorVersion, minorVersion);
+  }
+
+  @Override
+  @Transactional
+  public void updateMapElementLibrary(final long id, @Nonnull final String name, final int majorVersion, final int minorVersion, final String iconMd5MaybeNull) {
+    assert name != null : "name is null";
+    final MapElementLibrary foundLibrary = em.find(MapElementLibrary.class, id);
+    foundLibrary.setName(name);
+    foundLibrary.setMajorVersion(majorVersion);
+    foundLibrary.setMinorVersion(minorVersion);
+    if (iconMd5MaybeNull != null) {
+      foundLibrary.setIconMd5(iconMd5MaybeNull);
+    }
+    em.merge(foundLibrary);
   }
 
   @Override
@@ -41,6 +56,11 @@ public class MapElementLibraryDAOImpl implements MapElementLibraryDAO {
     query.setParameter("majorVersion", majorVersion);
     query.setParameter("minorVersion", minorVersion);
     return query.getSingleResult();
+  }
+
+  @Override
+  public MapElementLibrary getMapElementLibrary(final long id) {
+    return em.find(MapElementLibrary.class, id);
   }
 
   @Override

@@ -69,7 +69,12 @@ public class MELMServiceImpl implements MELMService {
 
   @Override
   @Transactional
-  public MapElementLibrary addLibrary(@Nonnull final String libraryName, @Nonnull final String version) throws MELMException {
+  public MapElementLibrary addLibrary(@Nonnull final String libraryName, @Nonnull final String version, @Nonnull final String iconMd5)
+      throws MELMException {
+    assert libraryName != null : "libraryName is null";
+    assert version != null : "version is null";
+    assert iconMd5 != null : "iconMd5 is null";
+
     final int majorVersion = MELMUtils.getMajorVersion(version);
     final int minorVersion = MELMUtils.getMinorVersion(version);
     try {
@@ -80,8 +85,16 @@ public class MELMServiceImpl implements MELMService {
       }
       throw new MELMException(msg);
     } catch (final javax.persistence.NoResultException e) {
-      return mapElementLibraryDAO.addMapElementLibrary(libraryName, majorVersion, minorVersion);
+      return mapElementLibraryDAO.addMapElementLibrary(libraryName, majorVersion, minorVersion, iconMd5);
     }
+  }
+
+  @Override
+  public void updateLibrary(@Nonnull final String id, @Nonnull final String libraryName, @Nonnull final String version,
+      final String iconMd5MaybeNull) throws MELMException {
+    final int majorVersion = MELMUtils.getMajorVersion(version);
+    final int minorVersion = MELMUtils.getMinorVersion(version);
+    mapElementLibraryDAO.updateMapElementLibrary(Long.parseLong(id), libraryName, majorVersion, minorVersion, iconMd5MaybeNull);
   }
 
   @Override
@@ -292,6 +305,15 @@ public class MELMServiceImpl implements MELMService {
     return new File(iconsDirectory, filePath);
   }
 
+  @Override
+  public File getLibraryIconFile(@Nonnull final String libraryName, final int majorVersion, final int minorVersion) {
+    assert libraryName != null : "libraryName is null";
+    final MapElementLibrary library = getLibrary(libraryName, majorVersion, minorVersion);
+    final String filePath = library.getIconPath();
+    final File libraryIconFolder = new File(librariesDirectory, "icons");
+    return new File(libraryIconFolder, filePath);
+  }
+
   @Nonnull
   @Override
   public File getIconsDirectory() {
@@ -373,9 +395,61 @@ public class MELMServiceImpl implements MELMService {
   }
 
   @Override
+  public String addLibraryIcon(@Nonnull final File sourceIconFile) throws MELMException {
+    assert sourceIconFile != null : "sourceIconFile is null";
+    final File libraryIconFolder = new File(librariesDirectory, "icons");
+    try {
+      final String hashForFile = MELMUtils.getHashForFile(sourceIconFile);
+      final MapElementLibrary tempMapElementLibrarHelper = new MapElementLibrary();
+      tempMapElementLibrarHelper.setIconMd5(hashForFile);
+      final String iconPath = tempMapElementLibrarHelper.getIconPath();
+      final File targetIconFile = new File(libraryIconFolder, iconPath);
+      if (targetIconFile.getParentFile().mkdirs()) {
+        if (LOGGER.isDebugEnabled()) {
+          LOGGER.debug("Parent folders were created");
+        }
+      }
+      FileUtils.copyFile(sourceIconFile, targetIconFile);
+      return hashForFile;
+    } catch (final IOException e) {
+      final String msg = "Failed to compute the hash and move the files";
+      throw new MELMException(msg, e);
+    }
+  }
+
+  @Override
+  public String moveImportedLibraryIcon(@Nonnull final XMLSelectionPathParser libraryParserlibraryIconRelativePath,
+      @Nonnull final File libraryFolder) throws MELMException {
+    assert libraryParserlibraryIconRelativePath != null : "libraryParserlibraryIconRelativePath is null";
+    assert libraryFolder != null : "libraryFolder is null";
+    final File sourceIconFile = new File(libraryFolder, libraryParserlibraryIconRelativePath.getLibraryIconRelativePath());
+    final File libraryIconFolder = new File(librariesDirectory, "icons");
+    try {
+      final String hashForFile = MELMUtils.getHashForFile(sourceIconFile);
+      final MapElementLibrary tempMapElementLibrarHelper = new MapElementLibrary();
+      tempMapElementLibrarHelper.setIconMd5(hashForFile);
+      final String iconPath = tempMapElementLibrarHelper.getIconPath();
+      final File targetIconFile = new File(libraryIconFolder, iconPath);
+      if (targetIconFile.getParentFile().mkdirs()) {
+        if (LOGGER.isDebugEnabled()) {
+          LOGGER.debug("Parent folders were created");
+        }
+      }
+      FileUtils.copyFile(sourceIconFile, targetIconFile);
+      return hashForFile;
+    } catch (final IOException e) {
+      final String msg = "Failed to compute the hash and move the files";
+      throw new MELMException(msg, e);
+    }
+  }
+
+  @Override
   @Transactional
   public void moveImportedIcons(@Nonnull final MapElementLibrary mapElementLibrary, @Nonnull final XMLSelectionPathParser libraryParser,
       @Nonnull final File libraryFolder) throws MELMException {
+    assert mapElementLibrary != null : "mapElementLibrary si null";
+    assert libraryParser != null : "libraryParser is null";
+    assert libraryFolder != null : "libraryFolder is null";
     final File largeFileFolder = new File(libraryFolder, IconSize.LARGE.getSize());
     try {
       final Map<String, BaseNodeType> mapOfNodesByUniqueCode = libraryParser.getMapOfNodesByUniqueCode();
