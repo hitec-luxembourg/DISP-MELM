@@ -277,6 +277,14 @@ public class MELMResource {
         Integer.parseInt(libraryIconUpload.getMinorVersion()));
   }
 
+  @GET
+  @Produces(MediaType.APPLICATION_JSON)
+  @Path("/hello/{value}")
+  public Response performHelloWorld(@PathParam("value") final String value) throws MELMException {
+    final String result = String.format("Hello %s", value);
+    return Response.status(Response.Status.OK).entity(result).build();
+  }
+
   @POST
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.TEXT_HTML)
