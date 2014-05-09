@@ -8,11 +8,6 @@
 <title>List Library Icons</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-<script>
-function notYetImplemented(){
-  alert("Not yet implemented");
-}
-</script>
 <link rel="stylesheet" type="text/css" href="${ctx}/css/style.css" />
 </head>
 <body>
@@ -32,8 +27,8 @@ function notYetImplemented(){
         </tr>
         <c:forEach var="icon" items="${it.icons}">
           <tr>
-            <td><a href="${ctx}/rest/libraries/icons/delete/${icon.library.name}/${it.library.majorVersion}/${it.library.minorVersion}/${icon.icon.id}">delete</a></td>
-            <td><a href="javascript:void(0)" onclick="notYetImplemented();">update</a></td>
+            <td><a href="${ctx}/rest/libraries/icons/delete/${icon.library.name}/${it.library.majorVersion}/${it.library.minorVersion}/${icon.id}">delete</a></td>
+            <td><a href="${ctx}/rest/libraries/icons/update/${icon.id}">update</a></td>
             <td align="center">${icon.indexOfIconInLibrary}</td>
             <td align="center">${icon.iconNameInLibrary}</td>
             <td align="center">${icon.iconDescriptionInLibrary}</td>

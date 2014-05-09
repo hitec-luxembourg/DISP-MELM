@@ -20,6 +20,7 @@ final class Params {
   static final String ICON_NAME = "iconName";
   static final String ICON_DESCRIPTION = "iconDescription";
   static final String ICON_ID = "iconId";
+  static final String LIBRARY_ICON_ID = "libraryIconId";
 
   private Params() {
   }

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -20,6 +21,7 @@ import javax.ws.rs.core.Response.Status;
 import lu.hitec.pssu.mapelement.library.xml.parser.XMLSelectionPathParser;
 import lu.hitec.pssu.melm.exceptions.MELMException;
 import lu.hitec.pssu.melm.persistence.entity.MapElementLibrary;
+import lu.hitec.pssu.melm.persistence.entity.MapElementLibraryIcon;
 import lu.hitec.pssu.melm.services.MELMService;
 import lu.hitec.pssu.melm.utils.MELMUtils;
 
@@ -78,11 +80,11 @@ public class MELMResource {
 
   @GET
   @Produces(MediaType.TEXT_HTML)
-  @Path("/libraries/icons/delete/{name}/{majorVersion}/{minorVersion}/{iconId}")
+  @Path("/libraries/icons/delete/{name}/{majorVersion}/{minorVersion}/{libraryIconId}")
   public Response deleteLibraryIcon(@PathParam("name") @Nonnull final String name, @PathParam("majorVersion") final int majorVersion,
-      @PathParam("minorVersion") final int minorVersion, @PathParam("iconId") final long iconId) {
+      @PathParam("minorVersion") final int minorVersion, @PathParam("libraryIconId") final long libraryIconId) {
     assert name != null : "name is null";
-    melmService.deleteLibraryIcon(name, majorVersion, minorVersion, iconId);
+    melmService.deleteLibraryIcon(libraryIconId);
     return getLibraryIcons(name, majorVersion, minorVersion);
   }
 
@@ -197,6 +199,14 @@ public class MELMResource {
     return Response.ok(new Viewable("/updateLibrary", library)).build();
   }
 
+  @GET
+  @Produces(MediaType.TEXT_HTML)
+  @Path("/libraries/icons/update/{libraryIconId}")
+  public Response gotoUpdateLibraryIcon(@PathParam("libraryIconId") final long libraryIconId) {
+    final MapElementLibraryIcon libraryIcon = melmService.getLibraryIcon(libraryIconId);
+    return Response.ok(new Viewable("/updateLibraryIcon", new UpdateLibraryIconsModel(libraryIcon, melmService.listAllIcons()))).build();
+  }
+
   @POST
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.TEXT_HTML)
@@ -252,8 +262,13 @@ public class MELMResource {
       return Response.status(Status.BAD_REQUEST).entity("Invalid request, no multipart content").build();
     }
 
+    final LibraryIconUpload libraryIconUpload = parseLibraryIconUpload();
     try {
-      final LibraryIconUpload libraryIconUpload = parseLibraryIconUpload();
+      if (libraryIconUpload == null) {
+        final String msg = "Failed to parse parameters";
+        LOGGER.warn(msg);
+        return Response.status(Status.BAD_REQUEST).entity(msg).build();
+      }
       melmService.addLibraryIcon(libraryIconUpload.getLibraryName(), libraryIconUpload.getMajorVersion(),
           libraryIconUpload.getMinorVersion(), libraryIconUpload.getIconIndex(), libraryIconUpload.getIconName(),
           libraryIconUpload.getIconDescription(), libraryIconUpload.getIconId());
@@ -261,7 +276,8 @@ public class MELMResource {
       LOGGER.warn("Error in performAddLibrary", e);
       return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
     }
-    return gotoListLibraries();
+    return getLibraryIcons(libraryIconUpload.getLibraryName(), Integer.parseInt(libraryIconUpload.getMajorVersion()),
+        Integer.parseInt(libraryIconUpload.getMinorVersion()));
   }
 
   @POST
@@ -323,6 +339,33 @@ public class MELMResource {
     return gotoListLibraries();
   }
 
+  @POST
+  @Consumes(MediaType.MULTIPART_FORM_DATA)
+  @Produces(MediaType.TEXT_HTML)
+  @Path("/libraries/icons/update")
+  public Response performUpdateLibraryIcon() throws MELMException {
+    if (!ServletFileUpload.isMultipartContent(request)) {
+      LOGGER.warn("Got invalid request, no multipart content");
+      return Response.status(Status.BAD_REQUEST).entity("Invalid request, no multipart content").build();
+    }
+
+    final LibraryIconUpload libraryIconUpload = parseLibraryIconUpload();
+    try {
+      if (libraryIconUpload == null) {
+        final String msg = "Failed to parse parameters";
+        LOGGER.warn(msg);
+        return Response.status(Status.BAD_REQUEST).entity(msg).build();
+      }
+      melmService.updateLibraryIcon(libraryIconUpload.getLibraryIconId(), libraryIconUpload.getIconIndex(),
+          libraryIconUpload.getIconName(), libraryIconUpload.getIconDescription(), libraryIconUpload.getIconId());
+    } catch (final MELMException e) {
+      LOGGER.warn("Error in performAddLibrary", e);
+      return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+    }
+    return getLibraryIcons(libraryIconUpload.getLibraryName(), Integer.parseInt(libraryIconUpload.getMajorVersion()),
+        Integer.parseInt(libraryIconUpload.getMinorVersion()));
+  }
+
   @GET
   @Produces("application/zip")
   @Path("/libraries/zip/{name}-{majorVersion}.{minorVersion}.zip")
@@ -369,6 +412,7 @@ public class MELMResource {
     return new IconUpload(displayName, largeIconFile);
   }
 
+  @CheckReturnValue
   private LibraryIconUpload parseLibraryIconUpload() {
     String name = null;
     String majorVersion = null;
@@ -377,6 +421,7 @@ public class MELMResource {
     String iconName = null;
     String iconDescription = null;
     String iconId = null;
+    String libraryIconId = null;
 
     final ServletFileUpload upload = new ServletFileUpload();
     upload.setFileSizeMax(MAX_FILE_SIZE);
@@ -402,6 +447,8 @@ public class MELMResource {
           iconDescription = Streams.asString(stream);
         } else if (Params.ICON_ID.equalsIgnoreCase(fieldName)) {
           iconId = Streams.asString(stream);
+        } else if (Params.LIBRARY_ICON_ID.equalsIgnoreCase(fieldName)) {
+          libraryIconId = Streams.asString(stream);
         }
       }
     } catch (final IOException e) {
@@ -415,7 +462,7 @@ public class MELMResource {
         || (iconDescription == null) || (iconId == null)) {
       return null;
     }
-    return new LibraryIconUpload(name, majorVersion, minorVersion, iconIndex, iconName, iconDescription, iconId);
+    return new LibraryIconUpload(libraryIconId, name, majorVersion, minorVersion, iconIndex, iconName, iconDescription, iconId);
   }
 
   private LibraryUpload parseLibraryUpload() {
@@ -485,14 +532,16 @@ public class MELMResource {
   private final class LibraryIconUpload {
     private final String iconDescription;
     private final String iconId;
+    private final String libraryIconId;
     private final String iconIndex;
     private final String iconName;
     private final String libraryName;
     private final String majorVersion;
     private final String minorVersion;
 
-    public LibraryIconUpload(final String libraryName, final String majorVersion, final String minorVersion, final String iconIndex,
-        final String iconName, final String iconDescription, final String iconId) {
+    public LibraryIconUpload(final String libraryIconId, final String libraryName, final String majorVersion, final String minorVersion,
+        final String iconIndex, final String iconName, final String iconDescription, final String iconId) {
+      this.libraryIconId = libraryIconId;
       this.libraryName = libraryName;
       this.majorVersion = majorVersion;
       this.minorVersion = minorVersion;
@@ -528,6 +577,10 @@ public class MELMResource {
 
     public String getMinorVersion() {
       return minorVersion;
+    }
+
+    public String getLibraryIconId() {
+      return libraryIconId;
     }
 
   }

@@ -33,7 +33,7 @@ public interface MELMService {
   @Transactional
   void deleteLibrary(@Nonnull final String libraryName, final int majorVersion, final int minorVersion);
 
-  void deleteLibraryIcon(@Nonnull final String libraryName, final int majorVersion, final int minorVersion, final long iconId);
+  void deleteLibraryIcon(final long libraryIconId);
 
   @CheckReturnValue
   File extractImportedLibrary(@Nonnull final File file) throws MELMException;
@@ -51,6 +51,8 @@ public interface MELMService {
   File getLibrariesDirectory();
 
   MapElementLibrary getLibrary(@Nonnull final String libraryName, final int majorVersion, final int minorVersion);
+
+  MapElementLibraryIcon getLibraryIcon(final long libraryIconId);
 
   File getLibraryIconFile(@Nonnull final String libraryName, final int majorVersion, final int minorVersion);
 
@@ -74,6 +76,9 @@ public interface MELMService {
 
   void updateLibrary(@Nonnull final String id, @Nonnull final String libraryName, @Nonnull final String version,
       final String iconMd5MaybeNull) throws MELMException;
+
+  void updateLibraryIcon(@Nonnull final String id, @Nonnull final String iconIndex, @Nonnull final String iconName,
+      @Nonnull final String iconDescription, @Nonnull final String iconId) throws MELMException;
 
   XMLSelectionPathParser validateAndParseImportedLibrary(@Nonnull final String libraryName, @Nonnull final String version)
       throws MELMException;

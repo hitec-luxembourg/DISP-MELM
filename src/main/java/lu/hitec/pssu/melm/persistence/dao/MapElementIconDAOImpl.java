@@ -61,8 +61,8 @@ public class MapElementIconDAOImpl implements MapElementIconDAO {
   @Override
   @Transactional
   public void delete(final long id) {
-    em.remove(getMapElementIcon(id));
-
+    final MapElementIcon icon = em.find(MapElementIcon.class, id);
+    em.remove(icon);
   }
 
   @Override
