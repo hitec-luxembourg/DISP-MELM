@@ -1,55 +1,69 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/xml" prefix="x"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <c:set value="${pageContext.request.contextPath}" var="ctx" scope="request" />
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
 <title>Add library icon</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="${ctx}/css/bootstrap.min.css" />
 <link rel="stylesheet" type="text/css" href="${ctx}/css/style.css" />
+<link rel="stylesheet" type="text/css" href="${ctx}/css/sticky-footer-navbar.css" />
 </head>
 <body>
-  <div id="wrapper">
-    <jsp:include page="header.jsp" />
-    <div id="content">
+  <jsp:include page="header.jsp" />
+  <div class="container">
+    <div class="page-header">
       <h1>Add library icon</h1>
-      <h3>${it.library.name}-${it.library.majorVersion}.${it.library.minorVersion}</h3>
-      <form method="POST" action="${ctx}/rest/libraries/icons/add" enctype='multipart/form-data'>
-        <input name="libraryName" id="libraryName" type="hidden" value="${it.library.name}"/> 
-        <input name="majorVersion" id="majorVersion" type="hidden" value="${it.library.majorVersion}" /> 
-        <input name="minorVersion" id="minorVersion" type="hidden" value="${it.library.minorVersion}" /> 
-        <fieldset>
-          <legend>Add library icon</legend>
-          <table>
-            <tr>
-              <td></td>
-              <td align="center">Name</td>
-              <td>Preview</td>
-            </tr>
-            <c:forEach var="icon" items="${it.icons}">
-              <tr>
-                <td><input type="radio" name="iconId" value="${icon.id}" /></td>
-                <td align="center">${icon.displayName}</td>
-                <td><img src="${ctx}/rest/icons/file/${icon.id}/MEDIUM"></td>
-              </tr>
-            </c:forEach>
-          </table>
-          <label for="iconIndex">Icon index</label> 
-          <input name="iconIndex" id="iconIndex" type="text" /> 
-          <br /> 
-          <label for="iconName">Icon name</label> 
-          <input name="iconName" id="iconName" type="text" />
-          <br /> 
-          <label for="iconDescription">Icon description</label> 
-          <input name="iconDescription" id="iconDescription" type="text" />
-          <br /> 
-          <input value="Save" type="submit" /> 
-        </fieldset>
-      </form>
     </div>
-    <jsp:include page="footer.jsp" />
+    <h3>${it.library.name}-${it.library.majorVersion}.${it.library.minorVersion}</h3>
+    <form method="POST" action="${ctx}/rest/libraries/icons/add" enctype='multipart/form-data' class="form-horizontal" role="form">
+      <input name="libraryName" id="libraryName" type="hidden" value="${it.library.name}" /> <input name="majorVersion" id="majorVersion"
+        type="hidden" value="${it.library.majorVersion}" /> <input name="minorVersion" id="minorVersion" type="hidden"
+        value="${it.library.minorVersion}" />
+      <table class="table table-striped">
+        <tr>
+          <td></td>
+          <td align="left">Name</td>
+          <td align="left">Preview</td>
+        </tr>
+        <c:forEach var="icon" items="${it.icons}">
+          <tr>
+            <td><input type="radio" name="iconId" value="${icon.id}" /></td>
+            <td align="left">${icon.displayName}</td>
+            <td align="left"><img src="${ctx}/rest/icons/file/${icon.id}/LARGE"></td>
+          </tr>
+        </c:forEach>
+      </table>
+      <div class="form-group">
+        <label for="iconIndex" class="col-sm-2 control-label">Icon index</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" id="iconIndex" name="iconIndex" placeholder="iconIndex">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="iconName" class="col-sm-2 control-label">Icon name</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" id="iconName" name="iconName" placeholder="iconName">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="iconDescription" class="col-sm-2 control-label">Icon description</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" id="iconDescription" name="iconDescription" placeholder="iconDescription">
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+          <button type="submit" class="btn btn-default">Submit</button>
+        </div>
+      </div>
+    </form>
   </div>
+  <jsp:include page="footer.jsp" />
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+  <script src="${ctx}/js/bootstrap.min.js"></script>
 </body>
 </html>

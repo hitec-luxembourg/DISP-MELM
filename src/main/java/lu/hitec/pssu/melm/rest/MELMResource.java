@@ -213,6 +213,9 @@ public class MELMResource {
 
     try {
       final IconUpload iconUpload = parseIconUpload();
+      if (iconUpload.getLargeIconFile().length() == 0) {
+        return Response.status(Status.BAD_REQUEST).entity("Icon file is invalid").build();
+      }
       melmService.addIconAndFiles(iconUpload.getDisplayName(), iconUpload.getLargeIconFile());
     } catch (final Exception e) {
       LOGGER.warn("Error in performAddIcon", e);
