@@ -12,8 +12,6 @@
 
   <!-- =================================== === SPRING =================================== -->
 
-  <!-- Start the Spring listener that loads the application context when the Web app starts up. It assumes the context is named WEB-INF/applicationContext.xml 
-    unless you set a context param called contextConfigLocation to override it. -->
   <listener>
     <description>Starts Spring listener to load app context</description>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
