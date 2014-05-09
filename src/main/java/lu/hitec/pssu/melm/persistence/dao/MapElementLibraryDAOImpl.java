@@ -18,13 +18,6 @@ public class MapElementLibraryDAOImpl implements MapElementLibraryDAO {
   private EntityManager em;
 
   @Override
-  public List<MapElementLibrary> listAllLibraries() {
-    final TypedQuery<MapElementLibrary> query = em.createQuery("SELECT mel FROM MapElementLibrary mel ORDER BY mel.id",
-        MapElementLibrary.class);
-    return query.getResultList();
-  }
-
-  @Override
   @Transactional
   public MapElementLibrary addMapElementLibrary(final String name, final int majorVersion, final int minorVersion, final String iconMd5) {
     final MapElementLibrary mapElementLibrary = new MapElementLibrary(name, majorVersion, minorVersion, iconMd5);
@@ -34,16 +27,25 @@ public class MapElementLibraryDAOImpl implements MapElementLibraryDAO {
 
   @Override
   @Transactional
-  public void updateMapElementLibrary(final long id, @Nonnull final String name, final int majorVersion, final int minorVersion, final String iconMd5MaybeNull) {
-    assert name != null : "name is null";
-    final MapElementLibrary foundLibrary = em.find(MapElementLibrary.class, id);
-    foundLibrary.setName(name);
-    foundLibrary.setMajorVersion(majorVersion);
-    foundLibrary.setMinorVersion(minorVersion);
-    if (iconMd5MaybeNull != null) {
-      foundLibrary.setIconMd5(iconMd5MaybeNull);
-    }
-    em.merge(foundLibrary);
+  public void deleteMapElementLibrary(final long id) {
+    final MapElementLibrary library = em.find(MapElementLibrary.class, id);
+    em.remove(library);
+  }
+
+  @Override
+  @Transactional
+  public void deleteMapElementLibraryForUnitTest(final String name, final int majorVersion, final int minorVersion) {
+    final Query query = em
+        .createQuery("DELETE FROM MapElementLibrary mel WHERE mel.name = :name AND mel.majorVersion = :majorVersion AND mel.minorVersion = :minorVersion");
+    query.setParameter("name", name);
+    query.setParameter("majorVersion", majorVersion);
+    query.setParameter("minorVersion", minorVersion);
+    query.executeUpdate();
+  }
+
+  @Override
+  public MapElementLibrary getMapElementLibrary(final long id) {
+    return em.find(MapElementLibrary.class, id);
   }
 
   @Override
@@ -59,18 +61,24 @@ public class MapElementLibraryDAOImpl implements MapElementLibraryDAO {
   }
 
   @Override
-  public MapElementLibrary getMapElementLibrary(final long id) {
-    return em.find(MapElementLibrary.class, id);
+  public List<MapElementLibrary> listAllLibraries() {
+    final TypedQuery<MapElementLibrary> query = em.createQuery("SELECT mel FROM MapElementLibrary mel ORDER BY mel.id",
+        MapElementLibrary.class);
+    return query.getResultList();
   }
 
   @Override
   @Transactional
-  public void deleteMapElementLibrary(final String name, final int majorVersion, final int minorVersion) {
-    final Query query = em
-        .createQuery("DELETE FROM MapElementLibrary mel WHERE mel.name = :name AND mel.majorVersion = :majorVersion AND mel.minorVersion = :minorVersion");
-    query.setParameter("name", name);
-    query.setParameter("majorVersion", majorVersion);
-    query.setParameter("minorVersion", minorVersion);
-    query.executeUpdate();
+  public void updateMapElementLibrary(final long id, @Nonnull final String name, final int majorVersion, final int minorVersion,
+      final String iconMd5MaybeNull) {
+    assert name != null : "name is null";
+    final MapElementLibrary foundLibrary = em.find(MapElementLibrary.class, id);
+    foundLibrary.setName(name);
+    foundLibrary.setMajorVersion(majorVersion);
+    foundLibrary.setMinorVersion(minorVersion);
+    if (iconMd5MaybeNull != null) {
+      foundLibrary.setIconMd5(iconMd5MaybeNull);
+    }
+    em.merge(foundLibrary);
   }
 }

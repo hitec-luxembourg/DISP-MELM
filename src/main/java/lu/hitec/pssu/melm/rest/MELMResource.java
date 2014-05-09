@@ -70,11 +70,9 @@ public class MELMResource {
 
   @GET
   @Produces(MediaType.TEXT_HTML)
-  @Path("/libraries/delete/{name}/{majorVersion}/{minorVersion}")
-  public Response deleteLibrary(@PathParam("name") @Nonnull final String name, @PathParam("majorVersion") final int majorVersion,
-      @PathParam("minorVersion") final int minorVersion) {
-    assert name != null : "name is null";
-    melmService.deleteLibrary(name, majorVersion, minorVersion);
+  @Path("/libraries/delete/{id}")
+  public Response deleteLibrary(@PathParam("id") final long id) {
+    melmService.deleteLibrary(id);
     return gotoListLibraries();
   }
 
@@ -115,11 +113,9 @@ public class MELMResource {
    */
   @GET
   @Produces("image/*")
-  @Path("/libraries/icon/file/{name}/{majorVersion}/{minorVersion}")
-  public Response getLibraryIconFile(@PathParam("name") @Nonnull final String name, @PathParam("majorVersion") final int majorVersion,
-      @PathParam("minorVersion") final int minorVersion) {
-    assert name != null : "name is null";
-    final File file = melmService.getLibraryIconFile(name, majorVersion, minorVersion);
+  @Path("/libraries/icon/file/{id}")
+  public Response getLibraryIconFile(@PathParam("id") final long id) {
+    final File file = melmService.getLibraryIconFile(id);
     if (!file.exists()) {
       return Response.status(Status.NOT_FOUND).build();
     }
@@ -191,11 +187,9 @@ public class MELMResource {
 
   @GET
   @Produces(MediaType.TEXT_HTML)
-  @Path("/libraries/update/{name}/{majorVersion}/{minorVersion}")
-  public Response gotoUpdateLibrary(@PathParam("name") @Nonnull final String name, @PathParam("majorVersion") final int majorVersion,
-      @PathParam("minorVersion") final int minorVersion) {
-    assert name != null : "name is null";
-    final MapElementLibrary library = melmService.getLibrary(name, majorVersion, minorVersion);
+  @Path("/libraries/update/{id}")
+  public Response gotoUpdateLibrary(@PathParam("id") final long id) {
+    final MapElementLibrary library = melmService.getLibrary(id);
     return Response.ok(new Viewable("/updateLibrary", library)).build();
   }
 
@@ -269,9 +263,9 @@ public class MELMResource {
         LOGGER.warn(msg);
         return Response.status(Status.BAD_REQUEST).entity(msg).build();
       }
-      melmService.addLibraryIcon(libraryIconUpload.getLibraryName(), libraryIconUpload.getMajorVersion(),
-          libraryIconUpload.getMinorVersion(), libraryIconUpload.getIconIndex(), libraryIconUpload.getIconName(),
-          libraryIconUpload.getIconDescription(), libraryIconUpload.getIconId());
+      melmService.addLibraryIcon(libraryIconUpload.getLibraryName(), Integer.parseInt(libraryIconUpload.getMajorVersion()),
+          Integer.parseInt(libraryIconUpload.getMinorVersion()), Integer.parseInt(libraryIconUpload.getIconIndex()),
+          libraryIconUpload.getIconName(), libraryIconUpload.getIconDescription(), Long.parseLong(libraryIconUpload.getIconId()));
     } catch (final MELMException e) {
       LOGGER.warn("Error in performAddLibrary", e);
       return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
@@ -328,9 +322,10 @@ public class MELMResource {
       final LibraryUpload libraryUpload = parseLibraryUpload();
       if (libraryUpload.getIconFile().length() != 0) {
         final String hashForFile = melmService.addLibraryIcon(libraryUpload.getIconFile());
-        melmService.updateLibrary(libraryUpload.getId(), libraryUpload.getLibraryName(), libraryUpload.getVersion(), hashForFile);
+        melmService.updateLibrary(Long.parseLong(libraryUpload.getId()), libraryUpload.getLibraryName(), libraryUpload.getVersion(),
+            hashForFile);
       } else {
-        melmService.updateLibrary(libraryUpload.getId(), libraryUpload.getLibraryName(), libraryUpload.getVersion(), null);
+        melmService.updateLibrary(Long.parseLong(libraryUpload.getId()), libraryUpload.getLibraryName(), libraryUpload.getVersion(), null);
       }
     } catch (final MELMException e) {
       LOGGER.warn("Error in performUpdateLibrary", e);
@@ -356,8 +351,9 @@ public class MELMResource {
         LOGGER.warn(msg);
         return Response.status(Status.BAD_REQUEST).entity(msg).build();
       }
-      melmService.updateLibraryIcon(libraryIconUpload.getLibraryIconId(), libraryIconUpload.getIconIndex(),
-          libraryIconUpload.getIconName(), libraryIconUpload.getIconDescription(), libraryIconUpload.getIconId());
+      melmService.updateLibraryIcon(Long.parseLong(libraryIconUpload.getLibraryIconId()),
+          Integer.parseInt(libraryIconUpload.getIconIndex()), libraryIconUpload.getIconName(), libraryIconUpload.getIconDescription(),
+          Long.parseLong(libraryIconUpload.getIconId()));
     } catch (final MELMException e) {
       LOGGER.warn("Error in performAddLibrary", e);
       return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
@@ -532,9 +528,9 @@ public class MELMResource {
   private final class LibraryIconUpload {
     private final String iconDescription;
     private final String iconId;
-    private final String libraryIconId;
     private final String iconIndex;
     private final String iconName;
+    private final String libraryIconId;
     private final String libraryName;
     private final String majorVersion;
     private final String minorVersion;
@@ -567,6 +563,10 @@ public class MELMResource {
       return iconName;
     }
 
+    public String getLibraryIconId() {
+      return libraryIconId;
+    }
+
     public String getLibraryName() {
       return libraryName;
     }
@@ -577,10 +577,6 @@ public class MELMResource {
 
     public String getMinorVersion() {
       return minorVersion;
-    }
-
-    public String getLibraryIconId() {
-      return libraryIconId;
     }
 
   }

@@ -6,18 +6,18 @@ import lu.hitec.pssu.melm.persistence.entity.MapElementIcon;
 
 public interface MapElementIconDAO {
 
-	List<MapElementIcon> listAllIcons();
+  MapElementIcon addMapElementIcon(final String hash, final long size, final String displayName);
 
-	MapElementIcon addMapElementIcon(final String hash, final long size, final String displayName);
+  void delete(long id);
 
-	MapElementIcon getMapElementIcon(final String hash, final long size);
+  void deleteMapElementIconForUnitTest(final String hash, final long size);
 
-	void deleteMapElementIcon(final String hash, final long size);
+  boolean exist(String hash, long size);
 
-	MapElementIcon getMapElementIcon(long id);
+  MapElementIcon getMapElementIcon(long id);
 
-	void delete(long id);
+  MapElementIcon getMapElementIcon(final String hash, final long size);
 
-	boolean exist(String hash, long size);
+  List<MapElementIcon> listAllIcons();
 
 }

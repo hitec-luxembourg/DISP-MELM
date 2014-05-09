@@ -13,16 +13,16 @@ public interface MapElementLibraryIconDAO {
   void addIconToLibrary(final MapElementLibrary library, final MapElementIcon icon, final int indexOfIconInLibrary,
       final String iconNameInLibrary, final String iconDescriptionInLibrary);
   
-  void updateLibraryIcon(final long libraryIconId, final MapElementIcon icon, final int indexOfIconInLibrary,
+  void updateLibraryIcon(final long id, final MapElementIcon icon, final int indexOfIconInLibrary,
       final String iconNameInLibrary, final String iconDescriptionInLibrary);
 
   //void removeIconFromLibrary(final MapElementLibrary library, final MapElementIcon icon);
   
-  void removeLibraryIcon(final long libraryIconId);
+  void deleteLibraryIcon(final long id);
 
   List<MapElementLibraryIcon> getIconsInLibrary(final MapElementLibrary library);
   
-  MapElementLibraryIcon getLibraryIcon(final long libraryIconId);
+  MapElementLibraryIcon getLibraryIcon(final long id);
   
   boolean checkIconInLibrary(@Nonnull final MapElementIcon icon);
   

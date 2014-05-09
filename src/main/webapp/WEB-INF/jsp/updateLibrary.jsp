@@ -27,7 +27,7 @@
             <input name="version" id="version" type="text" value="${it.majorVersion}.${it.minorVersion}"/>
             <br /> 
             <label>Current Icon</label> 
-            <img src="${ctx}/rest/libraries/icon/file/${it.name}/${it.majorVersion}/${it.minorVersion}">
+            <img src="${ctx}/rest/libraries/icon/file/${it.id}">
             <br /> 
             <label for="libraryIconFile">New Icon</label> 
             <input name="libraryIconFile" id="libraryIconFile" type='file' size='20' maxlength='1000000' accept='image/png' />

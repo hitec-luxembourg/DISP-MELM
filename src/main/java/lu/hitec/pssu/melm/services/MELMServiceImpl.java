@@ -166,16 +166,15 @@ public class MELMServiceImpl implements MELMService {
   }
 
   @Override
-  public void addLibraryIcon(@Nonnull final String libraryName, @Nonnull final String majorVersion, @Nonnull final String minorVersion,
-      @Nonnull final String iconIndex, @Nonnull final String iconName, @Nonnull final String iconDescription, @Nonnull final String iconId)
-      throws MELMException {
-    final MapElementIcon mapElementIcon = mapElementIconDAO.getMapElementIcon(Long.parseLong(iconId));
-    final MapElementLibrary library = getLibrary(libraryName, Integer.parseInt(majorVersion), Integer.parseInt(minorVersion));
+  public void addLibraryIcon(@Nonnull final String libraryName, final int majorVersion, final int minorVersion, final int iconIndex,
+      @Nonnull final String iconName, @Nonnull final String iconDescription, final long iconId) throws MELMException {
+    final MapElementIcon mapElementIcon = mapElementIconDAO.getMapElementIcon(iconId);
+    final MapElementLibrary library = getLibrary(libraryName, majorVersion, minorVersion);
     if (mapElementLibraryIconDAO.checkIconInLibrary(library, mapElementIcon)) {
       final String msg = String.format("Icon %s is already linked to this library", mapElementIcon.getDisplayName());
       throw new MELMException(msg);
     }
-    mapElementLibraryIconDAO.addIconToLibrary(library, mapElementIcon, Integer.parseInt(iconIndex), iconName, iconDescription);
+    mapElementLibraryIconDAO.addIconToLibrary(library, mapElementIcon, iconIndex, iconName, iconDescription);
   }
 
   /**
@@ -208,19 +207,19 @@ public class MELMServiceImpl implements MELMService {
 
   @Override
   @Transactional
-  public void deleteLibrary(@Nonnull final String libraryName, final int majorVersion, final int minorVersion) {
-    final MapElementLibrary library = mapElementLibraryDAO.getMapElementLibrary(libraryName, majorVersion, minorVersion);
+  public void deleteLibrary(final long id) {
+    final MapElementLibrary library = mapElementLibraryDAO.getMapElementLibrary(id);
     final List<MapElementLibraryIcon> libraryIcons = mapElementLibraryIconDAO.getIconsInLibrary(library);
     for (final MapElementLibraryIcon libraryIcon : libraryIcons) {
-      mapElementLibraryIconDAO.removeLibraryIcon(libraryIcon.getId());
+      mapElementLibraryIconDAO.deleteLibraryIcon(libraryIcon.getId());
     }
-    mapElementLibraryDAO.deleteMapElementLibrary(libraryName, majorVersion, minorVersion);
+    mapElementLibraryDAO.deleteMapElementLibrary(id);
   }
 
   @Override
   @Transactional
-  public void deleteLibraryIcon(final long libraryIconId) {
-    mapElementLibraryIconDAO.removeLibraryIcon(libraryIconId);
+  public void deleteLibraryIcon(final long id) {
+    mapElementLibraryIconDAO.deleteLibraryIcon(id);
   }
 
   @CheckReturnValue
@@ -343,23 +342,33 @@ public class MELMServiceImpl implements MELMService {
   }
 
   @Override
+  public MapElementLibrary getLibrary(@Nonnull final long id) {
+    return mapElementLibraryDAO.getMapElementLibrary(id);
+  }
+
+  @Override
   public MapElementLibrary getLibrary(@Nonnull final String libraryName, final int majorVersion, final int minorVersion) {
     return mapElementLibraryDAO.getMapElementLibrary(libraryName, majorVersion, minorVersion);
   }
 
   @Override
-  public MapElementLibraryIcon getLibraryIcon(final long libraryIconId) {
-    return mapElementLibraryIconDAO.getLibraryIcon(libraryIconId);
+  public MapElementLibraryIcon getLibraryIcon(final long id) {
+    return mapElementLibraryIconDAO.getLibraryIcon(id);
   }
 
   @Override
-  public File getLibraryIconFile(@Nonnull final String libraryName, final int majorVersion, final int minorVersion) {
-    assert libraryName != null : "libraryName is null";
-    final MapElementLibrary library = getLibrary(libraryName, majorVersion, minorVersion);
+  public File getLibraryIconFile(final long id) {
+    final MapElementLibrary library = getLibrary(id);
     final String filePath = library.getIconPath();
     final File libraryIconFolder = new File(librariesDirectory, "icons");
     return new File(libraryIconFolder, filePath);
   }
+
+  // @Override
+  // public List<MapElementLibraryIcon> getLibraryIcons(final long id) {
+  // final MapElementLibrary library = mapElementLibraryDAO.getMapElementLibrary(id);
+  // return mapElementLibraryIconDAO.getIconsInLibrary(library);
+  // }
 
   @Override
   public List<MapElementLibraryIcon> getLibraryIcons(@Nonnull final String libraryName, final int majorVersion, final int minorVersion) {
@@ -615,18 +624,25 @@ public class MELMServiceImpl implements MELMService {
   }
 
   @Override
-  public void updateLibrary(@Nonnull final String id, @Nonnull final String libraryName, @Nonnull final String version,
-      final String iconMd5MaybeNull) throws MELMException {
+  public void updateLibrary(final long id, @Nonnull final String libraryName, @Nonnull final String version, final String iconMd5MaybeNull)
+      throws MELMException {
     final int majorVersion = MELMUtils.getMajorVersion(version);
     final int minorVersion = MELMUtils.getMinorVersion(version);
-    mapElementLibraryDAO.updateMapElementLibrary(Long.parseLong(id), libraryName, majorVersion, minorVersion, iconMd5MaybeNull);
+    mapElementLibraryDAO.updateMapElementLibrary(id, libraryName, majorVersion, minorVersion, iconMd5MaybeNull);
   }
 
   @Override
-  public void updateLibraryIcon(@Nonnull final String id, @Nonnull final String iconIndex, @Nonnull final String iconName,
-      @Nonnull final String iconDescription, @Nonnull final String iconId) throws MELMException {
-    final MapElementIcon mapElementIcon = mapElementIconDAO.getMapElementIcon(Long.parseLong(iconId));
-    mapElementLibraryIconDAO.updateLibraryIcon(Long.parseLong(id), mapElementIcon, Integer.parseInt(iconIndex), iconName, iconDescription);
+  public void updateLibraryIcon(final long id, final int iconIndex, @Nonnull final String iconName, @Nonnull final String iconDescription,
+      final long iconId) throws MELMException {
+    final MapElementIcon newIcon = mapElementIconDAO.getMapElementIcon(iconId);
+    final MapElementLibraryIcon libraryIcon = mapElementLibraryIconDAO.getLibraryIcon(id);
+    final MapElementIcon oldIcon = libraryIcon.getIcon();
+    if ((newIcon.getId() == oldIcon.getId()) || !mapElementLibraryIconDAO.checkIconInLibrary(libraryIcon.getLibrary(), newIcon)) {
+      mapElementLibraryIconDAO.updateLibraryIcon(id, newIcon, iconIndex, iconName, iconDescription);
+    } else {
+      final String msg = String.format("Icon %s is already linked to this library", newIcon.getDisplayName());
+      throw new MELMException(msg);
+    }
   }
 
   @Override

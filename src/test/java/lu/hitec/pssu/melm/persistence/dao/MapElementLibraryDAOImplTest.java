@@ -29,7 +29,7 @@ public class MapElementLibraryDAOImplTest {
     assertEquals(1, mel.getMajorVersion());
     assertEquals(0, mel.getMinorVersion());
 
-    mapElementLibraryDAO.deleteMapElementLibrary("emergency.lu", 1, 0);
+    mapElementLibraryDAO.deleteMapElementLibrary(mel.getId());
 
     assertEquals(0, mapElementLibraryDAO.listAllLibraries().size());
   }

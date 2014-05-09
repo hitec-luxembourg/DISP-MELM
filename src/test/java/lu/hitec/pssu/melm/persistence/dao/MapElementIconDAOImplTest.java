@@ -18,24 +18,24 @@ public class MapElementIconDAOImplTest {
 	private MapElementIconDAO mapElementIconDAO;
 
 	@Test
-	public void test1() {
-		assertEquals(0, this.mapElementIconDAO.listAllIcons().size());
-		this.mapElementIconDAO.addMapElementIcon("14522dgdg22544dfgdfg225", 1264, "myDisplayName");
-		assertEquals(1, this.mapElementIconDAO.listAllIcons().size());
+	public void testDAO() {
+		assertEquals(0, mapElementIconDAO.listAllIcons().size());
+		mapElementIconDAO.addMapElementIcon("14522dgdg22544dfgdfg225", 1264, "myDisplayName");
+		assertEquals(1, mapElementIconDAO.listAllIcons().size());
 
-		assertTrue(this.mapElementIconDAO.exist("14522dgdg22544dfgdfg225", 1264));
-		assertFalse(this.mapElementIconDAO.exist("14522dgdg22544dfgdfg225", 1263));
-		assertFalse(this.mapElementIconDAO.exist("jdjdjdfjdfjdfg", 1264));
-		assertFalse(this.mapElementIconDAO.exist("jdjdjdfjdfjdfg", 1263));
+		assertTrue(mapElementIconDAO.exist("14522dgdg22544dfgdfg225", 1264));
+		assertFalse(mapElementIconDAO.exist("14522dgdg22544dfgdfg225", 1263));
+		assertFalse(mapElementIconDAO.exist("jdjdjdfjdfjdfg", 1264));
+		assertFalse(mapElementIconDAO.exist("jdjdjdfjdfjdfg", 1263));
 
-		final long theId = this.mapElementIconDAO.listAllIcons().get(0).getId();
-		this.mapElementIconDAO.delete(theId);
+		final long theId = mapElementIconDAO.listAllIcons().get(0).getId();
+		mapElementIconDAO.delete(theId);
 
-		assertEquals(0, this.mapElementIconDAO.listAllIcons().size());
-		assertFalse(this.mapElementIconDAO.exist("14522dgdg22544dfgdfg225", 1264));
-		assertFalse(this.mapElementIconDAO.exist("14522dgdg22544dfgdfg225", 1263));
-		assertFalse(this.mapElementIconDAO.exist("jdjdjdfjdfjdfg", 1264));
-		assertFalse(this.mapElementIconDAO.exist("jdjdjdfjdfjdfg", 1263));
+		assertEquals(0, mapElementIconDAO.listAllIcons().size());
+		assertFalse(mapElementIconDAO.exist("14522dgdg22544dfgdfg225", 1264));
+		assertFalse(mapElementIconDAO.exist("14522dgdg22544dfgdfg225", 1263));
+		assertFalse(mapElementIconDAO.exist("jdjdjdfjdfjdfg", 1264));
+		assertFalse(mapElementIconDAO.exist("jdjdjdfjdfjdfg", 1263));
 	}
 
 }

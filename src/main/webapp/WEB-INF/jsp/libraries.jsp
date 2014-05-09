@@ -27,13 +27,13 @@
         </tr>
         <c:forEach var="library" items="${it.libraries}">
           <tr>
-            <td><a href="${ctx}/rest/libraries/delete/${library.name}/${library.majorVersion}/${library.minorVersion}">delete</a></td>
+            <td><a href="${ctx}/rest/libraries/delete/${library.id}">delete</a></td>
             <td><a href="${ctx}/rest/libraries/icons/${library.name}/${library.majorVersion}/${library.minorVersion}">icons</a></td>
-            <td><a href="${ctx}/rest/libraries/update/${library.name}/${library.majorVersion}/${library.minorVersion}">update</a></td>
+            <td><a href="${ctx}/rest/libraries/update/${library.id}">update</a></td>
             <td><a href="${ctx}/rest/libraries/zip/${library.name}-${library.majorVersion}.${library.minorVersion}.zip">zip</a></td>
             <td align="center">${library.name}</td>
             <td align="center">${library.majorVersion}.${library.minorVersion}</td>
-            <td><img src="${ctx}/rest/libraries/icon/file/${library.name}/${library.majorVersion}/${library.minorVersion}"></td>
+            <td><img src="${ctx}/rest/libraries/icon/file/${library.id}"></td>
           </tr>
         </c:forEach>
       </table>

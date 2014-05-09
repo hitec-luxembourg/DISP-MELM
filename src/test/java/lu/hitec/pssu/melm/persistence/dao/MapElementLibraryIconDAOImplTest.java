@@ -55,7 +55,7 @@ public class MapElementLibraryIconDAOImplTest {
 		final List<MapElementLibraryIcon> iconsInLibrary = mapElementLibraryIconDAO.getIconsInLibrary(library);
 		assertEquals(1, iconsInLibrary.size());
 
-		mapElementLibraryIconDAO.removeLibraryIcon(iconsInLibrary.get(0).getId());
+		mapElementLibraryIconDAO.deleteLibraryIcon(iconsInLibrary.get(0).getId());
 
 		assertEquals(0, mapElementLibraryIconDAO.getIconsInLibrary(library).size());
 

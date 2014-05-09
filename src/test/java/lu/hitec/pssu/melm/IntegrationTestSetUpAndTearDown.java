@@ -19,7 +19,7 @@ public class IntegrationTestSetUpAndTearDown {
   }
 
   public void tearDown() {
-    mapElementLibraryDAO.deleteMapElementLibrary("IntegrationTest", 1, 0);
-    mapElementIconDAO.deleteMapElementIcon("IntegrationTestHash", 100);
+    mapElementLibraryDAO.deleteMapElementLibraryForUnitTest("IntegrationTest", 1, 0);
+    mapElementIconDAO.deleteMapElementIconForUnitTest("IntegrationTestHash", 100);
   }
 }

@@ -68,25 +68,25 @@ public class MapElementLibraryIconDAOImpl implements MapElementLibraryIconDAO {
   }
 
   @Override
-  public MapElementLibraryIcon getLibraryIcon(final long libraryIconId) {
-    return em.find(MapElementLibraryIcon.class, libraryIconId);
+  public MapElementLibraryIcon getLibraryIcon(final long id) {
+    return em.find(MapElementLibraryIcon.class, id);
   }
 
   @Override
   @Transactional
-  public void removeLibraryIcon(final long libraryIconId) {
-    final MapElementLibraryIcon libraryIcon = em.find(MapElementLibraryIcon.class, libraryIconId);
+  public void deleteLibraryIcon(final long id) {
+    final MapElementLibraryIcon libraryIcon = em.find(MapElementLibraryIcon.class, id);
     em.remove(libraryIcon);
   }
 
   @Override
   @Transactional
-  public void updateLibraryIcon(final long libraryIconId, @Nonnull final MapElementIcon icon, final int indexOfIconInLibrary,
+  public void updateLibraryIcon(final long id, @Nonnull final MapElementIcon icon, final int indexOfIconInLibrary,
       @Nonnull final String iconNameInLibrary, @Nonnull final String iconDescriptionInLibrary) {
     assert icon != null : "icon is null";
     assert iconNameInLibrary != null : "iconNameInLibrary is null";
     assert iconDescriptionInLibrary != null : "iconDescriptionInLibrary is null";
-    final MapElementLibraryIcon libraryIcon = em.find(MapElementLibraryIcon.class, libraryIconId);
+    final MapElementLibraryIcon libraryIcon = em.find(MapElementLibraryIcon.class, id);
     libraryIcon.setIcon(icon);
     libraryIcon.setIndexOfIconInLibrary(indexOfIconInLibrary);
     libraryIcon.setIconNameInLibrary(iconNameInLibrary);
