@@ -8,6 +8,7 @@ import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -55,17 +56,16 @@ public class MELMResource {
   @Context
   private HttpServletRequest request;
 
-  @GET
-  @Produces(MediaType.TEXT_HTML)
-  @Path("/icons/delete/{id}")
-  public Response deleteIcon(@PathParam("id") final long id) throws MELMException {
+  @POST
+  @Path("/icons/delete")
+  public Response deleteIcon(@FormParam("id") final long id) throws MELMException {
     try {
       melmService.deleteIconAndFiles(id);
+      return Response.ok().build();
     } catch (final MELMException e) {
       LOGGER.warn("Error in deleteIcon", e);
       return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
     }
-    return gotoListIcons();
   }
 
   @GET
@@ -170,6 +170,13 @@ public class MELMResource {
   @Path("/icons")
   public Response gotoListIcons() {
     return Response.ok(new Viewable("/icons", new IconsModel(melmService.listAllIcons()))).build();
+  }
+
+  @GET
+  @Produces(MediaType.APPLICATION_JSON)
+  @Path("/icons")
+  public Response getListIcons() {
+    return Response.ok(melmService.listAllIcons()).build();
   }
 
   @GET

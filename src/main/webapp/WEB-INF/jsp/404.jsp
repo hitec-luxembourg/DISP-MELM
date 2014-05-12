@@ -8,9 +8,7 @@
 <title>404 page</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" type="text/css" href="${ctx}/css/bootstrap.min.css" />
-<link rel="stylesheet" type="text/css" href="${ctx}/css/style.css" />
-<link rel="stylesheet" type="text/css" href="${ctx}/css/sticky-footer-navbar.css" />
+<jsp:include page="css-includes.jsp" />
 </head>
 <body>
   <div class="container">

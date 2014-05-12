@@ -8,9 +8,21 @@
 <title>Import library</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" type="text/css" href="${ctx}/css/bootstrap.min.css" />
-<link rel="stylesheet" type="text/css" href="${ctx}/css/style.css" />
-<link rel="stylesheet" type="text/css" href="${ctx}/css/sticky-footer-navbar.css" />
+<jsp:include page="css-includes.jsp" />
+<jsp:include page="js-includes.jsp" />
+<script type="text/javascript">
+  $(document).ready(function() {
+    $("#libraryFile").on("change", function() {
+      var fileName = $("#libraryFile").val().split('\\').pop();
+      var split = fileName.split("-");
+      var libraryName = split[0];
+      var secondPart = split[1];
+      var version = secondPart.substr(0, secondPart.length - 4);
+      $('#libraryName').val(libraryName);
+      $('#version').val(version);
+    });
+  });
+</script>
 </head>
 <body>
   <jsp:include page="header.jsp" />
@@ -45,20 +57,5 @@
     </form>
   </div>
   <jsp:include page="footer.jsp" />
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-  <script src="${ctx}/js/bootstrap.min.js"></script>
-  <script>
-      $(document).ready(function() {
-        $("#libraryFile").on("change", function() {
-          var fileName = $("#libraryFile").val().split('\\').pop();
-          var split = fileName.split("-");
-          var libraryName = split[0];
-          var secondPart = split[1];
-          var version = secondPart.substr(0, secondPart.length - 4);
-          $('#libraryName').val(libraryName);
-          $('#version').val(version);
-        });
-      });
-    </script>
 </body>
 </html>

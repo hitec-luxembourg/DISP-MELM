@@ -8,9 +8,8 @@
 <title>Update library</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" type="text/css" href="${ctx}/css/bootstrap.min.css" />
-<link rel="stylesheet" type="text/css" href="${ctx}/css/style.css" />
-<link rel="stylesheet" type="text/css" href="${ctx}/css/sticky-footer-navbar.css" />
+<jsp:include page="css-includes.jsp" />
+<jsp:include page="js-includes.jsp" />
 </head>
 <body>
   <jsp:include page="header.jsp" />
@@ -53,7 +52,5 @@
     </form>
   </div>
   <jsp:include page="footer.jsp" />
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-  <script src="${ctx}/js/bootstrap.min.js"></script>
 </body>
 </html>
