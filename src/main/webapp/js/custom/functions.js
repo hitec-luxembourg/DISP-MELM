@@ -5,3 +5,9 @@ function encodeParams(data) {
   }
   return result.join("&");
 };
+
+function getRESTParameter(sep, suffix) {
+  var partialString = window.location.href.split(sep)[1];
+  var id = partialString.split(suffix)[0];
+  return id;
+}

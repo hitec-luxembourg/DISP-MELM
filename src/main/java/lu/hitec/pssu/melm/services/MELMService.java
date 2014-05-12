@@ -19,9 +19,8 @@ public interface MELMService {
 
   String addLibraryIcon(@Nonnull final File sourceIconFile) throws MELMException;
 
-  void addLibraryIcon(@Nonnull final String libraryName, final int majorVersion, final int minorVersion,
-      final int iconIndex, @Nonnull final String iconName, @Nonnull final String iconDescription, final long iconId)
-      throws MELMException;
+  void addLibraryIcon(final long id, final int iconIndex, @Nonnull final String iconName, @Nonnull final String iconDescription,
+      final long iconId) throws MELMException;
 
   String buildArchiveFilename(@Nonnull final String libraryName, @Nonnull final String version);
 
@@ -51,7 +50,7 @@ public interface MELMService {
 
   File getLibraryIconFile(final long id);
 
-//  List<MapElementLibraryIcon> getLibraryIcons(final long id);
+  List<MapElementLibraryIcon> getLibraryIcons(final long id);
 
   List<MapElementLibraryIcon> getLibraryIcons(@Nonnull final String libraryName, final int majorVersion, final int minorVersion);
 
@@ -71,11 +70,11 @@ public interface MELMService {
 
   File prepareZipFile(@Nonnull final String name, final int majorVersion, final int minorVersion) throws MELMException;
 
-  void updateLibrary(final long id, @Nonnull final String libraryName, @Nonnull final String version,
-      final String iconMd5MaybeNull) throws MELMException;
+  void updateLibrary(final long id, @Nonnull final String libraryName, @Nonnull final String version, final String iconMd5MaybeNull)
+      throws MELMException;
 
-  void updateLibraryIcon(final long id, final int iconIndex, @Nonnull final String iconName,
-      @Nonnull final String iconDescription, final long iconId) throws MELMException;
+  void updateLibraryIcon(final long id, final int iconIndex, @Nonnull final String iconName, @Nonnull final String iconDescription,
+      final long iconId) throws MELMException;
 
   XMLSelectionPathParser validateAndParseImportedLibrary(@Nonnull final String libraryName, @Nonnull final String version)
       throws MELMException;

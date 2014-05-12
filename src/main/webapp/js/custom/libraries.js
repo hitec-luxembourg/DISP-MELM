@@ -1,9 +1,9 @@
 var app = angular.module('app', []);
 
-app.controller('IconsCtrl', function($scope, $http) {
+app.controller('LibrariesCtrl', function($scope, $http, $location) {
   $scope.loadResources = function() {
-    $http.get(melmContextRoot + '/rest/icons').success(function(data) {
-      $scope.icons = data;
+    $http.get(melmContextRoot + '/rest/libraries').success(function(data) {
+      $scope.libraries = data;
     });
   };
 
@@ -14,7 +14,7 @@ app.controller('IconsCtrl', function($scope, $http) {
     var params = encodeParams({
       "id" : id
     });
-    $http.post(melmContextRoot + '/rest/icons/delete', params, {
+    $http.post(melmContextRoot + '/rest/libraries/delete', params, {
       headers : {
         'Content-Type' : 'application/x-www-form-urlencoded'
       }
@@ -25,6 +25,10 @@ app.controller('IconsCtrl', function($scope, $http) {
     });
   };
 
-  $scope.predicate = 'displayName';
+  $scope.go = function(path) {
+    window.location = melmContextRoot + path;
+  };
+
+  $scope.predicate = 'name';
   $scope.loadResources();
 });

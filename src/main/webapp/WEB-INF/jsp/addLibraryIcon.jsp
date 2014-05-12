@@ -19,9 +19,7 @@
     </div>
     <h3>${it.library.name}-${it.library.majorVersion}.${it.library.minorVersion}</h3>
     <form method="POST" action="${ctx}/rest/libraries/icons/add" enctype='multipart/form-data' class="form-horizontal" role="form">
-      <input name="libraryName" id="libraryName" type="hidden" value="${it.library.name}" /> <input name="majorVersion" id="majorVersion"
-        type="hidden" value="${it.library.majorVersion}" /> <input name="minorVersion" id="minorVersion" type="hidden"
-        value="${it.library.minorVersion}" />
+      <input name="id" id="id" type="hidden" value="${it.library.id}" /> 
       <table class="table table-striped">
         <tr>
           <td></td>
@@ -56,7 +54,7 @@
       </div>
       <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
-          <button type="submit" class="btn btn-default">Submit</button>
+          <button type="submit" class="btn btn-info"><span class="glyphicon glyphicon-plus"></span>  Add</button>
         </div>
       </div>
     </form>

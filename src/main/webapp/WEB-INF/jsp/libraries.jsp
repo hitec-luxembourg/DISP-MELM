@@ -3,15 +3,16 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/xml" prefix="x"%>
 <c:set value="${pageContext.request.contextPath}" var="ctx" scope="request" />
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="app">
 <head>
 <title>List Libraries</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <jsp:include page="css-includes.jsp" />
 <jsp:include page="js-includes.jsp" />
+<script src="${ctx}/js/custom/libraries.js"></script>
 </head>
-<body>
+<body ng-controller="LibrariesCtrl">
   <jsp:include page="header.jsp" />
   <div class="container">
     <div class="page-header">
@@ -20,27 +21,37 @@
     <table class="table table-striped">
       <tr>
         <td align="left">Actions</td>
-        <td align="left">Name</td>
+        <td align="left"><a href="" ng-click="predicate='name'; reverse=!reverse">Name</a></td>
         <td align="left">Version</td>
         <td align="left">Icon</td>
       </tr>
-      <c:forEach var="library" items="${it.libraries}">
-        <tr>
-          <td align="left">
-            <ul class="nav nav-pills">
-              <li><a href="${ctx}/rest/libraries/delete/${library.id}">delete</a></li>
-              <li><a href="${ctx}/rest/libraries/icons/${library.name}/${library.majorVersion}/${library.minorVersion}">icons</a></li>
-              <li><a href="${ctx}/rest/libraries/update/${library.id}">update</a></li>
-              <li><a href="${ctx}/rest/libraries/zip/${library.name}-${library.majorVersion}.${library.minorVersion}.zip">zip</a></li>
-            </ul>
-          </td>
-          <td align="left">${library.name}</td>
-          <td align="left">${library.majorVersion}.${library.minorVersion}</td>
-          <td align="left"><img src="${ctx}/rest/libraries/icon/file/${library.id}"></td>
-        </tr>
-      </c:forEach>
+      <tr ng-repeat="library in libraries | orderBy:predicate:reverse">
+        <td align="left">
+          <ul class="nav nav-pills">
+            <li><button class="btn btn-danger" ng-click="deleteResource(library.id)">
+                <span class="glyphicon glyphicon-remove"></span> Delete
+              </button></li>
+            <li><button class="btn btn-primary" ng-click="go('/rest/libraries/icons/'+library.id)">
+                <span class="glyphicon glyphicon-th-list"></span> Icons
+              </button></li>
+            <li><button class="btn btn-primary" ng-click="go('/rest/libraries/update/'+library.id)">
+                <span class="glyphicon glyphicon-refresh"></span> Update
+              </button></li>
+            <li><button class="btn btn-primary"
+                ng-click="go('/rest/libraries/zip/'+library.name+'-'+library.majorVersion+'.'+library.minorVersion+'.zip')">
+                <span class="glyphicon glyphicon-download"></span> Zip</a></button></li>
+          </ul>
+        </td>
+        <td align="left">{{library.name}}</td>
+        <td align="left">{{library.majorVersion}}.{{library.minorVersion}}</td>
+        <td align="left"><img src="${ctx}/rest/libraries/icon/file/{{library.id}}"></td>
+      </tr>
     </table>
+    <hr />
+    <button class="btn btn-info" ng-click="go('/rest/libraries/add')">
+      <span class="glyphicon glyphicon-plus"></span> Add</a>
+    </button>
   </div>
-  <jsp:include page="footer.jsp" />
+    <jsp:include page="footer.jsp" />
 </body>
 </html>

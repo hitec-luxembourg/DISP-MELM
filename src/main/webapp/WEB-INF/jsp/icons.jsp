@@ -26,13 +26,19 @@
       </tr>
       <tr ng-repeat="icon in icons | orderBy:predicate:reverse">
         <td align="left">
-          <button class="btn btn-danger btn-custom-danger" ng-click="deleteIcon(icon.id)">Delete</button>
+          <button class="btn btn-danger" ng-click="deleteResource(icon.id)">
+            <span class="glyphicon glyphicon-remove"></span> Delete
+          </button>
         </td>
         <td align="left">{{icon.displayName}}</td>
         <td align="left"><a href="${ctx}/rest/icons/details/{{icon.id}}"><img src="${ctx}/rest/icons/file/{{icon.id}}/LARGE"></a></td>
       </tr>
     </table>
+    <button class="btn btn-info" ng-click="go('/rest/icons/add')">
+      <span class="glyphicon glyphicon-plus"></span> Add</a>
+    </button>
   </div>
-  <jsp:include page="footer.jsp" />
+  <hr />
+    <jsp:include page="footer.jsp" />
 </body>
 </html>

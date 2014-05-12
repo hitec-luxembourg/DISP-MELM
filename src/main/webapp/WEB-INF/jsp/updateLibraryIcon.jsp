@@ -19,10 +19,8 @@
     </div>
     <h3>${it.libraryIcon.library.name}-${it.libraryIcon.library.majorVersion}.${it.libraryIcon.library.minorVersion}</h3>
     <form method="POST" action="${ctx}/rest/libraries/icons/update" enctype='multipart/form-data' class="form-horizontal" role="form">
-      <input name="libraryIconId" id="libraryIconId" type="hidden" value="${it.libraryIcon.id}" /> <input name="libraryName"
-        id="libraryName" type="hidden" value="${it.libraryIcon.library.name}" /> <input name="majorVersion" id="majorVersion" type="hidden"
-        value="${it.libraryIcon.library.majorVersion}" /> <input name="minorVersion" id="minorVersion" type="hidden"
-        value="${it.libraryIcon.library.minorVersion}" />
+      <input name="libraryIconId" id="libraryIconId" type="hidden" value="${it.libraryIcon.id}" /> <input name="id" id="id" type="hidden"
+        value="${it.libraryIcon.library.id}" />
       <table class="table table-striped">
         <tr>
           <td></td>
@@ -60,7 +58,7 @@
       </div>
       <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
-          <button type="submit" class="btn btn-default">Submit</button>
+          <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-refresh"></span>  Update</button>
         </div>
       </div>
     </form>

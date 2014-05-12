@@ -166,10 +166,10 @@ public class MELMServiceImpl implements MELMService {
   }
 
   @Override
-  public void addLibraryIcon(@Nonnull final String libraryName, final int majorVersion, final int minorVersion, final int iconIndex,
-      @Nonnull final String iconName, @Nonnull final String iconDescription, final long iconId) throws MELMException {
+  public void addLibraryIcon(final long id, final int iconIndex, @Nonnull final String iconName, @Nonnull final String iconDescription,
+      final long iconId) throws MELMException {
     final MapElementIcon mapElementIcon = mapElementIconDAO.getMapElementIcon(iconId);
-    final MapElementLibrary library = getLibrary(libraryName, majorVersion, minorVersion);
+    final MapElementLibrary library = getLibrary(id);
     if (mapElementLibraryIconDAO.checkIconInLibrary(library, mapElementIcon)) {
       final String msg = String.format("Icon %s is already linked to this library", mapElementIcon.getDisplayName());
       throw new MELMException(msg);
@@ -364,11 +364,11 @@ public class MELMServiceImpl implements MELMService {
     return new File(libraryIconFolder, filePath);
   }
 
-  // @Override
-  // public List<MapElementLibraryIcon> getLibraryIcons(final long id) {
-  // final MapElementLibrary library = mapElementLibraryDAO.getMapElementLibrary(id);
-  // return mapElementLibraryIconDAO.getIconsInLibrary(library);
-  // }
+  @Override
+  public List<MapElementLibraryIcon> getLibraryIcons(final long id) {
+    final MapElementLibrary library = mapElementLibraryDAO.getMapElementLibrary(id);
+    return mapElementLibraryIconDAO.getIconsInLibrary(library);
+  }
 
   @Override
   public List<MapElementLibraryIcon> getLibraryIcons(@Nonnull final String libraryName, final int majorVersion, final int minorVersion) {
