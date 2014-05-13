@@ -39,7 +39,7 @@
               </button></li>
             <li><button class="btn btn-primary"
                 ng-click="go('/rest/libraries/zip/'+library.name+'-'+library.majorVersion+'.'+library.minorVersion+'.zip')">
-                <span class="glyphicon glyphicon-download"></span> Zip</a></button></li>
+                <span class="glyphicon glyphicon-download"></span> Zip</button></li>
           </ul>
         </td>
         <td align="left">{{library.name}}</td>
@@ -48,9 +48,12 @@
       </tr>
     </table>
     <hr />
-    <button class="btn btn-info" ng-click="go('/rest/libraries/add')">
-      <span class="glyphicon glyphicon-plus"></span> Add</a>
-    </button>
+    <ul class="nav nav-pills">
+      <li><button class="btn btn-info" ng-click="go('/rest/libraries/import')">
+          <span class="glyphicon glyphicon-cloud-upload"></span>  Import</button></li>
+      <li><button class="btn btn-info" ng-click="go('/rest/libraries/add')">
+          <span class="glyphicon glyphicon-plus"></span>  Add</button></li>
+    </ul>
   </div>
     <jsp:include page="footer.jsp" />
 </body>

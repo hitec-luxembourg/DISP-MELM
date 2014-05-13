@@ -21,7 +21,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-import lu.hitec.pssu.mapelement.library.xml.parser.XMLSelectionPathParser;
 import lu.hitec.pssu.melm.exceptions.MELMException;
 import lu.hitec.pssu.melm.persistence.entity.MapElementLibrary;
 import lu.hitec.pssu.melm.persistence.entity.MapElementLibraryIcon;
@@ -40,6 +39,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.w3c.dom.NodeList;
 
 @Path("/rest")
 @Component
@@ -316,12 +316,12 @@ public class MELMResource {
           .importLibrary(libraryUpload.getLibraryName(), libraryUpload.getVersion(), libraryUpload.getZipFile());
       final File libraryFolder = melmService.extractImportedLibrary(zipFile);
       if (libraryFolder != null) {
-        final XMLSelectionPathParser libraryParser = melmService.validateAndParseImportedLibrary(libraryUpload.getLibraryName(),
-            libraryUpload.getVersion());
-        final String iconMd5 = melmService.moveImportedLibraryIcon(libraryParser, libraryFolder);
+        final String iconMd5 = melmService.moveImportedLibraryIcon(libraryFolder, libraryUpload.getLibraryName(), libraryUpload.getVersion());
         final MapElementLibrary mapElementLibrary = melmService.addLibrary(libraryUpload.getLibraryName(), libraryUpload.getVersion(),
             iconMd5);
-        melmService.moveImportedIcons(mapElementLibrary, libraryParser, libraryFolder);
+        final NodeList nodeList = melmService.validateImportedLibraryAndGetNodeList(libraryUpload.getLibraryName(),
+            libraryUpload.getVersion());
+        melmService.moveImportedIcons(mapElementLibrary, nodeList, libraryFolder);
       }
     } catch (final MELMException e) {
       LOGGER.warn("Error in performImportLibrary", e);
@@ -392,7 +392,7 @@ public class MELMResource {
   public Response performZipLibrary(@PathParam("name") @Nonnull final String name, @PathParam("majorVersion") final int majorVersion,
       @PathParam("minorVersion") final int minorVersion) throws MELMException {
     assert name != null : "name is null";
-    final File zipFolder = melmService.prepareZipFile(name, majorVersion, minorVersion);
+    final File zipFolder = melmService.generateXmlAndPrepareZipFile(name, majorVersion, minorVersion);
     final File zipFile = melmService.generateZipFile(zipFolder);
     return Response.ok(zipFile).build();
   }

@@ -10,7 +10,12 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import lu.hitec.pssu.mapelement.library.xml.parser.XMLSelectionPathParser;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
+
 import lu.hitec.pssu.melm.exceptions.MELMException;
 import lu.hitec.pssu.melm.persistence.dao.MapElementIconDAO;
 import lu.hitec.pssu.melm.persistence.dao.MapElementLibraryDAO;
@@ -27,19 +32,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
+@SuppressWarnings("static-method")
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:/ctx-config-test.xml", "classpath:/ctx-dao.xml", "classpath:/ctx-persistence-test.xml" })
 public class MELMServiceImplTest {
-
-  @Autowired
-  private MELMService melmService;
 
   @Autowired
   private MapElementIconDAO mapElementIconDAO;
 
   @Autowired
   private MapElementLibraryDAO mapElementLibraryDAO;
+
+  @Autowired
+  private MELMService melmService;
 
   @Before
   public void setUp() throws Exception {
@@ -53,10 +63,24 @@ public class MELMServiceImplTest {
     final File iconsDirectory = melmService.getIconsDirectory();
     FileUtils.deleteQuietly(iconsDirectory);
 
-//    final List<MapElementIcon> icons = mapElementIconDAO.listAllIcons();
-//    for (final MapElementIcon icon : icons) {
-//      mapElementIconDAO.delete(icon.getId());
-//    }
+    // final List<MapElementIcon> icons = mapElementIconDAO.listAllIcons();
+    // for (final MapElementIcon icon : icons) {
+    // mapElementIconDAO.delete(icon.getId());
+    // }
+  }
+
+  @Test
+  public void testAddIconAndFiles() throws MELMException, IOException {
+    final File sampleIcon = new ClassPathResource("sample/libraries/emergency.lu/1.1/emergency.lu-1.1/100px/Accident.png").getFile();
+    final MapElementIcon icon = melmService.addIconAndFiles("AccidentFromUnitTest", sampleIcon);
+
+    assertEquals("1/b/1b7ccd4aa667f2dd1a9bb5d39772ccd7-100px.png", icon.getFilePath(IconSize.LARGE));
+
+    try {
+      melmService.addIconAndFiles("AccidentFromUnitTest", sampleIcon);
+      fail("Should have raised an exception, Icon already Exist");
+    } catch (final MELMException e) {
+    }
   }
 
   @Test
@@ -72,16 +96,6 @@ public class MELMServiceImplTest {
   public void testBuildArchiveFilename() {
     final String archiveFilename = melmService.buildArchiveFilename("emergency.lu", "1.1");
     assertEquals("emergency.lu-1.1.zip", archiveFilename);
-  }
-
-  @Test
-  public void testMoveImportedIcons() throws MELMException, IOException {
-    final File tmpZipFile = new ClassPathResource("sample/zip/emergency.lu-1.1.zip").getFile();
-    final File targetArchiveFile = melmService.importLibrary("emergency.lu", "1.1", tmpZipFile);
-    final File libraryFolder = melmService.extractImportedLibrary(targetArchiveFile);
-    final XMLSelectionPathParser libraryParser = melmService.validateAndParseImportedLibrary("emergency.lu", "1.1");
-    final MapElementLibrary mapElementLibrary = melmService.addLibrary("emergency.lu", "1.1", "");
-    melmService.moveImportedIcons(mapElementLibrary, libraryParser, libraryFolder);
   }
 
   @Test
@@ -114,16 +128,38 @@ public class MELMServiceImplTest {
   }
 
   @Test
-  public void testAddIconAndFiles() throws MELMException, IOException {
-    final File sampleIcon = new ClassPathResource("sample/libraries/emergency.lu/1.1/emergency.lu-1.1/100px/Accident.png").getFile();
-    final MapElementIcon icon = melmService.addIconAndFiles("AccidentFromUnitTest", sampleIcon);
+  public void testMoveImportedIcons() throws MELMException, IOException {
+    final File tmpZipFile = new ClassPathResource("sample/zip/emergency.lu-1.1.zip").getFile();
+    final File targetArchiveFile = melmService.importLibrary("emergency.lu", "1.1", tmpZipFile);
+    final File libraryFolder = melmService.extractImportedLibrary(targetArchiveFile);
+    final NodeList nodeList = melmService.validateImportedLibraryAndGetNodeList("emergency.lu", "1.1");
+    final MapElementLibrary mapElementLibrary = melmService.addLibrary("emergency.lu", "1.1", "");
+    melmService.moveImportedIcons(mapElementLibrary, nodeList, libraryFolder);
+  }
 
-    assertEquals("1/b/1b7ccd4aa667f2dd1a9bb5d39772ccd7-100px.png", icon.getFilePath(IconSize.LARGE));
+  @Test
+  public void testXPathParsing() throws Exception {
+    final File xmlFile = new ClassPathResource("sample/libraries/emergency.lu/1.1/emergency.lu-1.1/emergency.lu-1.1.xml").getFile();
+    final String expression = "elements/choice/node";
+    final String subExpression = "element/point/icon";
+    final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+    final DocumentBuilder builder = factory.newDocumentBuilder();
+    final Document document = builder.parse(xmlFile);
+    final XPath xPath = XPathFactory.newInstance().newXPath();
+    final NodeList nodeList = (NodeList) xPath.compile(expression).evaluate(document, XPathConstants.NODESET);
+    final int length = nodeList.getLength();
+    for (int i = 0; i < length; i++) {
+      final Node node = nodeList.item(i);
+      final Element element = (Element) node;
+      final String itemName = element.getAttribute("unique-code");
+      assertNotNull(itemName);
+      final String itemDescription = element.getAttribute("description");
+      assertNotNull(itemDescription);
 
-    try {
-      melmService.addIconAndFiles("AccidentFromUnitTest", sampleIcon);
-      fail("Should have raised an exception, Icon already Exist");
-    } catch (final MELMException e) {
+      final Node subNode = (Node) xPath.compile(subExpression).evaluate(node, XPathConstants.NODE);
+      final Element subElement = (Element) subNode;
+      final String fileName = subElement.getAttribute("file");
+      assertNotNull(fileName);
     }
   }
 

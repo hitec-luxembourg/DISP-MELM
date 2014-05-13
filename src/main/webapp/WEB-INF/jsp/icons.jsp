@@ -35,7 +35,7 @@
       </tr>
     </table>
     <button class="btn btn-info" ng-click="go('/rest/icons/add')">
-      <span class="glyphicon glyphicon-plus"></span> Add</a>
+      <span class="glyphicon glyphicon-plus"></span> Add
     </button>
   </div>
   <hr />

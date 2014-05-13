@@ -45,6 +45,7 @@
         library_id int8 not null,
         primary key (id),
         unique (library_id, icon_id),
+        unique (library_id, icon_name_in_library),
         unique (library_id, index_of_icon_in_library)
     );
 

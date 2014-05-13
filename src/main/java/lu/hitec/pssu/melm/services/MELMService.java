@@ -5,11 +5,12 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import lu.hitec.pssu.mapelement.library.xml.parser.XMLSelectionPathParser;
 import lu.hitec.pssu.melm.exceptions.MELMException;
 import lu.hitec.pssu.melm.persistence.entity.MapElementIcon;
 import lu.hitec.pssu.melm.persistence.entity.MapElementLibrary;
 import lu.hitec.pssu.melm.persistence.entity.MapElementLibraryIcon;
+
+import org.w3c.dom.NodeList;
 
 public interface MELMService {
   MapElementIcon addIconAndFiles(@Nonnull final String displayName, @Nonnull final File iconLargeFile) throws MELMException;
@@ -31,6 +32,8 @@ public interface MELMService {
   void deleteLibraryIcon(final long id);
 
   File extractImportedLibrary(@Nonnull final File file) throws MELMException;
+
+  File generateXmlAndPrepareZipFile(@Nonnull final String name, final int majorVersion, final int minorVersion) throws MELMException;
 
   File generateZipFile(@Nonnull final File zipFolder) throws MELMException;
 
@@ -62,13 +65,11 @@ public interface MELMService {
 
   List<MapElementLibrary> listAllLibraries();
 
-  void moveImportedIcons(@Nonnull final MapElementLibrary mapElementLibrary, @Nonnull final XMLSelectionPathParser libraryParser,
+  void moveImportedIcons(@Nonnull final MapElementLibrary mapElementLibrary, @Nonnull final NodeList nodeList,
       @Nonnull final File libraryFolder) throws MELMException;
 
-  String moveImportedLibraryIcon(@Nonnull final XMLSelectionPathParser libraryParserlibraryIconRelativePath,
-      @Nonnull final File libraryFolder) throws MELMException;
-
-  File prepareZipFile(@Nonnull final String name, final int majorVersion, final int minorVersion) throws MELMException;
+  String moveImportedLibraryIcon(@Nonnull final File libraryFolder, @Nonnull final String libraryName, @Nonnull final String version)
+      throws MELMException;
 
   void updateLibrary(final long id, @Nonnull final String libraryName, @Nonnull final String version, final String iconMd5MaybeNull)
       throws MELMException;
@@ -76,6 +77,5 @@ public interface MELMService {
   void updateLibraryIcon(final long id, final int iconIndex, @Nonnull final String iconName, @Nonnull final String iconDescription,
       final long iconId) throws MELMException;
 
-  XMLSelectionPathParser validateAndParseImportedLibrary(@Nonnull final String libraryName, @Nonnull final String version)
-      throws MELMException;
+  NodeList validateImportedLibraryAndGetNodeList(@Nonnull final String libraryName, @Nonnull final String version) throws MELMException;
 }

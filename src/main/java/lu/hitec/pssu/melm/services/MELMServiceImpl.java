@@ -6,11 +6,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -26,9 +23,11 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
-import lu.hitec.pssu.mapelement.library.xml.BaseNodeType;
-import lu.hitec.pssu.mapelement.library.xml.parser.XMLSelectionPathParser;
 import lu.hitec.pssu.melm.exceptions.LibraryValidatorException;
 import lu.hitec.pssu.melm.exceptions.MELMException;
 import lu.hitec.pssu.melm.persistence.dao.MapElementIconDAO;
@@ -47,6 +46,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 public class MELMServiceImpl implements MELMService {
 
@@ -64,6 +66,14 @@ public class MELMServiceImpl implements MELMService {
 
   @Autowired
   private MapElementLibraryIconDAO mapElementLibraryIconDAO;
+
+  private final String XPATH_ICON_EXPRESSION = "elements/description/library-icon";
+
+  private final String XPATH_EXPRESSION = "elements/choice/node";
+
+  private final String XPATH_SUB_EXPRESSION = "element/point/icon";
+
+  public static final String XSD_EXPORT_PATH = "/lu/hitec/pssu/melm/utils/xsd/mapelement-hierarchy-export.xsd";
 
   public MELMServiceImpl(final File librariesDirectory, final File iconsDirectory) {
     if (!librariesDirectory.isDirectory() && !librariesDirectory.mkdirs()) {
@@ -305,6 +315,130 @@ public class MELMServiceImpl implements MELMService {
   }
 
   @Override
+  public File generateXmlAndPrepareZipFile(@Nonnull final String name, final int majorVersion, final int minorVersion) throws MELMException {
+    final DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
+    try {
+      final DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
+
+      // Define root element.
+      final Document document = documentBuilder.newDocument();
+      final Element rootElement = document.createElementNS("http://hitec.lu/pss/xsd/mapelement/hierarchy", "elements");
+      rootElement.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+      rootElement.setAttribute("version", "1.0");
+
+      document.appendChild(rootElement);
+
+      /*
+       * <description>
+       * <library-type>points</library-type>
+       * <library-version>1.1</library-version>
+       * <library-name>emergency.lu</library-name>
+       * <library-display-name>emergency.lu</library-display-name>
+       * <library-icon file="icon.png" />
+       * </description>
+       */
+
+      final MapElementLibrary mapElementLibrary = mapElementLibraryDAO.getMapElementLibrary(name, majorVersion, minorVersion);
+      final File generatedFolder = new File(librariesDirectory, "generated");
+      final File libraryRootFolder = new File(generatedFolder, String.format("%s/%s.%s/%s-%s.%s", mapElementLibrary.getName(),
+          mapElementLibrary.getMajorVersion(), mapElementLibrary.getMinorVersion(), mapElementLibrary.getName(),
+          mapElementLibrary.getMajorVersion(), mapElementLibrary.getMinorVersion()));
+      FileUtils.deleteQuietly(libraryRootFolder);
+      if (!libraryRootFolder.mkdirs()) {
+        LOGGER.debug("Failed to perform mkdir for libraryRootFolder");
+      }
+
+      final Element descriptionElement = document.createElement("description");
+      rootElement.appendChild(descriptionElement);
+      descriptionElement.appendChild(createTextElement(document, "library-type", "points"));
+      final String version = String.format("%s.%s", majorVersion, minorVersion);
+      descriptionElement.appendChild(createTextElement(document, "library-version", version));
+      descriptionElement.appendChild(createTextElement(document, "library-name", mapElementLibrary.getName()));
+      descriptionElement.appendChild(createTextElement(document, "library-display-name", mapElementLibrary.getName()));
+
+      // Copy library icon.
+      final File libraryIconFolder = new File(librariesDirectory, "icons");
+      final File sourceLibraryIconFile = new File(libraryIconFolder, mapElementLibrary.getIconPath());
+      final File targetLibraryIconFile = new File(libraryRootFolder, "icon.png");
+      FileUtils.copyFile(sourceLibraryIconFile, targetLibraryIconFile);
+
+      final Element choiceElement = document.createElement("choice");
+      choiceElement.setAttribute("choice-var", "Type");
+      rootElement.appendChild(choiceElement);
+
+      /*
+       * <node hierarchy-code="1.1" unique-code="Accomodation" choice-value="Accomodation" description="Accomodation">
+       * <element description="Accomodation">
+       * <point>
+       * <icon file="Accomodation" anchor="NE" />
+       * </point>
+       * </element>
+       * </node>
+       */
+
+      // FIXME ORDER BY index !
+      final List<MapElementLibraryIcon> iconsInLibrary = mapElementLibraryIconDAO.getIconsInLibrary(mapElementLibrary);
+      for (final MapElementLibraryIcon mapElementLibraryIcon : iconsInLibrary) {
+        final Element nodeElement = document.createElement("node");
+        choiceElement.appendChild(nodeElement);
+        nodeElement.setAttribute("unique-code", mapElementLibraryIcon.getIconNameInLibrary());
+        nodeElement.setAttribute("choice-value", mapElementLibraryIcon.getIconNameInLibrary());
+        nodeElement.setAttribute("description", mapElementLibraryIcon.getIconDescriptionInLibrary());
+        final Element nodeInnerElement = document.createElement("element");
+        nodeElement.appendChild(nodeInnerElement);
+        final Element nodePointElement = document.createElement("point");
+        nodeInnerElement.appendChild(nodePointElement);
+        final Element nodeIconElement = document.createElement("icon");
+        nodePointElement.appendChild(nodeIconElement);
+
+        final MapElementIcon icon = mapElementLibraryIcon.getIcon();
+        nodeIconElement.setAttribute("file", mapElementLibraryIcon.getIconNameInLibrary());
+        nodeIconElement.setAttribute("anchor", "NE");
+
+        for (final IconSize iconSize : IconSize.values()) {
+          final File sourceIconFile = new File(iconsDirectory, icon.getFilePath(iconSize));
+          final File libraryIconSizeFolder = new File(libraryRootFolder, iconSize.getSize());
+          if (!libraryIconSizeFolder.mkdirs()) {
+            LOGGER.debug("Failed to perform mkdir for libraryIconSizeFolder");
+          }
+          final File targetIconFile = new File(libraryIconSizeFolder, String.format("%s.png", mapElementLibraryIcon.getIconNameInLibrary()));
+          FileUtils.copyFile(sourceIconFile, targetIconFile);
+        }
+      }
+
+      // Creating and writing to xml file.
+      final TransformerFactory transformerFactory = TransformerFactory.newInstance();
+      final Transformer transformer = transformerFactory.newTransformer();
+      transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+      transformer.setOutputProperty(OutputKeys.STANDALONE, "yes");
+      final DOMSource domSource = new DOMSource(document);
+      final File xmlFile = new File(libraryRootFolder, String.format("%s-%s.%s.xml", name, majorVersion, minorVersion));
+      final StreamResult streamResult = new StreamResult(xmlFile);
+      transformer.transform(domSource, streamResult);
+
+      // Validate the xml.
+      final String xsdPath = this.getClass().getResource(XSD_EXPORT_PATH).getPath();
+      try {
+        LibraryValidator.validateLibrary(xsdPath, xmlFile, name, version);
+      } catch (final LibraryValidatorException e) {
+        final String msg = "Failed to validate library xml file";
+        throw new MELMException(msg, e);
+      }
+      return libraryRootFolder;
+
+    } catch (final ParserConfigurationException e) {
+      final String msg = "Failed to generate zip file";
+      throw new MELMException(msg, e);
+    } catch (final TransformerException e) {
+      final String msg = "Failed to generate zip file";
+      throw new MELMException(msg, e);
+    } catch (final IOException e) {
+      final String msg = "Failed to generate zip file";
+      throw new MELMException(msg, e);
+    }
+  }
+
+  @Override
   public File generateZipFile(@Nonnull final File zipFolder) throws MELMException {
     assert zipFolder != null : "zipFolder is null";
     assert zipFolder.exists();
@@ -446,19 +580,25 @@ public class MELMServiceImpl implements MELMService {
 
   @Override
   @Transactional
-  public void moveImportedIcons(@Nonnull final MapElementLibrary mapElementLibrary, @Nonnull final XMLSelectionPathParser libraryParser,
+  public void moveImportedIcons(@Nonnull final MapElementLibrary mapElementLibrary, @Nonnull final NodeList nodeList,
       @Nonnull final File libraryFolder) throws MELMException {
     assert mapElementLibrary != null : "mapElementLibrary si null";
-    assert libraryParser != null : "libraryParser is null";
+    assert nodeList != null : "nodeList is null";
     assert libraryFolder != null : "libraryFolder is null";
     final File largeFileFolder = new File(libraryFolder, IconSize.LARGE.getSize());
+    final XPath xPath = XPathFactory.newInstance().newXPath();
     try {
-      final Map<String, BaseNodeType> mapOfNodesByUniqueCode = libraryParser.getMapOfNodesByUniqueCode();
-      final Iterator<Map.Entry<String, BaseNodeType>> iterator = mapOfNodesByUniqueCode.entrySet().iterator();
-      int i = 0;
-      while (iterator.hasNext()) {
-        final Map.Entry<String, BaseNodeType> mapEntry = iterator.next();
-        final String fileName = mapEntry.getValue().getElement().getPoint().getIcon().getFile();
+      for (int i = 0; i < nodeList.getLength(); i++) {
+        final Node node = nodeList.item(i);
+        final Element element = (Element) node;
+        final String itemName = element.getAttribute("unique-code");
+        assert itemName != null;
+        final String itemDescription = element.getAttribute("description");
+        assert itemDescription != null;
+        final Node subNode = (Node) xPath.compile(XPATH_SUB_EXPRESSION).evaluate(node, XPathConstants.NODE);
+        final Element subElement = (Element) subNode;
+        final String fileName = subElement.getAttribute("file");
+        assert fileName != null;
         final File sourceIconLargeFile = new File(largeFileFolder, String.format("%s.png", fileName));
         final String hashForLargeFile = MELMUtils.getHashForFile(sourceIconLargeFile);
         if (!mapElementIconDAO.exist(hashForLargeFile, sourceIconLargeFile.length())) {
@@ -467,24 +607,46 @@ public class MELMServiceImpl implements MELMService {
           for (final IconSize iconSize : IconSize.values()) {
             moveImportedFile(libraryFolder, sourceIconLargeFile.getName(), iconSize, mapElementIcon);
           }
-          mapElementLibraryIconDAO.addIconToLibrary(mapElementLibrary, mapElementIcon, i++, fileName, mapEntry.getValue().getDescription());
+          mapElementLibraryIconDAO.addIconToLibrary(mapElementLibrary, mapElementIcon, i++, itemName, itemDescription);
         } else {
           final MapElementIcon mapElementIcon = mapElementIconDAO.getMapElementIcon(hashForLargeFile, sourceIconLargeFile.length());
-          mapElementLibraryIconDAO.addIconToLibrary(mapElementLibrary, mapElementIcon, i++, fileName, mapEntry.getValue().getDescription());
+          mapElementLibraryIconDAO.addIconToLibrary(mapElementLibrary, mapElementIcon, i++, itemName, itemDescription);
         }
       }
-    } catch (final IOException e) {
+    } catch (final IOException | XPathExpressionException e) {
       final String msg = "Failed to compute the hash and move the files";
       throw new MELMException(msg, e);
     }
   }
 
   @Override
-  public String moveImportedLibraryIcon(@Nonnull final XMLSelectionPathParser libraryParserlibraryIconRelativePath,
-      @Nonnull final File libraryFolder) throws MELMException {
-    assert libraryParserlibraryIconRelativePath != null : "libraryParserlibraryIconRelativePath is null";
+  public String moveImportedLibraryIcon(@Nonnull final File libraryFolder, @Nonnull final String libraryName, @Nonnull final String version)
+      throws MELMException {
     assert libraryFolder != null : "libraryFolder is null";
-    final File sourceIconFile = new File(libraryFolder, libraryParserlibraryIconRelativePath.getLibraryIconRelativePath());
+    assert libraryName != null : "Library name is null";
+    assert version != null : "Version is null";
+
+     String iconFileName;
+    final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+    final XPath xPath = XPathFactory.newInstance().newXPath();
+    final String xsdPath = this.getClass().getResource(LibraryValidator.XSD_PATH).getPath();
+    try {
+      final DocumentBuilder builder = factory.newDocumentBuilder();
+      final File xmlFile = LibraryValidator.validateLibrary(xsdPath, new File(librariesDirectory, "imported").getAbsolutePath(),
+          libraryName, version);
+      final Document document = builder.parse(xmlFile);
+      final Node node = (Node) xPath.compile(XPATH_ICON_EXPRESSION).evaluate(document, XPathConstants.NODE);
+      final Element element = (Element) node;
+      iconFileName = element.getAttribute("file");
+    } catch (final ParserConfigurationException | LibraryValidatorException | IOException | SAXException | XPathExpressionException e) {
+      final String msg = "Failed to copy library icon file";
+      throw new MELMException(msg, e);
+    }
+
+    if ((iconFileName == null) || ("").equalsIgnoreCase(iconFileName)) {
+      iconFileName = "icon.png";
+    }
+    final File sourceIconFile = new File(libraryFolder, iconFileName);
     final File libraryIconFolder = new File(librariesDirectory, "icons");
     try {
       final String hashForFile = MELMUtils.getHashForFile(sourceIconFile);
@@ -500,125 +662,7 @@ public class MELMServiceImpl implements MELMService {
       FileUtils.copyFile(sourceIconFile, targetIconFile);
       return hashForFile;
     } catch (final IOException e) {
-      final String msg = "Failed to compute the hash and move the files";
-      throw new MELMException(msg, e);
-    }
-  }
-
-  @Override
-  public File prepareZipFile(@Nonnull final String name, final int majorVersion, final int minorVersion) throws MELMException {
-    final DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
-    try {
-      final DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
-
-      // Define root element.
-      final Document document = documentBuilder.newDocument();
-      final Element rootElement = document.createElement("elements");
-      document.appendChild(rootElement);
-
-      /*
-       * <description>
-       * <library-type>points</library-type>
-       * <library-version>1.1</library-version>
-       * <library-name>emergency.lu</library-name>
-       * <library-display-name>emergency.lu</library-display-name>
-       * <library-icon file="icon.png" />
-       * </description>
-       */
-
-      final MapElementLibrary mapElementLibrary = mapElementLibraryDAO.getMapElementLibrary(name, majorVersion, minorVersion);
-      final File generatedFolder = new File(librariesDirectory, "generated");
-      final File libraryRootFolder = new File(generatedFolder, String.format("%s/%s.%s/%s-%s.%s", mapElementLibrary.getName(),
-          mapElementLibrary.getMajorVersion(), mapElementLibrary.getMinorVersion(), mapElementLibrary.getName(),
-          mapElementLibrary.getMajorVersion(), mapElementLibrary.getMinorVersion()));
-      FileUtils.deleteQuietly(libraryRootFolder);
-      if (!libraryRootFolder.mkdirs()) {
-        LOGGER.debug("Failed to perform mkdir for libraryRootFolder");
-      }
-
-      final Element descriptionElement = document.createElement("description");
-      rootElement.appendChild(descriptionElement);
-      descriptionElement.appendChild(createTextElement(document, "library-type", "points"));
-      descriptionElement.appendChild(createTextElement(document, "library-version",
-          String.format("%s.%s", mapElementLibrary.getMajorVersion(), mapElementLibrary.getMinorVersion())));
-      descriptionElement.appendChild(createTextElement(document, "library-name", mapElementLibrary.getName()));
-      descriptionElement.appendChild(createTextElement(document, "library-display-name", mapElementLibrary.getName()));
-      final Element libraryIconElement = document.createElement("library-icon");
-      libraryIconElement.setAttribute("file", String.format("%s.png", mapElementLibrary.getIconMd5()));
-      descriptionElement.appendChild(libraryIconElement);
-
-      // Copy library icon.
-      final File libraryIconFolder = new File(librariesDirectory, "icons");
-      final File sourceLibraryIconFile = new File(libraryIconFolder, mapElementLibrary.getIconPath());
-      final File targetLibraryIconFile = new File(libraryRootFolder, String.format("%s.png", mapElementLibrary.getIconMd5()));
-      FileUtils.copyFile(sourceLibraryIconFile, targetLibraryIconFile);
-
-      final Element choiceElement = document.createElement("choice");
-      choiceElement.setAttribute("choice-var", "Type");
-      rootElement.appendChild(choiceElement);
-
-      /*
-       * <node hierarchy-code="1.1" unique-code="Accomodation" choice-value="Accomodation" description="Accomodation">
-       * <element description="Accomodation">
-       * <point>
-       * <icon file="Accomodation" anchor="NE" />
-       * </point>
-       * </element>
-       * </node>
-       */
-
-      final List<MapElementLibraryIcon> iconsInLibrary = mapElementLibraryIconDAO.getIconsInLibrary(mapElementLibrary);
-      for (final MapElementLibraryIcon mapElementLibraryIcon : iconsInLibrary) {
-        final Element nodeElement = document.createElement("node");
-        choiceElement.appendChild(nodeElement);
-        nodeElement.setAttribute("hierarchy-code", new Integer(mapElementLibraryIcon.getIndexOfIconInLibrary()).toString());
-        nodeElement.setAttribute("unique-code", mapElementLibraryIcon.getIconNameInLibrary());
-        nodeElement.setAttribute("choice-value", mapElementLibraryIcon.getIconNameInLibrary());
-        nodeElement.setAttribute("description", mapElementLibraryIcon.getIconDescriptionInLibrary());
-        final Element nodeInnerElement = document.createElement("element");
-        nodeElement.appendChild(nodeInnerElement);
-        nodeInnerElement.setAttribute("description", mapElementLibraryIcon.getIconNameInLibrary());
-        final Element nodePointElement = document.createElement("point");
-        nodeInnerElement.appendChild(nodePointElement);
-        final Element nodeIconElement = document.createElement("icon");
-        nodePointElement.appendChild(nodeIconElement);
-
-        final MapElementIcon icon = mapElementLibraryIcon.getIcon();
-        nodeIconElement.setAttribute("file", icon.getPic100pxMd5());
-        nodeIconElement.setAttribute("anchor", "NE");
-
-        for (final IconSize iconSize : IconSize.values()) {
-          final File sourceIconFile = new File(iconsDirectory, icon.getFilePath(iconSize));
-          final File libraryIconSizeFolder = new File(libraryRootFolder, iconSize.getSize());
-          if (!libraryIconSizeFolder.mkdirs()) {
-            LOGGER.debug("Failed to perform mkdir for libraryIconSizeFolder");
-          }
-          final File targetIconFile = new File(libraryIconSizeFolder, String.format("%s.png", icon.getPic100pxMd5()));
-          FileUtils.copyFile(sourceIconFile, targetIconFile);
-        }
-      }
-
-      // Creating and writing to xml file.
-      final TransformerFactory transformerFactory = TransformerFactory.newInstance();
-      final Transformer transformer = transformerFactory.newTransformer();
-      transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-      transformer.setOutputProperty(OutputKeys.STANDALONE, "yes");
-      final DOMSource domSource = new DOMSource(document);
-      final StreamResult streamResult = new StreamResult(new File(libraryRootFolder, String.format("%s-%s.%s.xml", name, majorVersion,
-          minorVersion)));
-
-      transformer.transform(domSource, streamResult);
-
-      return libraryRootFolder;
-
-    } catch (final ParserConfigurationException e) {
-      final String msg = "Failed to generate zip file";
-      throw new MELMException(msg, e);
-    } catch (final TransformerException e) {
-      final String msg = "Failed to generate zip file";
-      throw new MELMException(msg, e);
-    } catch (final IOException e) {
-      final String msg = "Failed to generate zip file";
+      final String msg = "Failed to copy library icon file";
       throw new MELMException(msg, e);
     }
   }
@@ -646,7 +690,7 @@ public class MELMServiceImpl implements MELMService {
   }
 
   @Override
-  public XMLSelectionPathParser validateAndParseImportedLibrary(@Nonnull final String libraryName, @Nonnull final String version)
+  public NodeList validateImportedLibraryAndGetNodeList(@Nonnull final String libraryName, @Nonnull final String version)
       throws MELMException {
     assert libraryName != null : "Library name is null";
     assert version != null : "Version is null";
@@ -660,22 +704,18 @@ public class MELMServiceImpl implements MELMService {
       throw new MELMException(msg, e);
     }
 
-    InputStream in = null;
+    final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+    final XPath xPath = XPathFactory.newInstance().newXPath();
     try {
-      in = new FileInputStream(xmlFile);
-      assert in.available() != 0;
-      final XMLSelectionPathParser parser = new XMLSelectionPathParser(in);
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(String.format("Parse map library: %s, %s", parser.getLibraryName(), parser.getLibraryDisplayName()));
-      }
-      return parser;
-    } catch (final Exception e) {
+      final DocumentBuilder builder = factory.newDocumentBuilder();
+      final Document document = builder.parse(xmlFile);
+      final NodeList nl = (NodeList) xPath.compile(XPATH_EXPRESSION).evaluate(document, XPathConstants.NODESET);
+      return nl;
+    } catch (final IOException | SAXException | ParserConfigurationException | XPathExpressionException e) {
       final String msg = "Failed to parse library xml file";
       LOGGER.error(msg, e);
-    } finally {
-      MELMUtils.closeResource(in);
+      throw new MELMException(msg, e);
     }
-    throw new MELMException("Failed to parse xml file");
   }
 
   private void copyFile(@Nonnull final MapElementIcon mapElementIcon, @Nonnull final File file, @Nonnull final IconSize size)
