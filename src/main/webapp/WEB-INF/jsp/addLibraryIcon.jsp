@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Add library icon</title>
+<title>Add library element</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <jsp:include page="css-includes.jsp" />
@@ -15,7 +15,7 @@
   <jsp:include page="header.jsp" />
   <div class="container">
     <div class="page-header">
-      <h1>Add library icon</h1>
+      <h1>Add library element</h1>
     </div>
     <h3>${it.library.name}-${it.library.majorVersion}.${it.library.minorVersion}</h3>
     <form method="POST" action="${ctx}/rest/libraries/icons/add" enctype='multipart/form-data' class="form-horizontal" role="form">

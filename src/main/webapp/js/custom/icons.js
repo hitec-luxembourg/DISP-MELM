@@ -25,6 +25,10 @@ app.controller('IconsCtrl', function($scope, $http) {
     });
   };
 
+  $scope.go = function(path) {
+    window.location = melmContextRoot + path;
+  };
+
   $scope.predicate = 'displayName';
   $scope.loadResources();
 });

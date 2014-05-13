@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="app">
 <head>
-<title>List Library Icons</title>
+<title>List Library elements</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <jsp:include page="css-includes.jsp" />
@@ -16,7 +16,7 @@
   <jsp:include page="header.jsp" />
   <div class="container">
     <div class="page-header">
-      <h1>List library Icons</h1>
+      <h1>List library elements</h1>
     </div>
     <h3>{{libraryIconsModel.library.name}}-{{libraryIconsModel.library.majorVersion}}.{{libraryIconsModel.library.minorVersion}}</h3>
     <table class="table table-striped">

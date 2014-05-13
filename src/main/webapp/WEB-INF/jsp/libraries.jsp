@@ -32,10 +32,13 @@
                 <span class="glyphicon glyphicon-remove"></span> Delete
               </button></li>
             <li><button class="btn btn-primary" ng-click="go('/rest/libraries/icons/'+library.id)">
-                <span class="glyphicon glyphicon-th-list"></span> Icons
+                <span class="glyphicon glyphicon-list"></span> Elements
               </button></li>
             <li><button class="btn btn-primary" ng-click="go('/rest/libraries/update/'+library.id)">
-                <span class="glyphicon glyphicon-refresh"></span> Update
+                <span class="glyphicon glyphicon-refresh"></span> Update metadata
+              </button></li>
+            <li><button class="btn btn-primary" ng-click="go('/rest/libraries/clone/'+library.id)">
+                <span class="glyphicon glyphicon-random"></span> Clone
               </button></li>
             <li><button class="btn btn-primary"
                 ng-click="go('/rest/libraries/zip/'+library.name+'-'+library.majorVersion+'.'+library.minorVersion+'.zip')">
@@ -49,10 +52,10 @@
     </table>
     <hr />
     <ul class="nav nav-pills">
-      <li><button class="btn btn-info" ng-click="go('/rest/libraries/import')">
-          <span class="glyphicon glyphicon-cloud-upload"></span>  Import</button></li>
       <li><button class="btn btn-info" ng-click="go('/rest/libraries/add')">
           <span class="glyphicon glyphicon-plus"></span>  Add</button></li>
+      <li><button class="btn btn-info" ng-click="go('/rest/libraries/import')">
+          <span class="glyphicon glyphicon-cloud-upload"></span>  Import</button></li>
     </ul>
   </div>
     <jsp:include page="footer.jsp" />

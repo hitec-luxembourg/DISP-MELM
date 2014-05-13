@@ -15,7 +15,7 @@ import org.w3c.dom.NodeList;
 public interface MELMService {
   MapElementIcon addIconAndFiles(@Nonnull final String displayName, @Nonnull final File iconLargeFile) throws MELMException;
 
-  MapElementLibrary addLibrary(@Nonnull final String libraryName, @Nonnull final String version, @Nonnull final String iconMd5)
+  MapElementLibrary addLibrary(@Nonnull final String libraryName, final int majorVersion, final int minorVersion, @Nonnull final String iconMd5)
       throws MELMException;
 
   String addLibraryIcon(@Nonnull final File sourceIconFile) throws MELMException;
@@ -23,7 +23,11 @@ public interface MELMService {
   void addLibraryIcon(final long id, final int iconIndex, @Nonnull final String iconName, @Nonnull final String iconDescription,
       final long iconId) throws MELMException;
 
-  String buildArchiveFilename(@Nonnull final String libraryName, @Nonnull final String version);
+  String buildArchiveFilename(@Nonnull final String libraryName, final int majorVersion, final int minorVersion);
+
+  MapElementLibrary cloneLibrary(long id, @Nonnull final String libraryName, final int majorVersion, final int minorVersion,
+      @Nonnull final String iconMd5)
+      throws MELMException;
 
   void deleteIconAndFiles(final long id) throws MELMException;
 
@@ -57,9 +61,9 @@ public interface MELMService {
 
   List<MapElementLibraryIcon> getLibraryIcons(@Nonnull final String libraryName, final int majorVersion, final int minorVersion);
 
-  File getTargetArchiveFile(@Nonnull final String libraryName, @Nonnull final String version) throws MELMException;
+  File getTargetArchiveFile(@Nonnull final String libraryName, final int majorVersion, final int minorVersion) throws MELMException;
 
-  File importLibrary(@Nonnull final String name, @Nonnull final String version, @Nonnull final File libraryFile) throws MELMException;
+  File importLibrary(@Nonnull final String name, final int majorVersion, final int minorVersion, @Nonnull final File libraryFile) throws MELMException;
 
   List<MapElementIcon> listAllIcons();
 
@@ -68,14 +72,14 @@ public interface MELMService {
   void moveImportedIcons(@Nonnull final MapElementLibrary mapElementLibrary, @Nonnull final NodeList nodeList,
       @Nonnull final File libraryFolder) throws MELMException;
 
-  String moveImportedLibraryIcon(@Nonnull final File libraryFolder, @Nonnull final String libraryName, @Nonnull final String version)
+  String moveImportedLibraryIcon(@Nonnull final File libraryFolder, @Nonnull final String libraryName, final int majorVersion, final int minorVersion)
       throws MELMException;
 
-  void updateLibrary(final long id, @Nonnull final String libraryName, @Nonnull final String version, final String iconMd5MaybeNull)
+  void updateLibrary(final long id, @Nonnull final String libraryName, final int majorVersion, final int minorVersion, final String iconMd5MaybeNull)
       throws MELMException;
 
   void updateLibraryIcon(final long id, final int iconIndex, @Nonnull final String iconName, @Nonnull final String iconDescription,
       final long iconId) throws MELMException;
 
-  NodeList validateImportedLibraryAndGetNodeList(@Nonnull final String libraryName, @Nonnull final String version) throws MELMException;
+  NodeList validateImportedLibraryAndGetNodeList(@Nonnull final String libraryName, final int majorVersion, final int minorVersion) throws MELMException;
 }

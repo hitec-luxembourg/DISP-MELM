@@ -17,17 +17,17 @@
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">Libraries <b class="caret"></b></a>
           <ul class="dropdown-menu">
-            <li><a href="${ctx}/rest/libraries"><span class="glyphicon glyphicon-th-list"></span>  List</a></li>
-            <li class="divider"></li>
-            <li><a href="${ctx}/rest/libraries/import"><span class="glyphicon glyphicon-cloud-upload"></span>  Import</a></li>
+            <li><a href="${ctx}/rest/libraries"><span class="glyphicon glyphicon-list"></span>  List</a></li>
             <li class="divider"></li>
             <li><a href="${ctx}/rest/libraries/add"><span class="glyphicon glyphicon-plus"></span>  Add</a></li>
+            <li class="divider"></li>
+            <li><a href="${ctx}/rest/libraries/import"><span class="glyphicon glyphicon-cloud-upload"></span>  Import</a></li>
           </ul>
         </li>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">Icons <b class="caret"></b></a>
           <ul class="dropdown-menu">
-            <li><a href="${ctx}/rest/icons"><span class="glyphicon glyphicon-th-list"></span>  List</a></li>
+            <li><a href="${ctx}/rest/icons"><span class="glyphicon glyphicon-list"></span>  List</a></li>
             <li class="divider"></li>
             <li><a href="${ctx}/rest/icons/add"><span class="glyphicon glyphicon-plus"></span>  Add</a></li>
           </ul>

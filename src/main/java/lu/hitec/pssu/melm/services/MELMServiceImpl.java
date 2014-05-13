@@ -52,6 +52,8 @@ import org.xml.sax.SAXException;
 
 public class MELMServiceImpl implements MELMService {
 
+  public static final String XSD_EXPORT_PATH = "/lu/hitec/pssu/melm/utils/xsd/mapelement-hierarchy-export.xsd";
+
   private static final Logger LOGGER = LoggerFactory.getLogger(MELMServiceImpl.class);
 
   private final File iconsDirectory;
@@ -67,13 +69,11 @@ public class MELMServiceImpl implements MELMService {
   @Autowired
   private MapElementLibraryIconDAO mapElementLibraryIconDAO;
 
-  private final String XPATH_ICON_EXPRESSION = "elements/description/library-icon";
-
   private final String XPATH_EXPRESSION = "elements/choice/node";
 
-  private final String XPATH_SUB_EXPRESSION = "element/point/icon";
+  private final String XPATH_ICON_EXPRESSION = "elements/description/library-icon";
 
-  public static final String XSD_EXPORT_PATH = "/lu/hitec/pssu/melm/utils/xsd/mapelement-hierarchy-export.xsd";
+  private final String XPATH_SUB_EXPRESSION = "element/point/icon";
 
   public MELMServiceImpl(final File librariesDirectory, final File iconsDirectory) {
     if (!librariesDirectory.isDirectory() && !librariesDirectory.mkdirs()) {
@@ -132,14 +132,10 @@ public class MELMServiceImpl implements MELMService {
 
   @Override
   @Transactional
-  public MapElementLibrary addLibrary(@Nonnull final String libraryName, @Nonnull final String version, @Nonnull final String iconMd5)
-      throws MELMException {
+  public MapElementLibrary addLibrary(@Nonnull final String libraryName, final int majorVersion, final int minorVersion,
+      @Nonnull final String iconMd5) throws MELMException {
     assert libraryName != null : "libraryName is null";
-    assert version != null : "version is null";
     assert iconMd5 != null : "iconMd5 is null";
-
-    final int majorVersion = MELMUtils.getMajorVersion(version);
-    final int minorVersion = MELMUtils.getMinorVersion(version);
     try {
       mapElementLibraryDAO.getMapElementLibrary(libraryName, majorVersion, minorVersion);
       final String msg = String.format("Library with name %s and version %d.%d already exist", libraryName, majorVersion, minorVersion);
@@ -193,10 +189,35 @@ public class MELMServiceImpl implements MELMService {
    */
   @Nonnull
   @Override
-  public String buildArchiveFilename(@Nonnull final String libraryName, @Nonnull final String version) {
+  public String buildArchiveFilename(@Nonnull final String libraryName, final int majorVersion, final int minorVersion) {
     assert libraryName != null : "Library name is null";
-    assert version != null : "Version is null";
-    return String.format("%s-%s.zip", libraryName, version);
+    return String.format("%s-%s.%s.zip", libraryName, majorVersion, minorVersion);
+  }
+
+  @Override
+  @Transactional
+  public MapElementLibrary cloneLibrary(final long id, @Nonnull final String libraryName, final int majorVersion, final int minorVersion,
+      @Nonnull final String iconMd5) throws MELMException {
+    assert libraryName != null : "libraryName is null";
+
+    try {
+      mapElementLibraryDAO.getMapElementLibrary(libraryName, majorVersion, minorVersion);
+      final String msg = String.format("Library with name %s and version %d.%d already exist", libraryName, majorVersion, minorVersion);
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug(msg);
+      }
+      throw new MELMException(msg);
+    } catch (final javax.persistence.NoResultException e) {
+      final MapElementLibrary oldMapElementLibrary = mapElementLibraryDAO.getMapElementLibrary(id);
+      final MapElementLibrary newMapElementLibrary = mapElementLibraryDAO.addMapElementLibrary(libraryName, majorVersion, minorVersion,
+          iconMd5);
+      for (final MapElementLibraryIcon mapElementLibraryIcon : mapElementLibraryIconDAO.getIconsInLibrary(oldMapElementLibrary)) {
+        mapElementLibraryIconDAO.addIconToLibrary(newMapElementLibrary, mapElementLibraryIcon.getIcon(),
+            mapElementLibraryIcon.getIndexOfIconInLibrary(), mapElementLibraryIcon.getIconNameInLibrary(),
+            mapElementLibraryIcon.getIconDescriptionInLibrary());
+      }
+      return newMapElementLibrary;
+    }
   }
 
   @Override
@@ -511,28 +532,26 @@ public class MELMServiceImpl implements MELMService {
   }
 
   @Override
-  public File getTargetArchiveFile(@Nonnull final String libraryName, @Nonnull final String version) throws MELMException {
+  public File getTargetArchiveFile(@Nonnull final String libraryName, final int majorVersion, final int minorVersion) throws MELMException {
     assert libraryName != null : "Library name is null";
-    assert version != null : "Version is null";
     final File archiveDirectory = LibraryValidator.buildDirectoryForLibraryVersion(
-        new File(librariesDirectory, "imported").getAbsolutePath(), libraryName, version);
+        new File(librariesDirectory, "imported").getAbsolutePath(), libraryName, String.format("%s.%s", majorVersion, minorVersion));
     if (archiveDirectory == null) {
       throw new MELMException("Failed to create target folder to store new file");
     }
 
-    final String newArchiveFilename = buildArchiveFilename(libraryName, version);
+    final String newArchiveFilename = buildArchiveFilename(libraryName, majorVersion, minorVersion);
     final File targetArchiveFile = new File(archiveDirectory, newArchiveFilename);
 
     return targetArchiveFile;
   }
 
   @Override
-  public File importLibrary(@Nonnull final String libraryName, @Nonnull final String version, @Nonnull final File libraryFile)
-      throws MELMException {
+  public File importLibrary(@Nonnull final String libraryName, final int majorVersion, final int minorVersion,
+      @Nonnull final File libraryFile) throws MELMException {
     assert libraryName != null : "Library name is null";
-    assert version != null : "Version is null";
     assert libraryFile != null : "Library file is null";
-    final File targetArchiveFile = getTargetArchiveFile(libraryName, version);
+    final File targetArchiveFile = getTargetArchiveFile(libraryName, majorVersion, minorVersion);
 
     if (targetArchiveFile.isFile()) {
       LOGGER.warn(String.format("Target file for picture : %s exists, will be overwritten", targetArchiveFile.getName()));
@@ -607,10 +626,11 @@ public class MELMServiceImpl implements MELMService {
           for (final IconSize iconSize : IconSize.values()) {
             moveImportedFile(libraryFolder, sourceIconLargeFile.getName(), iconSize, mapElementIcon);
           }
-          mapElementLibraryIconDAO.addIconToLibrary(mapElementLibrary, mapElementIcon, i++, itemName, itemDescription);
+          mapElementLibraryIconDAO.addIconToLibrary(mapElementLibrary, mapElementIcon, i, itemName, itemDescription);
         } else {
           final MapElementIcon mapElementIcon = mapElementIconDAO.getMapElementIcon(hashForLargeFile, sourceIconLargeFile.length());
-          mapElementLibraryIconDAO.addIconToLibrary(mapElementLibrary, mapElementIcon, i++, itemName, itemDescription);
+          LOGGER.debug(i + ";" + itemName + ";" + itemDescription);
+          mapElementLibraryIconDAO.addIconToLibrary(mapElementLibrary, mapElementIcon, i, itemName, itemDescription);
         }
       }
     } catch (final IOException | XPathExpressionException e) {
@@ -620,20 +640,19 @@ public class MELMServiceImpl implements MELMService {
   }
 
   @Override
-  public String moveImportedLibraryIcon(@Nonnull final File libraryFolder, @Nonnull final String libraryName, @Nonnull final String version)
-      throws MELMException {
+  public String moveImportedLibraryIcon(@Nonnull final File libraryFolder, @Nonnull final String libraryName, final int majorVersion,
+      final int minorVersion) throws MELMException {
     assert libraryFolder != null : "libraryFolder is null";
     assert libraryName != null : "Library name is null";
-    assert version != null : "Version is null";
 
-     String iconFileName;
+    String iconFileName;
     final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     final XPath xPath = XPathFactory.newInstance().newXPath();
     final String xsdPath = this.getClass().getResource(LibraryValidator.XSD_PATH).getPath();
     try {
       final DocumentBuilder builder = factory.newDocumentBuilder();
       final File xmlFile = LibraryValidator.validateLibrary(xsdPath, new File(librariesDirectory, "imported").getAbsolutePath(),
-          libraryName, version);
+          libraryName, String.format("%s.%s", majorVersion, minorVersion));
       final Document document = builder.parse(xmlFile);
       final Node node = (Node) xPath.compile(XPATH_ICON_EXPRESSION).evaluate(document, XPathConstants.NODE);
       final Element element = (Element) node;
@@ -668,10 +687,8 @@ public class MELMServiceImpl implements MELMService {
   }
 
   @Override
-  public void updateLibrary(final long id, @Nonnull final String libraryName, @Nonnull final String version, final String iconMd5MaybeNull)
-      throws MELMException {
-    final int majorVersion = MELMUtils.getMajorVersion(version);
-    final int minorVersion = MELMUtils.getMinorVersion(version);
+  public void updateLibrary(final long id, @Nonnull final String libraryName, final int majorVersion, final int minorVersion,
+      final String iconMd5MaybeNull) throws MELMException {
     mapElementLibraryDAO.updateMapElementLibrary(id, libraryName, majorVersion, minorVersion, iconMd5MaybeNull);
   }
 
@@ -690,15 +707,15 @@ public class MELMServiceImpl implements MELMService {
   }
 
   @Override
-  public NodeList validateImportedLibraryAndGetNodeList(@Nonnull final String libraryName, @Nonnull final String version)
+  public NodeList validateImportedLibraryAndGetNodeList(@Nonnull final String libraryName, final int majorVersion, final int minorVersion)
       throws MELMException {
     assert libraryName != null : "Library name is null";
-    assert version != null : "Version is null";
 
     final String xsdPath = this.getClass().getResource(LibraryValidator.XSD_PATH).getPath();
     final File xmlFile;
     try {
-      xmlFile = LibraryValidator.validateLibrary(xsdPath, new File(librariesDirectory, "imported").getAbsolutePath(), libraryName, version);
+      xmlFile = LibraryValidator.validateLibrary(xsdPath, new File(librariesDirectory, "imported").getAbsolutePath(), libraryName,
+          String.format("%s.%s", majorVersion, minorVersion));
     } catch (final LibraryValidatorException e) {
       final String msg = "Failed to validate library xml file";
       throw new MELMException(msg, e);

@@ -21,16 +21,16 @@
     <h2>Libraries</h2>
     <ul class="nav nav-pills">
       <li><button class="btn btn-primary" ng-click="go('/rest/libraries')">
-          <span class="glyphicon glyphicon-th-list"></span>  List</button></li>
-      <li><button class="btn btn-info" ng-click="go('/rest/libraries/import')">
-          <span class="glyphicon glyphicon-cloud-upload"></span>  Import</button></li>
+          <span class="glyphicon glyphicon-list"></span>  List</button></li>
       <li><button class="btn btn-info" ng-click="go('/rest/libraries/add')">
           <span class="glyphicon glyphicon-plus"></span>  Add</button></li>
+      <li><button class="btn btn-info" ng-click="go('/rest/libraries/import')">
+          <span class="glyphicon glyphicon-cloud-upload"></span>  Import</button></li>
     </ul>
     <h2>Icons</h2>
     <ul class="nav nav-pills">
       <li><button class="btn btn-primary" ng-click="go('/rest/icons')">
-          <span class="glyphicon glyphicon-th-list"></span>  List</button></li>
+          <span class="glyphicon glyphicon-list"></span>  List</button></li>
       <li><button class="btn btn-info" ng-click="go('/rest/icons/add')">
           <span class="glyphicon glyphicon-plus"></span>  Add</button></li>
     </ul>

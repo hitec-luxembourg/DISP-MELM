@@ -86,7 +86,7 @@ public class MELMServiceImplTest {
   @Test
   public void testAddZipFile() throws MELMException, URISyntaxException, IOException {
     final File archiveFile = new ClassPathResource("sample/zip/emergency.lu-1.0.zip").getFile();
-    final File targetArchiveFile = melmService.importLibrary("emergency.lu", "1.0", archiveFile);
+    final File targetArchiveFile = melmService.importLibrary("emergency.lu", 1, 0, archiveFile);
     assertNotNull("Target archive file is null", targetArchiveFile);
     assertTrue("Target archive file should exist", targetArchiveFile.exists());
     assertEquals(archiveFile.length(), targetArchiveFile.length());
@@ -94,27 +94,27 @@ public class MELMServiceImplTest {
 
   @Test
   public void testBuildArchiveFilename() {
-    final String archiveFilename = melmService.buildArchiveFilename("emergency.lu", "1.1");
+    final String archiveFilename = melmService.buildArchiveFilename("emergency.lu", 1, 1);
     assertEquals("emergency.lu-1.1.zip", archiveFilename);
   }
 
   @Test
   public void testExtractZipFile() throws MELMException, URISyntaxException, IOException {
     {
-      final File targetArchiveFile = melmService.getTargetArchiveFile("emergency.lu", "1.0");
+      final File targetArchiveFile = melmService.getTargetArchiveFile("emergency.lu", 1, 0);
       assertNotNull(targetArchiveFile);
       assertFalse("Target archive file should not exist", targetArchiveFile.exists());
     }
     {
       final File tmpZipFile = new ClassPathResource("sample/zip/emergency.lu-1.0.zip").getFile();
-      final File targetArchiveFile = melmService.importLibrary("emergency.lu", "1.0", tmpZipFile);
+      final File targetArchiveFile = melmService.importLibrary("emergency.lu", 1, 0, tmpZipFile);
       assertNotNull("Target archive file is null", targetArchiveFile);
       assertTrue("Target archive file should exist", targetArchiveFile.exists());
       assertEquals(tmpZipFile.length(), targetArchiveFile.length());
       melmService.extractImportedLibrary(targetArchiveFile);
     }
     {
-      final File targetArchiveFile = melmService.getTargetArchiveFile("emergency.lu", "1.0");
+      final File targetArchiveFile = melmService.getTargetArchiveFile("emergency.lu", 1, 0);
       assertNotNull(targetArchiveFile);
       assertTrue("Target archive file should exist", targetArchiveFile.exists());
     }
@@ -122,18 +122,18 @@ public class MELMServiceImplTest {
 
   @Test
   public void testGetTargetArchiveFile() throws MELMException {
-    final File archiveFile = melmService.getTargetArchiveFile("emergency.lu", "1.1");
+    final File archiveFile = melmService.getTargetArchiveFile("emergency.lu", 1, 1);
     assertNotNull("Archive file is null", archiveFile);
     assertFalse("Archive file should not exist", archiveFile.exists());
   }
 
   @Test
   public void testMoveImportedIcons() throws MELMException, IOException {
+    final MapElementLibrary mapElementLibrary = melmService.addLibrary("emergency.lu", 1, 1, "");
     final File tmpZipFile = new ClassPathResource("sample/zip/emergency.lu-1.1.zip").getFile();
-    final File targetArchiveFile = melmService.importLibrary("emergency.lu", "1.1", tmpZipFile);
+    final File targetArchiveFile = melmService.importLibrary("emergency.lu", 1, 1, tmpZipFile);
     final File libraryFolder = melmService.extractImportedLibrary(targetArchiveFile);
-    final NodeList nodeList = melmService.validateImportedLibraryAndGetNodeList("emergency.lu", "1.1");
-    final MapElementLibrary mapElementLibrary = melmService.addLibrary("emergency.lu", "1.1", "");
+    final NodeList nodeList = melmService.validateImportedLibraryAndGetNodeList("emergency.lu", 1, 1);
     melmService.moveImportedIcons(mapElementLibrary, nodeList, libraryFolder);
   }
 

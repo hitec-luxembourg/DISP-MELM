@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Update library metadata</title>
+<title>Clone library</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <jsp:include page="css-includes.jsp" />
@@ -15,9 +15,9 @@
   <jsp:include page="header.jsp" />
   <div class="container">
     <div class="page-header">
-      <h1>Update library metadata</h1>
+      <h1>Clone library</h1>
     </div>
-    <form method="POST" action="${ctx}/rest/libraries/update" enctype='multipart/form-data' class="form-horizontal" role="form">
+    <form method="POST" action="${ctx}/rest/libraries/clone" enctype='multipart/form-data' class="form-horizontal" role="form">
       <input name="id" id="id" type="hidden" value="${it.id}" />
       <div class="form-group">
         <label for="libraryName" class="col-sm-2 control-label">Name</label>
@@ -33,20 +33,14 @@
         </div>
       </div>
       <div class="form-group">
-        <label class="col-sm-2 control-label">Current Icon</label>
-        <div class="col-sm-10">
-          <img src="${ctx}/rest/libraries/icon/file/${it.id}">
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="libraryIconFile" class="col-sm-2 control-label">New Icon</label>
+        <label for="libraryIconFile" class="col-sm-2 control-label">Icon</label>
         <div class="col-sm-10">
           <input type="file" id="libraryIconFile" name="libraryIconFile" maxlength='1000000' accept='image/png'>
         </div>
       </div>
       <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
-          <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-refresh"></span>  Update</button>
+          <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-random"></span>  Clone</button>
         </div>
       </div>
     </form>

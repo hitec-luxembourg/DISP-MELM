@@ -208,6 +208,14 @@ public class MELMResource {
 
   @GET
   @Produces(MediaType.TEXT_HTML)
+  @Path("/libraries/clone/{id}")
+  public Response gotoCloneLibrary(@PathParam("id") final long id) {
+    final MapElementLibrary library = melmService.getLibrary(id);
+    return Response.ok(new Viewable("/cloneLibrary", library)).build();
+  }
+
+  @GET
+  @Produces(MediaType.TEXT_HTML)
   @Path("/libraries/icons/update/{libraryIconId}")
   public Response gotoUpdateLibraryIcon(@PathParam("libraryIconId") final long libraryIconId) {
     final MapElementLibraryIcon libraryIcon = melmService.getLibraryIcon(libraryIconId);
@@ -254,7 +262,10 @@ public class MELMResource {
         return Response.status(Status.BAD_REQUEST).entity("Icon file is invalid").build();
       }
       final String hashForFile = melmService.addLibraryIcon(libraryUpload.getIconFile());
-      melmService.addLibrary(libraryUpload.getLibraryName(), libraryUpload.getVersion(), hashForFile);
+      final int majorVersion = MELMUtils.getMajorVersion(libraryUpload.getVersion());
+      final int minorVersion = MELMUtils.getMinorVersion(libraryUpload.getVersion());
+
+      melmService.addLibrary(libraryUpload.getLibraryName(), majorVersion, minorVersion, hashForFile);
     } catch (final MELMException e) {
       LOGGER.warn("Error in performAddLibrary", e);
       return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
@@ -312,15 +323,18 @@ public class MELMResource {
       if (libraryUpload.getZipFile().length() == 0) {
         return Response.status(Status.BAD_REQUEST).entity("Zip file is invalid").build();
       }
+      final int majorVersion = MELMUtils.getMajorVersion(libraryUpload.getVersion());
+      final int minorVersion = MELMUtils.getMinorVersion(libraryUpload.getVersion());
       final File zipFile = melmService
-          .importLibrary(libraryUpload.getLibraryName(), libraryUpload.getVersion(), libraryUpload.getZipFile());
+          .importLibrary(libraryUpload.getLibraryName(), majorVersion, minorVersion, libraryUpload.getZipFile());
       final File libraryFolder = melmService.extractImportedLibrary(zipFile);
       if (libraryFolder != null) {
-        final String iconMd5 = melmService.moveImportedLibraryIcon(libraryFolder, libraryUpload.getLibraryName(), libraryUpload.getVersion());
-        final MapElementLibrary mapElementLibrary = melmService.addLibrary(libraryUpload.getLibraryName(), libraryUpload.getVersion(),
+        final String iconMd5 = melmService.moveImportedLibraryIcon(libraryFolder, libraryUpload.getLibraryName(), majorVersion,
+            minorVersion);
+        final MapElementLibrary mapElementLibrary = melmService.addLibrary(libraryUpload.getLibraryName(), majorVersion, minorVersion,
             iconMd5);
-        final NodeList nodeList = melmService.validateImportedLibraryAndGetNodeList(libraryUpload.getLibraryName(),
-            libraryUpload.getVersion());
+        final NodeList nodeList = melmService.validateImportedLibraryAndGetNodeList(libraryUpload.getLibraryName(), majorVersion,
+            minorVersion);
         melmService.moveImportedIcons(mapElementLibrary, nodeList, libraryFolder);
       }
     } catch (final MELMException e) {
@@ -343,15 +357,44 @@ public class MELMResource {
 
     try {
       final LibraryUpload libraryUpload = parseLibraryUpload();
+      final int majorVersion = MELMUtils.getMajorVersion(libraryUpload.getVersion());
+      final int minorVersion = MELMUtils.getMinorVersion(libraryUpload.getVersion());
       if (libraryUpload.getIconFile().length() != 0) {
         final String hashForFile = melmService.addLibraryIcon(libraryUpload.getIconFile());
-        melmService.updateLibrary(Long.parseLong(libraryUpload.getId()), libraryUpload.getLibraryName(), libraryUpload.getVersion(),
+        melmService.updateLibrary(Long.parseLong(libraryUpload.getId()), libraryUpload.getLibraryName(), majorVersion, minorVersion,
             hashForFile);
       } else {
-        melmService.updateLibrary(Long.parseLong(libraryUpload.getId()), libraryUpload.getLibraryName(), libraryUpload.getVersion(), null);
+        melmService.updateLibrary(Long.parseLong(libraryUpload.getId()), libraryUpload.getLibraryName(), majorVersion, minorVersion, null);
       }
     } catch (final MELMException e) {
       LOGGER.warn("Error in performUpdateLibrary", e);
+      return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+    }
+    return gotoListLibraries();
+  }
+
+  @POST
+  @Consumes(MediaType.MULTIPART_FORM_DATA)
+  @Produces(MediaType.TEXT_HTML)
+  @Path("/libraries/clone")
+  public Response performCloneLibrary() throws MELMException {
+    if (!ServletFileUpload.isMultipartContent(request)) {
+      LOGGER.warn("Got invalid request, no multipart content");
+      return Response.status(Status.BAD_REQUEST).entity("Invalid request, no multipart content").build();
+    }
+
+    try {
+      final LibraryUpload libraryUpload = parseLibraryUpload();
+      if (libraryUpload.getIconFile().length() == 0) {
+        return Response.status(Status.BAD_REQUEST).entity("Icon file is invalid").build();
+      }
+      final String hashForFile = melmService.addLibraryIcon(libraryUpload.getIconFile());
+      final int majorVersion = MELMUtils.getMajorVersion(libraryUpload.getVersion());
+      final int minorVersion = MELMUtils.getMinorVersion(libraryUpload.getVersion());
+      melmService.cloneLibrary(Long.parseLong(libraryUpload.getId()), libraryUpload.getLibraryName(), majorVersion, minorVersion,
+          hashForFile);
+    } catch (final MELMException e) {
+      LOGGER.warn("Error in performCloneLibrary", e);
       return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
     }
     return gotoListLibraries();

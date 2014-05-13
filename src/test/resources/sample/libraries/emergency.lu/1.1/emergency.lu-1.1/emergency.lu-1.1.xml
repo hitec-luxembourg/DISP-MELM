@@ -63,14 +63,6 @@
         </point>
       </element>
     </node>
-    <node hierarchy-code="1.6" unique-code="CarRepairRefuel" choice-value="Repair and refuel"
-      description="Repair and refuel">
-      <element description="Repair and refuel">
-        <point>
-          <icon file="CarRepairRefuel" anchor="NE" />
-        </point>
-      </element>
-    </node>
     <node hierarchy-code="1.7" unique-code="CommunicationRoom"
       choice-value="Communication room" description="Communication room">
       <element description="Communication room">
