@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
@@ -22,9 +24,13 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import lu.hitec.pssu.melm.exceptions.MELMException;
+import lu.hitec.pssu.melm.persistence.dto.DTOMapElementCustomProperty;
+import lu.hitec.pssu.melm.persistence.dto.DTOMapElementLibraryIcon;
+import lu.hitec.pssu.melm.persistence.entity.MapElementCustomProperty;
 import lu.hitec.pssu.melm.persistence.entity.MapElementLibrary;
 import lu.hitec.pssu.melm.persistence.entity.MapElementLibraryIcon;
 import lu.hitec.pssu.melm.services.MELMService;
+import lu.hitec.pssu.melm.utils.CustomPropertyType;
 import lu.hitec.pssu.melm.utils.MELMUtils;
 
 import org.apache.commons.fileupload.FileItemIterator;
@@ -37,6 +43,7 @@ import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.server.mvc.Viewable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.NodeList;
@@ -84,6 +91,13 @@ public class MELMResource {
     return Response.ok().build();
   }
 
+  @POST
+  @Path("/libraries/icons/properties/delete")
+  public Response deleteProperty(@FormParam("id") final long id) {
+    melmService.deleteProperty(id);
+    return Response.ok().build();
+  }
+
   @GET
   @Produces(MediaType.TEXT_HTML)
   @Path("/icons/details/{id}")
@@ -125,7 +139,15 @@ public class MELMResource {
   @Path("/libraries/icons/{id}")
   public Response getLibraryIcons(@PathParam("id") final long id) {
     final MapElementLibrary library = melmService.getLibrary(id);
-    return Response.ok(new LibraryIconsModel(library, melmService.getLibraryIcons(id))).build();
+    // Convert to DTO in order to prevent jackson throwing LazyInitializationException.
+    final List<DTOMapElementLibraryIcon> results = new ArrayList<>();
+    final List<MapElementLibraryIcon> libraryIcons = melmService.getLibraryIcons(id);
+    for (final MapElementLibraryIcon libraryIcon : libraryIcons) {
+      final DTOMapElementLibraryIcon dtoLibraryIcon = new DTOMapElementLibraryIcon();
+      BeanUtils.copyProperties(libraryIcon, dtoLibraryIcon);
+      results.add(dtoLibraryIcon);
+    }
+    return Response.ok(new LibraryIconsModel(library, results)).build();
   }
 
   @GET
@@ -140,6 +162,21 @@ public class MELMResource {
   @Path("/libraries")
   public Response getListLibraries() {
     return Response.ok(melmService.listAllLibraries()).build();
+  }
+
+  @GET
+  @Produces(MediaType.APPLICATION_JSON)
+  @Path("/libraries/icons/properties/{id}")
+  public Response getProperties(@PathParam("id") final long id) {
+    final List<MapElementCustomProperty> properties = melmService.getProperties(id);
+    // Convert to DTO in order to prevent jackson throwing LazyInitializationException.
+    final List<DTOMapElementCustomProperty> results = new ArrayList<>();
+    for (final MapElementCustomProperty property : properties) {
+      final DTOMapElementCustomProperty dtoProperty = new DTOMapElementCustomProperty();
+      BeanUtils.copyProperties(property, dtoProperty);
+      results.add(dtoProperty);
+    }
+    return Response.ok(results).build();
   }
 
   @GET
@@ -166,6 +203,14 @@ public class MELMResource {
 
   @GET
   @Produces(MediaType.TEXT_HTML)
+  @Path("/libraries/clone/{id}")
+  public Response gotoCloneLibrary(@PathParam("id") final long id) {
+    final MapElementLibrary library = melmService.getLibrary(id);
+    return Response.ok(new Viewable("/cloneLibrary", library)).build();
+  }
+
+  @GET
+  @Produces(MediaType.TEXT_HTML)
   @Path("/libraries/import")
   public Response gotoImportLibrary() {
     return Response.ok(new Viewable("/importLibrary")).build();
@@ -175,7 +220,7 @@ public class MELMResource {
   @Produces(MediaType.TEXT_HTML)
   @Path("/libraries/icons/{id}")
   public Response gotoLibraryIcons(@PathParam("id") final long id) {
-    return Response.ok(new Viewable("/libraryIcons")).build();
+    return Response.ok(new Viewable("/libraryIcons", id)).build();
   }
 
   @GET
@@ -194,6 +239,13 @@ public class MELMResource {
 
   @GET
   @Produces(MediaType.TEXT_HTML)
+  @Path("/libraries/icons/properties/{id}")
+  public Response gotoProperties(@PathParam("id") final long id) {
+    return Response.ok(new Viewable("/properties", id)).build();
+  }
+
+  @GET
+  @Produces(MediaType.TEXT_HTML)
   public Response gotoStart() {
     return Response.ok(new Viewable("/start")).build();
   }
@@ -204,14 +256,6 @@ public class MELMResource {
   public Response gotoUpdateLibrary(@PathParam("id") final long id) {
     final MapElementLibrary library = melmService.getLibrary(id);
     return Response.ok(new Viewable("/updateLibrary", library)).build();
-  }
-
-  @GET
-  @Produces(MediaType.TEXT_HTML)
-  @Path("/libraries/clone/{id}")
-  public Response gotoCloneLibrary(@PathParam("id") final long id) {
-    final MapElementLibrary library = melmService.getLibrary(id);
-    return Response.ok(new Viewable("/cloneLibrary", library)).build();
   }
 
   @GET
@@ -300,6 +344,41 @@ public class MELMResource {
     }
   }
 
+  @POST
+  @Path("/libraries/icons/properties/add")
+  public Response performAddProperty(@FormParam("id") final long id, @FormParam("uniqueName") final String uniqueName,
+      @FormParam("type") final String type) throws MELMException {
+    melmService.addProperty(id, uniqueName, CustomPropertyType.valueOf(type.toUpperCase()));
+    return Response.ok().build();
+  }
+
+  @POST
+  @Consumes(MediaType.MULTIPART_FORM_DATA)
+  @Produces(MediaType.TEXT_HTML)
+  @Path("/libraries/clone")
+  public Response performCloneLibrary() throws MELMException {
+    if (!ServletFileUpload.isMultipartContent(request)) {
+      LOGGER.warn("Got invalid request, no multipart content");
+      return Response.status(Status.BAD_REQUEST).entity("Invalid request, no multipart content").build();
+    }
+
+    try {
+      final LibraryUpload libraryUpload = parseLibraryUpload();
+      if (libraryUpload.getIconFile().length() == 0) {
+        return Response.status(Status.BAD_REQUEST).entity("Icon file is invalid").build();
+      }
+      final String hashForFile = melmService.addLibraryIcon(libraryUpload.getIconFile());
+      final int majorVersion = MELMUtils.getMajorVersion(libraryUpload.getVersion());
+      final int minorVersion = MELMUtils.getMinorVersion(libraryUpload.getVersion());
+      melmService.cloneLibrary(Long.parseLong(libraryUpload.getId()), libraryUpload.getLibraryName(), majorVersion, minorVersion,
+          hashForFile);
+    } catch (final MELMException e) {
+      LOGGER.warn("Error in performCloneLibrary", e);
+      return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+    }
+    return gotoListLibraries();
+  }
+
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   @Path("/hello/{value}")
@@ -368,33 +447,6 @@ public class MELMResource {
       }
     } catch (final MELMException e) {
       LOGGER.warn("Error in performUpdateLibrary", e);
-      return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
-    }
-    return gotoListLibraries();
-  }
-
-  @POST
-  @Consumes(MediaType.MULTIPART_FORM_DATA)
-  @Produces(MediaType.TEXT_HTML)
-  @Path("/libraries/clone")
-  public Response performCloneLibrary() throws MELMException {
-    if (!ServletFileUpload.isMultipartContent(request)) {
-      LOGGER.warn("Got invalid request, no multipart content");
-      return Response.status(Status.BAD_REQUEST).entity("Invalid request, no multipart content").build();
-    }
-
-    try {
-      final LibraryUpload libraryUpload = parseLibraryUpload();
-      if (libraryUpload.getIconFile().length() == 0) {
-        return Response.status(Status.BAD_REQUEST).entity("Icon file is invalid").build();
-      }
-      final String hashForFile = melmService.addLibraryIcon(libraryUpload.getIconFile());
-      final int majorVersion = MELMUtils.getMajorVersion(libraryUpload.getVersion());
-      final int minorVersion = MELMUtils.getMinorVersion(libraryUpload.getVersion());
-      melmService.cloneLibrary(Long.parseLong(libraryUpload.getId()), libraryUpload.getLibraryName(), majorVersion, minorVersion,
-          hashForFile);
-    } catch (final MELMException e) {
-      LOGGER.warn("Error in performCloneLibrary", e);
       return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
     }
     return gotoListLibraries();

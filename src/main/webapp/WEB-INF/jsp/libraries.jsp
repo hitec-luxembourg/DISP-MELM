@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="app">
 <head>
-<title>List Libraries</title>
+<title>MELM - List Libraries</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <jsp:include page="css-includes.jsp" />
@@ -52,12 +52,14 @@
         <td align="left"><img src="${ctx}/rest/libraries/icon/file/{{library.id}}"></td>
       </tr>
     </table>
-    <ul class="pagination">
-      <li><a ng-hide="pagination.page == 0" ng-click="pagination.prevPage()">&laquo;</a></li>
-      <li ng-repeat="n in [] | range: pagination.numPages" ng-class="{current: n == pagination.page}"><a
-        ng-click="pagination.toPageId(n)">{{n + 1}}</a></li>
-      <li><a ng-hide="pagination.page + 1 >= pagination.numPages" ng-click="pagination.nextPage()">&raquo;</a></li>
-    </ul>
+    <div class="pagination-centered">
+      <ul class="pagination">
+        <li><a ng-hide="pagination.page == 0" ng-click="pagination.prevPage()">&laquo;</a></li>
+        <li ng-repeat="n in [] | range: pagination.numPages" ng-class="{current: n == pagination.page}"><a
+          ng-click="pagination.toPageId(n)">{{n + 1}}</a></li>
+        <li><a ng-hide="pagination.page + 1 >= pagination.numPages" ng-click="pagination.nextPage()">&raquo;</a></li>
+      </ul>
+    </div>
     <hr />
     <ul class="nav nav-pills">
       <li><button class="btn btn-info" ng-click="go('/rest/libraries/add')">

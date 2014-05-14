@@ -10,14 +10,12 @@ import lu.hitec.pssu.melm.persistence.entity.MapElementLibraryIcon;
 
 public interface MapElementLibraryIconDAO {
 
-  void addIconToLibrary(final MapElementLibrary library, final MapElementIcon icon, final int indexOfIconInLibrary,
+  MapElementLibraryIcon addIconToLibrary(final MapElementLibrary library, final MapElementIcon icon, final int indexOfIconInLibrary,
       final String iconNameInLibrary, final String iconDescriptionInLibrary);
   
   void updateLibraryIcon(final long id, final MapElementIcon icon, final int indexOfIconInLibrary,
       final String iconNameInLibrary, final String iconDescriptionInLibrary);
 
-  //void removeIconFromLibrary(final MapElementLibrary library, final MapElementIcon icon);
-  
   void deleteLibraryIcon(final long id);
 
   List<MapElementLibraryIcon> getIconsInLibrary(final MapElementLibrary library);

@@ -1,9 +1,14 @@
 
+    alter table map_element_custom_property 
+        drop constraint FKE80525BD3A7561BD;
+
     alter table map_element_library_icon 
         drop constraint fk_meli_to_icon;
 
     alter table map_element_library_icon 
         drop constraint fk_meli_to_ibrary;
+
+    drop table map_element_custom_property;
 
     drop table map_element_icon;
 
@@ -11,11 +16,22 @@
 
     drop table map_element_library_icon;
 
+    drop sequence map_element_custom_property_seq;
+
     drop sequence map_element_icon_seq;
 
     drop sequence map_element_library_icon_seq;
 
     drop sequence map_element_library_seq;
+
+    create table map_element_custom_property (
+        id int8 not null,
+        type varchar(255) not null,
+        unique_name varchar(255) not null,
+        map_element_library_icon_id int8 not null,
+        primary key (id),
+        unique (map_element_library_icon_id, unique_name)
+    );
 
     create table map_element_icon (
         id int8 not null,
@@ -49,6 +65,11 @@
         unique (library_id, index_of_icon_in_library)
     );
 
+    alter table map_element_custom_property 
+        add constraint FKE80525BD3A7561BD 
+        foreign key (map_element_library_icon_id) 
+        references map_element_library_icon;
+
     alter table map_element_library_icon 
         add constraint fk_meli_to_icon 
         foreign key (icon_id) 
@@ -58,6 +79,8 @@
         add constraint fk_meli_to_ibrary 
         foreign key (library_id) 
         references map_element_library;
+
+    create sequence map_element_custom_property_seq;
 
     create sequence map_element_icon_seq;
 

@@ -87,4 +87,10 @@ public class MapElementLibrary {
     this.name = name;
   }
 
+  @Override
+  public String toString() {
+    return "MapElementLibrary [iconMd5=" + iconMd5 + ", id=" + id + ", majorVersion=" + majorVersion + ", minorVersion=" + minorVersion
+        + ", name=" + name + "]";
+  }
+
 }

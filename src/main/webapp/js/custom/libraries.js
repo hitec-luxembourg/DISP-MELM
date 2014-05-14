@@ -7,7 +7,7 @@ app.controller('LibrariesCtrl', [ '$scope', '$http', '$location', 'Pagination', 
   };
 
   $scope.deleteResource = function(id) {
-    if (!confirm("Do you really want to delete this item ?")) {
+    if (!confirm("Do you really want to delete this resource ?")) {
       return;
     }
     var params = encodeParams({
@@ -20,7 +20,7 @@ app.controller('LibrariesCtrl', [ '$scope', '$http', '$location', 'Pagination', 
     }).success(function() {
       $scope.loadResources();
     }).error(function() {
-      alert("Item deletion threw an error.");
+      alert("Resource deletion threw an error.");
     });
   };
 

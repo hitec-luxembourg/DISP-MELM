@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="app">
 <head>
-<title>List Library elements</title>
+<title>MELM - List Library elements</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <jsp:include page="css-includes.jsp" />
@@ -16,7 +16,9 @@
   <jsp:include page="header.jsp" />
   <div class="container">
     <div class="page-header">
-      <h1>List library elements <small>{{libraryIconsModel.library.name}}-{{libraryIconsModel.library.majorVersion}}.{{libraryIconsModel.library.minorVersion}}</small></h1>
+      <h1>
+        List library elements <small>{{libraryIconsModel.library.name}}-{{libraryIconsModel.library.majorVersion}}.{{libraryIconsModel.library.minorVersion}}</small>
+      </h1>
     </div>
     <table class="table table-striped">
       <tr>
@@ -26,11 +28,19 @@
         <td align="left"><a href="" ng-click="predicate='iconDescriptionInLibrary'; reverse=!reverse">Icon Description</a></td>
         <td>Preview</td>
       </tr>
-      <tr ng-repeat="icon in libraryIconsModel.icons | orderBy:predicate:reverse | startFrom: pagination.page * pagination.perPage | limitTo: pagination.perPage">
+      <tr
+        ng-repeat="icon in libraryIconsModel.icons | orderBy:predicate:reverse | startFrom: pagination.page * pagination.perPage | limitTo: pagination.perPage">
         <td>
           <ul class="nav nav-pills">
-            <li><button class="btn btn-danger" ng-click="deleteResource(icon.id)"><span class="glyphicon glyphicon-remove"></span>  Delete</button></li>
-            <li><button class="btn btn-primary" ng-click="go('/rest/libraries/icons/update/'+icon.id)"><span class="glyphicon glyphicon-refresh"></span>  Update</button></li>
+            <li><button class="btn btn-danger" ng-click="deleteResource(icon.id)">
+                <span class="glyphicon glyphicon-remove"></span> Delete
+              </button></li>
+            <li><button class="btn btn-primary" ng-click="go('/rest/libraries/icons/update/'+icon.id)">
+                <span class="glyphicon glyphicon-refresh"></span> Update
+              </button></li>
+            <li><button class="btn btn-primary" ng-click="go('/rest/libraries/icons/properties/'+icon.id)">
+                <span class="glyphicon glyphicon-certificate"></span> Properties
+              </button></li>
           </ul>
         </td>
         <td align="left">{{icon.indexOfIconInLibrary}}</td>
@@ -39,14 +49,18 @@
         <td align="left"><img src="${ctx}/rest/icons/file/{{icon.icon.id}}/LARGE"></td>
       </tr>
     </table>
-    <ul class="pagination">
-      <li><a ng-hide="pagination.page == 0" ng-click="pagination.prevPage()">&laquo;</a></li>
-      <li ng-repeat="n in [] | range: pagination.numPages" ng-class="{current: n == pagination.page}"><a
-        ng-click="pagination.toPageId(n)">{{n + 1}}</a></li>
-      <li><a ng-hide="pagination.page + 1 >= pagination.numPages" ng-click="pagination.nextPage()">&raquo;</a></li>
-    </ul>
+    <div class="pagination-centered">
+      <ul class="pagination">
+        <li><a ng-hide="pagination.page == 0" ng-click="pagination.prevPage()">&laquo;</a></li>
+        <li ng-repeat="n in [] | range: pagination.numPages" ng-class="{current: n == pagination.page}"><a
+          ng-click="pagination.toPageId(n)">{{n + 1}}</a></li>
+        <li><a ng-hide="pagination.page + 1 >= pagination.numPages" ng-click="pagination.nextPage()">&raquo;</a></li>
+      </ul>
+    </div>
     <hr />
-    <button class="btn btn-info" ng-click="go('/rest/libraries/icons/add/'+libraryIconsModel.library.id)"><span class="glyphicon glyphicon-plus"></span>  Add</button>
+    <button class="btn btn-info" ng-click="go('/rest/libraries/icons/add/'+libraryIconsModel.library.id)">
+      <span class="glyphicon glyphicon-plus"></span> Add
+    </button>
   </div>
   <jsp:include page="footer.jsp" />
 </body>

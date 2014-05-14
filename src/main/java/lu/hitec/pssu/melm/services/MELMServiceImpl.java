@@ -30,12 +30,15 @@ import javax.xml.xpath.XPathFactory;
 
 import lu.hitec.pssu.melm.exceptions.LibraryValidatorException;
 import lu.hitec.pssu.melm.exceptions.MELMException;
+import lu.hitec.pssu.melm.persistence.dao.MapElementCustomPropertyDAO;
 import lu.hitec.pssu.melm.persistence.dao.MapElementIconDAO;
 import lu.hitec.pssu.melm.persistence.dao.MapElementLibraryDAO;
 import lu.hitec.pssu.melm.persistence.dao.MapElementLibraryIconDAO;
+import lu.hitec.pssu.melm.persistence.entity.MapElementCustomProperty;
 import lu.hitec.pssu.melm.persistence.entity.MapElementIcon;
 import lu.hitec.pssu.melm.persistence.entity.MapElementLibrary;
 import lu.hitec.pssu.melm.persistence.entity.MapElementLibraryIcon;
+import lu.hitec.pssu.melm.utils.CustomPropertyType;
 import lu.hitec.pssu.melm.utils.LibraryValidator;
 import lu.hitec.pssu.melm.utils.MELMUtils;
 
@@ -52,6 +55,14 @@ import org.xml.sax.SAXException;
 
 public class MELMServiceImpl implements MELMService {
 
+  public final static String XPATH_LIBRARY_ELEMENTS_CUSTOM_PROPERTY_EXPRESSION = "element/customProperty";
+
+  public final static String XPATH_LIBRARY_ELEMENTS_EXPRESSION = "elements/choice/node";
+
+  public final static String XPATH_LIBRARY_ELEMENTS_ICON_EXPRESSION = "element/point/icon";
+
+  public final static String XPATH_LIBRARY_ICON_EXPRESSION = "elements/description/library-icon";
+
   public static final String XSD_EXPORT_PATH = "/lu/hitec/pssu/melm/utils/xsd/mapelement-hierarchy-export.xsd";
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MELMServiceImpl.class);
@@ -61,6 +72,9 @@ public class MELMServiceImpl implements MELMService {
   private final File librariesDirectory;
 
   @Autowired
+  private MapElementCustomPropertyDAO mapElementCustomPropertyDAO;
+
+  @Autowired
   private MapElementIconDAO mapElementIconDAO;
 
   @Autowired
@@ -68,12 +82,6 @@ public class MELMServiceImpl implements MELMService {
 
   @Autowired
   private MapElementLibraryIconDAO mapElementLibraryIconDAO;
-
-  private final String XPATH_EXPRESSION = "elements/choice/node";
-
-  private final String XPATH_ICON_EXPRESSION = "elements/description/library-icon";
-
-  private final String XPATH_SUB_EXPRESSION = "element/point/icon";
 
   public MELMServiceImpl(final File librariesDirectory, final File iconsDirectory) {
     if (!librariesDirectory.isDirectory() && !librariesDirectory.mkdirs()) {
@@ -183,6 +191,12 @@ public class MELMServiceImpl implements MELMService {
     mapElementLibraryIconDAO.addIconToLibrary(library, mapElementIcon, iconIndex, iconName, iconDescription);
   }
 
+  @Override
+  public void addProperty(final long id, @Nonnull final String uniqueName, @Nonnull final CustomPropertyType type) throws MELMException {
+    final MapElementLibraryIcon libraryIcon = mapElementLibraryIconDAO.getLibraryIcon(id);
+    mapElementCustomPropertyDAO.addCustomProperty(libraryIcon, uniqueName, type);
+  }
+
   /**
    * Creates a unique filename from the given name and version format which is used to store files, and to find files back again with the
    * given information.
@@ -222,6 +236,12 @@ public class MELMServiceImpl implements MELMService {
 
   @Override
   @Transactional
+  public void deleteCustomProperty(final long id) {
+    mapElementCustomPropertyDAO.deleteCustomProperty(id);
+  }
+
+  @Override
+  @Transactional
   public void deleteIconAndFiles(final long id) throws MELMException {
     final MapElementIcon mapElementIcon = mapElementIconDAO.getMapElementIcon(id);
     if (mapElementLibraryIconDAO.checkIconInLibrary(mapElementIcon)) {
@@ -242,7 +262,7 @@ public class MELMServiceImpl implements MELMService {
     final MapElementLibrary library = mapElementLibraryDAO.getMapElementLibrary(id);
     final List<MapElementLibraryIcon> libraryIcons = mapElementLibraryIconDAO.getIconsInLibrary(library);
     for (final MapElementLibraryIcon libraryIcon : libraryIcons) {
-      mapElementLibraryIconDAO.deleteLibraryIcon(libraryIcon.getId());
+      deleteLibraryIcon(libraryIcon.getId());
     }
     mapElementLibraryDAO.deleteMapElementLibrary(id);
   }
@@ -250,7 +270,18 @@ public class MELMServiceImpl implements MELMService {
   @Override
   @Transactional
   public void deleteLibraryIcon(final long id) {
+    final MapElementLibraryIcon libraryIcon = mapElementLibraryIconDAO.getLibraryIcon(id);
+    final List<MapElementCustomProperty> customProperties = mapElementCustomPropertyDAO.getCustomProperties(libraryIcon);
+    for (final MapElementCustomProperty customProperty : customProperties) {
+      mapElementCustomPropertyDAO.deleteCustomProperty(customProperty.getId());
+    }
     mapElementLibraryIconDAO.deleteLibraryIcon(id);
+  }
+
+  @Override
+  @Transactional
+  public void deleteProperty(final long id) {
+    mapElementCustomPropertyDAO.deleteCustomProperty(id);
   }
 
   @CheckReturnValue
@@ -392,6 +423,9 @@ public class MELMServiceImpl implements MELMService {
        * <element description="Accomodation">
        * <point>
        * <icon file="Accomodation" anchor="NE" />
+       * <customProperty key="number_of_casualties" type="integer" />
+       * <customProperty key="comment" type="string" />
+       * <customProperty key="time" type="date" />
        * </point>
        * </element>
        * </node>
@@ -414,6 +448,7 @@ public class MELMServiceImpl implements MELMService {
 
         final MapElementIcon icon = mapElementLibraryIcon.getIcon();
         nodeIconElement.setAttribute("file", mapElementLibraryIcon.getIconNameInLibrary());
+        // FIXME manage anchor.
         nodeIconElement.setAttribute("anchor", "NE");
 
         for (final IconSize iconSize : IconSize.values()) {
@@ -424,6 +459,14 @@ public class MELMServiceImpl implements MELMService {
           }
           final File targetIconFile = new File(libraryIconSizeFolder, String.format("%s.png", mapElementLibraryIcon.getIconNameInLibrary()));
           FileUtils.copyFile(sourceIconFile, targetIconFile);
+        }
+
+        final List<MapElementCustomProperty> customProperties = mapElementCustomPropertyDAO.getCustomProperties(mapElementLibraryIcon);
+        for (final MapElementCustomProperty customProperty : customProperties) {
+          final Element propertyElement = document.createElement("customProperty");
+          nodeInnerElement.appendChild(propertyElement);
+          propertyElement.setAttribute("key", customProperty.getUniqueName());
+          propertyElement.setAttribute("type", customProperty.getType().name().toLowerCase());
         }
       }
 
@@ -532,6 +575,12 @@ public class MELMServiceImpl implements MELMService {
   }
 
   @Override
+  public List<MapElementCustomProperty> getProperties(final long id) {
+    final MapElementLibraryIcon libraryIcon = mapElementLibraryIconDAO.getLibraryIcon(id);
+    return mapElementCustomPropertyDAO.getCustomProperties(libraryIcon);
+  }
+
+  @Override
   public File getTargetArchiveFile(@Nonnull final String libraryName, final int majorVersion, final int minorVersion) throws MELMException {
     assert libraryName != null : "Library name is null";
     final File archiveDirectory = LibraryValidator.buildDirectoryForLibraryVersion(
@@ -614,7 +663,7 @@ public class MELMServiceImpl implements MELMService {
         assert itemName != null;
         final String itemDescription = element.getAttribute("description");
         assert itemDescription != null;
-        final Node subNode = (Node) xPath.compile(XPATH_SUB_EXPRESSION).evaluate(node, XPathConstants.NODE);
+        final Node subNode = (Node) xPath.compile(XPATH_LIBRARY_ELEMENTS_ICON_EXPRESSION).evaluate(node, XPathConstants.NODE);
         final Element subElement = (Element) subNode;
         final String fileName = subElement.getAttribute("file");
         assert fileName != null;
@@ -626,11 +675,28 @@ public class MELMServiceImpl implements MELMService {
           for (final IconSize iconSize : IconSize.values()) {
             moveImportedFile(libraryFolder, sourceIconLargeFile.getName(), iconSize, mapElementIcon);
           }
-          mapElementLibraryIconDAO.addIconToLibrary(mapElementLibrary, mapElementIcon, i, itemName, itemDescription);
+          final MapElementLibraryIcon libraryIcon = mapElementLibraryIconDAO.addIconToLibrary(mapElementLibrary, mapElementIcon, i,
+              itemName, itemDescription);
+          final NodeList nodeList2 = (NodeList) xPath.compile(XPATH_LIBRARY_ELEMENTS_CUSTOM_PROPERTY_EXPRESSION).evaluate(node,
+              XPathConstants.NODESET);
+          for (int j = 0; j < nodeList2.getLength(); j++) {
+            final Node subNode2 = nodeList2.item(j);
+            final Element subElement2 = (Element) subNode2;
+            mapElementCustomPropertyDAO.addCustomProperty(libraryIcon, subElement2.getAttribute("key"),
+                CustomPropertyType.valueOf(subElement2.getAttribute("type").toUpperCase()));
+          }
         } else {
           final MapElementIcon mapElementIcon = mapElementIconDAO.getMapElementIcon(hashForLargeFile, sourceIconLargeFile.length());
-          LOGGER.debug(i + ";" + itemName + ";" + itemDescription);
-          mapElementLibraryIconDAO.addIconToLibrary(mapElementLibrary, mapElementIcon, i, itemName, itemDescription);
+          final MapElementLibraryIcon libraryIcon = mapElementLibraryIconDAO.addIconToLibrary(mapElementLibrary, mapElementIcon, i,
+              itemName, itemDescription);
+          final NodeList nodeList2 = (NodeList) xPath.compile(XPATH_LIBRARY_ELEMENTS_CUSTOM_PROPERTY_EXPRESSION).evaluate(node,
+              XPathConstants.NODESET);
+          for (int j = 0; j < nodeList2.getLength(); j++) {
+            final Node subNode2 = nodeList2.item(j);
+            final Element subElement2 = (Element) subNode2;
+            mapElementCustomPropertyDAO.addCustomProperty(libraryIcon, subElement2.getAttribute("key"),
+                CustomPropertyType.valueOf(subElement2.getAttribute("type").toUpperCase()));
+          }
         }
       }
     } catch (final IOException | XPathExpressionException e) {
@@ -654,7 +720,7 @@ public class MELMServiceImpl implements MELMService {
       final File xmlFile = LibraryValidator.validateLibrary(xsdPath, new File(librariesDirectory, "imported").getAbsolutePath(),
           libraryName, String.format("%s.%s", majorVersion, minorVersion));
       final Document document = builder.parse(xmlFile);
-      final Node node = (Node) xPath.compile(XPATH_ICON_EXPRESSION).evaluate(document, XPathConstants.NODE);
+      final Node node = (Node) xPath.compile(XPATH_LIBRARY_ICON_EXPRESSION).evaluate(document, XPathConstants.NODE);
       final Element element = (Element) node;
       iconFileName = element.getAttribute("file");
     } catch (final ParserConfigurationException | LibraryValidatorException | IOException | SAXException | XPathExpressionException e) {
@@ -726,8 +792,7 @@ public class MELMServiceImpl implements MELMService {
     try {
       final DocumentBuilder builder = factory.newDocumentBuilder();
       final Document document = builder.parse(xmlFile);
-      final NodeList nl = (NodeList) xPath.compile(XPATH_EXPRESSION).evaluate(document, XPathConstants.NODESET);
-      return nl;
+      return (NodeList) xPath.compile(XPATH_LIBRARY_ELEMENTS_EXPRESSION).evaluate(document, XPathConstants.NODESET);
     } catch (final IOException | SAXException | ParserConfigurationException | XPathExpressionException e) {
       final String msg = "Failed to parse library xml file";
       LOGGER.error(msg, e);

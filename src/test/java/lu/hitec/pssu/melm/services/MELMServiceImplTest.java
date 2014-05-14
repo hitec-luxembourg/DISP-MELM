@@ -140,15 +140,12 @@ public class MELMServiceImplTest {
   @Test
   public void testXPathParsing() throws Exception {
     final File xmlFile = new ClassPathResource("sample/libraries/emergency.lu/1.1/emergency.lu-1.1/emergency.lu-1.1.xml").getFile();
-    final String expression = "elements/choice/node";
-    final String subExpression = "element/point/icon";
     final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     final DocumentBuilder builder = factory.newDocumentBuilder();
     final Document document = builder.parse(xmlFile);
     final XPath xPath = XPathFactory.newInstance().newXPath();
-    final NodeList nodeList = (NodeList) xPath.compile(expression).evaluate(document, XPathConstants.NODESET);
-    final int length = nodeList.getLength();
-    for (int i = 0; i < length; i++) {
+    final NodeList nodeList = (NodeList) xPath.compile(MELMServiceImpl.XPATH_LIBRARY_ELEMENTS_EXPRESSION).evaluate(document, XPathConstants.NODESET);
+    for (int i = 0; i < nodeList.getLength(); i++) {
       final Node node = nodeList.item(i);
       final Element element = (Element) node;
       final String itemName = element.getAttribute("unique-code");
@@ -156,10 +153,18 @@ public class MELMServiceImplTest {
       final String itemDescription = element.getAttribute("description");
       assertNotNull(itemDescription);
 
-      final Node subNode = (Node) xPath.compile(subExpression).evaluate(node, XPathConstants.NODE);
+      final Node subNode = (Node) xPath.compile(MELMServiceImpl.XPATH_LIBRARY_ELEMENTS_ICON_EXPRESSION).evaluate(node, XPathConstants.NODE);
       final Element subElement = (Element) subNode;
       final String fileName = subElement.getAttribute("file");
       assertNotNull(fileName);
+      
+      final NodeList nodeList2 = (NodeList) xPath.compile(MELMServiceImpl.XPATH_LIBRARY_ELEMENTS_CUSTOM_PROPERTY_EXPRESSION).evaluate(node, XPathConstants.NODESET);
+      for (int j = 0; j < nodeList2.getLength(); j++) {
+        final Node node2 = nodeList2.item(j);
+        final Element element2 = (Element) node2;
+        System.out.println(element2.getAttribute("key"));
+        System.out.println(element2.getAttribute("type"));
+      }
     }
   }
 

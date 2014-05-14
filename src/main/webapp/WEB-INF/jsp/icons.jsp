@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="app">
 <head>
-<title>List Icons</title>
+<title>MELM - List Icons</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <jsp:include page="css-includes.jsp" />
@@ -35,12 +35,14 @@
         <td align="left"><a href="${ctx}/rest/icons/details/{{icon.id}}"><img src="${ctx}/rest/icons/file/{{icon.id}}/LARGE"></a></td>
       </tr>
     </table>
-    <ul class="pagination">
-      <li><a ng-hide="pagination.page == 0" ng-click="pagination.prevPage()">&laquo;</a></li>
-      <li ng-repeat="n in [] | range: pagination.numPages" ng-class="{current: n == pagination.page}"><a
-        ng-click="pagination.toPageId(n)">{{n + 1}}</a></li>
-      <li><a ng-hide="pagination.page + 1 >= pagination.numPages" ng-click="pagination.nextPage()">&raquo;</a></li>
-    </ul>
+    <div class="pagination-centered">
+      <ul class="pagination">
+        <li><a ng-hide="pagination.page == 0" ng-click="pagination.prevPage()">&laquo;</a></li>
+        <li ng-repeat="n in [] | range: pagination.numPages" ng-class="{current: n == pagination.page}"><a
+          ng-click="pagination.toPageId(n)">{{n + 1}}</a></li>
+        <li><a ng-hide="pagination.page + 1 >= pagination.numPages" ng-click="pagination.nextPage()">&raquo;</a></li>
+      </ul>
+    </div>
     <hr />
     <button class="btn btn-info" ng-click="go('/rest/icons/add')">
       <span class="glyphicon glyphicon-plus"></span> Add

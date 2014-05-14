@@ -20,7 +20,7 @@ public class MapElementLibraryIconDAOImpl implements MapElementLibraryIconDAO {
 
   @Override
   @Transactional
-  public void addIconToLibrary(final MapElementLibrary library, final MapElementIcon icon, final int indexOfIconInLibrary,
+  public MapElementLibraryIcon addIconToLibrary(final MapElementLibrary library, final MapElementIcon icon, final int indexOfIconInLibrary,
       final String iconNameInLibrary, final String iconDescriptionInLibrary) {
     final MapElementLibraryIcon libraryIcon = new MapElementLibraryIcon();
     libraryIcon.setLibrary(library);
@@ -29,16 +29,8 @@ public class MapElementLibraryIconDAOImpl implements MapElementLibraryIconDAO {
     libraryIcon.setIconNameInLibrary(iconNameInLibrary);
     libraryIcon.setIconDescriptionInLibrary(iconDescriptionInLibrary);
     em.persist(libraryIcon);
+    return libraryIcon;
   }
-
-  // @Override
-  // @Transactional
-  // public void removeIconFromLibrary(final MapElementLibrary library, final MapElementIcon icon) {
-  // final Query query = em.createQuery("DELETE FROM MapElementLibraryIcon meli WHERE meli.library = :library AND meli.icon = :icon");
-  // query.setParameter("library", library);
-  // query.setParameter("icon", icon);
-  // query.executeUpdate();
-  // }
 
   @Override
   public boolean checkIconInLibrary(final MapElementIcon icon) {
@@ -58,6 +50,13 @@ public class MapElementLibraryIconDAOImpl implements MapElementLibraryIconDAO {
   }
 
   @Override
+  @Transactional
+  public void deleteLibraryIcon(final long id) {
+    final MapElementLibraryIcon libraryIcon = em.find(MapElementLibraryIcon.class, id);
+    em.remove(libraryIcon);
+  }
+
+  @Override
   public List<MapElementLibraryIcon> getIconsInLibrary(@Nonnull final MapElementLibrary library) {
     assert library != null : "Library is null";
     final TypedQuery<MapElementLibraryIcon> query = em.createQuery(
@@ -70,13 +69,6 @@ public class MapElementLibraryIconDAOImpl implements MapElementLibraryIconDAO {
   @Override
   public MapElementLibraryIcon getLibraryIcon(final long id) {
     return em.find(MapElementLibraryIcon.class, id);
-  }
-
-  @Override
-  @Transactional
-  public void deleteLibraryIcon(final long id) {
-    final MapElementLibraryIcon libraryIcon = em.find(MapElementLibraryIcon.class, id);
-    em.remove(libraryIcon);
   }
 
   @Override

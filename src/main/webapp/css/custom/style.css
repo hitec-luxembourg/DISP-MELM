@@ -1,0 +1,12 @@
+body { padding-top: 30px; }
+.container .left {
+  margin: 20px 0;
+  float:left;
+}
+.container .right {
+  margin: 20px 0;
+  float:right;
+}
+.pagination-centered {
+    text-align: center;
+}
