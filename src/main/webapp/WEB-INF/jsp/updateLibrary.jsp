@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>MELM - Update library metadata</title>
+<title>MELM - Update library</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <jsp:include page="css-includes.jsp" />
@@ -15,7 +15,7 @@
   <jsp:include page="header.jsp" />
   <div class="container">
     <div class="page-header">
-      <h1>Update library metadata</h1>
+      <h1>Update library</h1>
     </div>
     <form method="POST" action="${ctx}/rest/libraries/update" enctype='multipart/form-data' class="form-horizontal" role="form">
       <input name="id" id="id" type="hidden" value="${it.id}" />

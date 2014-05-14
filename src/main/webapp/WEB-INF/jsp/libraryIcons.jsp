@@ -22,14 +22,18 @@
     </div>
     <table class="table table-striped">
       <tr>
-        <td align="left">Actions</td>
         <td align="left"><a href="" ng-click="predicate='indexOfIconInLibrary'; reverse=!reverse">Icon Index</a></td>
         <td align="left"><a href="" ng-click="predicate='iconNameInLibrary'; reverse=!reverse">Icon Name</a></td>
         <td align="left"><a href="" ng-click="predicate='iconDescriptionInLibrary'; reverse=!reverse">Icon Description</a></td>
         <td>Preview</td>
+        <td align="left">Actions</td>
       </tr>
       <tr
         ng-repeat="icon in libraryIconsModel.icons | orderBy:predicate:reverse | startFrom: pagination.page * pagination.perPage | limitTo: pagination.perPage">
+        <td align="left">{{icon.indexOfIconInLibrary}}</td>
+        <td align="left">{{icon.iconNameInLibrary}}</td>
+        <td align="left">{{icon.iconDescriptionInLibrary}}</td>
+        <td align="left"><img src="${ctx}/rest/icons/file/{{icon.icon.id}}/LARGE"></td>
         <td>
           <ul class="nav nav-pills">
             <li><button class="btn btn-danger" ng-click="deleteResource(icon.id)">
@@ -43,10 +47,6 @@
               </button></li>
           </ul>
         </td>
-        <td align="left">{{icon.indexOfIconInLibrary}}</td>
-        <td align="left">{{icon.iconNameInLibrary}}</td>
-        <td align="left">{{icon.iconDescriptionInLibrary}}</td>
-        <td align="left"><img src="${ctx}/rest/icons/file/{{icon.icon.id}}/LARGE"></td>
       </tr>
     </table>
     <div class="pagination-centered">

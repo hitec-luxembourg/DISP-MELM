@@ -37,12 +37,14 @@
       <h3>List properties</h3>
     <table class="table table-striped">
       <tr>
-        <td align="left">Actions</td>
         <td align="left"><a href="" ng-click="predicate='uniqueName'; reverse=!reverse">Unique name</a></td>
         <td align="left"><a href="" ng-click="predicate='type'; reverse=!reverse">Type</a></td>
+        <td align="left">Actions</td>
       </tr>
       <tr
         ng-repeat="property in properties | orderBy:predicate:reverse | startFrom: pagination.page * pagination.perPage | limitTo: pagination.perPage">
+        <td align="left">{{property.uniqueName}}</td>
+        <td align="left">{{property.type}}</td>
         <td>
           <ul class="nav nav-pills">
             <li><button class="btn btn-danger" ng-click="deleteResource(property.id)">
@@ -50,8 +52,6 @@
               </button></li>
           </ul>
         </td>
-        <td align="left">{{property.uniqueName}}</td>
-        <td align="left">{{property.type}}</td>
       </tr>
     </table>
     <div class="pagination-centered">

@@ -20,13 +20,16 @@
     </div>
     <table class="table table-striped">
       <tr>
-        <td align="left">Actions</td>
         <td align="left"><a href="" ng-click="predicate='name'; reverse=!reverse">Name</a></td>
         <td align="left">Version</td>
         <td align="left">Icon</td>
+        <td align="left">Actions</td>
       </tr>
       <tr
         ng-repeat="library in libraries | orderBy:predicate:reverse | startFrom: pagination.page * pagination.perPage | limitTo: pagination.perPage">
+        <td align="left">{{library.name}}</td>
+        <td align="left">{{library.majorVersion}}.{{library.minorVersion}}</td>
+        <td align="left"><img src="${ctx}/rest/libraries/icon/file/{{library.id}}"></td>
         <td align="left">
           <ul class="nav nav-pills">
             <li><button class="btn btn-danger" ng-click="deleteResource(library.id)">
@@ -36,7 +39,7 @@
                 <span class="glyphicon glyphicon-list"></span> Elements
               </button></li>
             <li><button class="btn btn-primary" ng-click="go('/rest/libraries/update/'+library.id)">
-                <span class="glyphicon glyphicon-refresh"></span> Update metadata
+                <span class="glyphicon glyphicon-refresh"></span> Update
               </button></li>
             <li><button class="btn btn-primary" ng-click="go('/rest/libraries/clone/'+library.id)">
                 <span class="glyphicon glyphicon-random"></span> Clone
@@ -47,9 +50,6 @@
               </button></li>
           </ul>
         </td>
-        <td align="left">{{library.name}}</td>
-        <td align="left">{{library.majorVersion}}.{{library.minorVersion}}</td>
-        <td align="left"><img src="${ctx}/rest/libraries/icon/file/{{library.id}}"></td>
       </tr>
     </table>
     <div class="pagination-centered">

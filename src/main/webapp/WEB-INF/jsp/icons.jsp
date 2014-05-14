@@ -20,19 +20,19 @@
     </div>
     <table class="table table-striped">
       <tr>
-        <td align="left">Actions</td>
         <td align="left"><a href="" ng-click="predicate='displayName'; reverse=!reverse">Name</a></td>
         <td align="left">Preview</td>
+        <td align="left">Actions</td>
       </tr>
       <tr
         ng-repeat="icon in icons | orderBy:predicate:reverse | startFrom: pagination.page * pagination.perPage | limitTo: pagination.perPage">
+        <td align="left">{{icon.displayName}}</td>
+        <td align="left"><a href="${ctx}/rest/icons/details/{{icon.id}}"><img src="${ctx}/rest/icons/file/{{icon.id}}/LARGE"></a></td>
         <td align="left">
           <button class="btn btn-danger" ng-click="deleteResource(icon.id)">
             <span class="glyphicon glyphicon-remove"></span> Delete
           </button>
         </td>
-        <td align="left">{{icon.displayName}}</td>
-        <td align="left"><a href="${ctx}/rest/icons/details/{{icon.id}}"><img src="${ctx}/rest/icons/file/{{icon.id}}/LARGE"></a></td>
       </tr>
     </table>
     <div class="pagination-centered">
