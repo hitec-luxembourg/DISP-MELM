@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Login page</title>
+<title>Login</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <jsp:include page="css-includes.jsp" />
@@ -17,9 +17,10 @@
 </script>
 </head>
 <body>
+  <jsp:include page="login-header.jsp" />
   <div class="container">
     <div class="page-header">
-      <h1>Login page</h1>
+      <h1>Login</h1>
     </div>
     <c:if test="${not empty it}">
       <div class="alert alert-danger">Wrong User id or Password!</div>
@@ -28,7 +29,7 @@
       <div class="form-group">
         <label for="userId" class="col-sm-2 control-label">User id</label>
         <div class="col-sm-10">
-          <input type="text" class="form-control" id="userId" name="userId" placeholder="userId">
+          <input type="text" class="form-control" id="userId"  name="userId" placeholder="userId">
         </div>
       </div>
       <div class="form-group">

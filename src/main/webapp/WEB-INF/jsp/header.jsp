@@ -8,14 +8,14 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="${ctx}/rest/">MELM</a>
+      <a class="navbar-brand" href="${ctx}/rest/"><img src="${ctx}/img/library.png" width="25px" height="25px" />  MELM</a>
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Libraries <b class="caret"></b></a>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Libraries</a>
           <ul class="dropdown-menu">
             <li><a href="${ctx}/rest/libraries"><span class="glyphicon glyphicon-list"></span>  List</a></li>
             <li class="divider"></li>
@@ -25,7 +25,7 @@
           </ul>
         </li>
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Icons <b class="caret"></b></a>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Icons</a>
           <ul class="dropdown-menu">
             <li><a href="${ctx}/rest/icons"><span class="glyphicon glyphicon-list"></span>  List</a></li>
             <li class="divider"></li>

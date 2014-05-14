@@ -10,15 +10,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <jsp:include page="css-includes.jsp" />
 <jsp:include page="js-includes.jsp" />
-<script src="${ctx}/js/custom/libraryIcons.js"></script>
+<script type="text/javascript" src="${ctx}/js/custom/libraryIcons.js"></script>
 </head>
 <body ng-controller="LibraryIconsCtrl">
   <jsp:include page="header.jsp" />
   <div class="container">
     <div class="page-header">
-      <h1>List library elements</h1>
+      <h1>List library elements <small>{{libraryIconsModel.library.name}}-{{libraryIconsModel.library.majorVersion}}.{{libraryIconsModel.library.minorVersion}}</small></h1>
     </div>
-    <h3>{{libraryIconsModel.library.name}}-{{libraryIconsModel.library.majorVersion}}.{{libraryIconsModel.library.minorVersion}}</h3>
     <table class="table table-striped">
       <tr>
         <td align="left">Actions</td>
@@ -27,7 +26,7 @@
         <td align="left"><a href="" ng-click="predicate='iconDescriptionInLibrary'; reverse=!reverse">Icon Description</a></td>
         <td>Preview</td>
       </tr>
-      <tr ng-repeat="icon in libraryIconsModel.icons | orderBy:predicate:reverse">
+      <tr ng-repeat="icon in libraryIconsModel.icons | orderBy:predicate:reverse | startFrom: pagination.page * pagination.perPage | limitTo: pagination.perPage">
         <td>
           <ul class="nav nav-pills">
             <li><button class="btn btn-danger" ng-click="deleteResource(icon.id)"><span class="glyphicon glyphicon-remove"></span>  Delete</button></li>
@@ -40,6 +39,12 @@
         <td align="left"><img src="${ctx}/rest/icons/file/{{icon.icon.id}}/LARGE"></td>
       </tr>
     </table>
+    <ul class="pagination">
+      <li><a ng-hide="pagination.page == 0" ng-click="pagination.prevPage()">&laquo;</a></li>
+      <li ng-repeat="n in [] | range: pagination.numPages" ng-class="{current: n == pagination.page}"><a
+        ng-click="pagination.toPageId(n)">{{n + 1}}</a></li>
+      <li><a ng-hide="pagination.page + 1 >= pagination.numPages" ng-click="pagination.nextPage()">&raquo;</a></li>
+    </ul>
     <hr />
     <button class="btn btn-info" ng-click="go('/rest/libraries/icons/add/'+libraryIconsModel.library.id)"><span class="glyphicon glyphicon-plus"></span>  Add</button>
   </div>

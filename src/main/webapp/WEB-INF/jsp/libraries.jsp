@@ -10,7 +10,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <jsp:include page="css-includes.jsp" />
 <jsp:include page="js-includes.jsp" />
-<script src="${ctx}/js/custom/libraries.js"></script>
+<script type="text/javascript" src="${ctx}/js/custom/libraries.js"></script>
 </head>
 <body ng-controller="LibrariesCtrl">
   <jsp:include page="header.jsp" />
@@ -25,7 +25,8 @@
         <td align="left">Version</td>
         <td align="left">Icon</td>
       </tr>
-      <tr ng-repeat="library in libraries | orderBy:predicate:reverse">
+      <tr
+        ng-repeat="library in libraries | orderBy:predicate:reverse | startFrom: pagination.page * pagination.perPage | limitTo: pagination.perPage">
         <td align="left">
           <ul class="nav nav-pills">
             <li><button class="btn btn-danger" ng-click="deleteResource(library.id)">
@@ -42,7 +43,8 @@
               </button></li>
             <li><button class="btn btn-primary"
                 ng-click="go('/rest/libraries/zip/'+library.name+'-'+library.majorVersion+'.'+library.minorVersion+'.zip')">
-                <span class="glyphicon glyphicon-download"></span> Zip</button></li>
+                <span class="glyphicon glyphicon-download"></span> Zip
+              </button></li>
           </ul>
         </td>
         <td align="left">{{library.name}}</td>
@@ -50,14 +52,22 @@
         <td align="left"><img src="${ctx}/rest/libraries/icon/file/{{library.id}}"></td>
       </tr>
     </table>
+    <ul class="pagination">
+      <li><a ng-hide="pagination.page == 0" ng-click="pagination.prevPage()">&laquo;</a></li>
+      <li ng-repeat="n in [] | range: pagination.numPages" ng-class="{current: n == pagination.page}"><a
+        ng-click="pagination.toPageId(n)">{{n + 1}}</a></li>
+      <li><a ng-hide="pagination.page + 1 >= pagination.numPages" ng-click="pagination.nextPage()">&raquo;</a></li>
+    </ul>
     <hr />
     <ul class="nav nav-pills">
       <li><button class="btn btn-info" ng-click="go('/rest/libraries/add')">
-          <span class="glyphicon glyphicon-plus"></span>  Add</button></li>
+          <span class="glyphicon glyphicon-plus"></span> Add
+        </button></li>
       <li><button class="btn btn-info" ng-click="go('/rest/libraries/import')">
-          <span class="glyphicon glyphicon-cloud-upload"></span>  Import</button></li>
+          <span class="glyphicon glyphicon-cloud-upload"></span> Import
+        </button></li>
     </ul>
   </div>
-    <jsp:include page="footer.jsp" />
+  <jsp:include page="footer.jsp" />
 </body>
 </html>

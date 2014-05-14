@@ -25,8 +25,13 @@ body {
 body > .container {
   padding: 60px 15px 0;
 }
-.container .text-muted {
+.container .left {
   margin: 20px 0;
+  float:left;
+}
+.container .right {
+  margin: 20px 0;
+  float:right;
 }
 
 #footer > .container {

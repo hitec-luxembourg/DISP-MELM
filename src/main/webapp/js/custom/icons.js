@@ -1,9 +1,8 @@
-var app = angular.module('app', []);
-
-app.controller('IconsCtrl', function($scope, $http) {
+app.controller('IconsCtrl', ['$scope', '$http', 'Pagination', function($scope, $http, Pagination) {
   $scope.loadResources = function() {
     $http.get(melmContextRoot + '/rest/icons').success(function(data) {
       $scope.icons = data;
+      $scope.pagination.numPages = Math.ceil($scope.icons.length/$scope.pagination.perPage);
     });
   };
 
@@ -29,6 +28,7 @@ app.controller('IconsCtrl', function($scope, $http) {
     window.location = melmContextRoot + path;
   };
 
+  $scope.pagination = Pagination.getNew(10);
   $scope.predicate = 'displayName';
   $scope.loadResources();
-});
+}]);

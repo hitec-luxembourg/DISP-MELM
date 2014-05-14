@@ -15,9 +15,8 @@
   <jsp:include page="header.jsp" />
   <div class="container">
     <div class="page-header">
-      <h1>Add library element</h1>
+      <h1>Add library element <small>${it.library.name}-${it.library.majorVersion}.${it.library.minorVersion}</small></h1>
     </div>
-    <h3>${it.library.name}-${it.library.majorVersion}.${it.library.minorVersion}</h3>
     <form method="POST" action="${ctx}/rest/libraries/icons/add" enctype='multipart/form-data' class="form-horizontal" role="form">
       <input name="id" id="id" type="hidden" value="${it.library.id}" /> 
       <table class="table table-striped">

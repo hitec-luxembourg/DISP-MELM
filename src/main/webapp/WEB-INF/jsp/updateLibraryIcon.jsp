@@ -15,9 +15,8 @@
   <jsp:include page="header.jsp" />
   <div class="container">
     <div class="page-header">
-      <h1>Update library element</h1>
+      <h1>Update library element <small>${it.libraryIcon.library.name}-${it.libraryIcon.library.majorVersion}.${it.libraryIcon.library.minorVersion}</small></h1>
     </div>
-    <h3>${it.libraryIcon.library.name}-${it.libraryIcon.library.majorVersion}.${it.libraryIcon.library.minorVersion}</h3>
     <form method="POST" action="${ctx}/rest/libraries/icons/update" enctype='multipart/form-data' class="form-horizontal" role="form">
       <input name="libraryIconId" id="libraryIconId" type="hidden" value="${it.libraryIcon.id}" /> <input name="id" id="id" type="hidden"
         value="${it.libraryIcon.library.id}" />
@@ -58,10 +57,13 @@
       </div>
       <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
-          <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-refresh"></span>  Update</button>
+          <button type="submit" class="btn btn-primary">
+            <span class="glyphicon glyphicon-refresh"></span> Update
+          </button>
         </div>
       </div>
     </form>
-    <jsp:include page="footer.jsp" />
+  </div>
+  <jsp:include page="footer.jsp" />
 </body>
 </html>

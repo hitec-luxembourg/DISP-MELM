@@ -10,7 +10,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <jsp:include page="css-includes.jsp" />
 <jsp:include page="js-includes.jsp" />
-<script src="${ctx}/js/custom/icons.js"></script>
+<script type="text/javascript" src="${ctx}/js/custom/icons.js"></script>
 </head>
 <body ng-controller="IconsCtrl">
   <jsp:include page="header.jsp" />
@@ -24,7 +24,8 @@
         <td align="left"><a href="" ng-click="predicate='displayName'; reverse=!reverse">Name</a></td>
         <td align="left">Preview</td>
       </tr>
-      <tr ng-repeat="icon in icons | orderBy:predicate:reverse">
+      <tr
+        ng-repeat="icon in icons | orderBy:predicate:reverse | startFrom: pagination.page * pagination.perPage | limitTo: pagination.perPage">
         <td align="left">
           <button class="btn btn-danger" ng-click="deleteResource(icon.id)">
             <span class="glyphicon glyphicon-remove"></span> Delete
@@ -34,11 +35,18 @@
         <td align="left"><a href="${ctx}/rest/icons/details/{{icon.id}}"><img src="${ctx}/rest/icons/file/{{icon.id}}/LARGE"></a></td>
       </tr>
     </table>
+    <ul class="pagination">
+      <li><a ng-hide="pagination.page == 0" ng-click="pagination.prevPage()">&laquo;</a></li>
+      <li ng-repeat="n in [] | range: pagination.numPages" ng-class="{current: n == pagination.page}"><a
+        ng-click="pagination.toPageId(n)">{{n + 1}}</a></li>
+      <li><a ng-hide="pagination.page + 1 >= pagination.numPages" ng-click="pagination.nextPage()">&raquo;</a></li>
+    </ul>
+    <hr />
     <button class="btn btn-info" ng-click="go('/rest/icons/add')">
       <span class="glyphicon glyphicon-plus"></span> Add
     </button>
   </div>
   <hr />
-    <jsp:include page="footer.jsp" />
+  <jsp:include page="footer.jsp" />
 </body>
 </html>

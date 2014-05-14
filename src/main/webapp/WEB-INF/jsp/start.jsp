@@ -10,13 +10,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <jsp:include page="css-includes.jsp" />
 <jsp:include page="js-includes.jsp" />
-<script src="${ctx}/js/custom/start.js"></script>
+<script type="text/javascript" src="${ctx}/js/custom/start.js"></script>
 </head>
 <body ng-controller="StartCtrl">
   <jsp:include page="header.jsp" />
   <div class="container">
     <div class="page-header">
-      <h1>MELM</h1>
+      <h1>Map Element Library Manager</h1>
     </div>
     <h2>Libraries</h2>
     <ul class="nav nav-pills">

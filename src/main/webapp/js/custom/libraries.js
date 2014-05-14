@@ -1,9 +1,8 @@
-var app = angular.module('app', []);
-
-app.controller('LibrariesCtrl', function($scope, $http, $location) {
+app.controller('LibrariesCtrl', [ '$scope', '$http', '$location', 'Pagination', function($scope, $http, $location, Pagination) {
   $scope.loadResources = function() {
     $http.get(melmContextRoot + '/rest/libraries').success(function(data) {
       $scope.libraries = data;
+      $scope.pagination.numPages = Math.ceil($scope.libraries.length / $scope.pagination.perPage);
     });
   };
 
@@ -29,6 +28,7 @@ app.controller('LibrariesCtrl', function($scope, $http, $location) {
     window.location = melmContextRoot + path;
   };
 
+  $scope.pagination = Pagination.getNew(10);
   $scope.predicate = 'name';
   $scope.loadResources();
-});
+} ]);

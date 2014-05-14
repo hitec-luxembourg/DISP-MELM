@@ -1,9 +1,8 @@
-var app = angular.module('app', []);
-
-app.controller('LibraryIconsCtrl', function($scope, $http, $location) {
+app.controller('LibraryIconsCtrl', [ '$scope', '$http', '$location', 'Pagination', function($scope, $http, $location, Pagination) {
   $scope.loadResources = function(id) {
     $http.get(melmContextRoot + '/rest/libraries/icons/'+id).success(function(data) {
       $scope.libraryIconsModel = data;
+      $scope.pagination.numPages = Math.ceil($scope.libraryIconsModel.icons.length / $scope.pagination.perPage);
     });
   };
 
@@ -29,6 +28,7 @@ app.controller('LibraryIconsCtrl', function($scope, $http, $location) {
     window.location = melmContextRoot + path;
   };
 
+  $scope.pagination = Pagination.getNew(10);
   $scope.predicate = 'indexOfIconInLibrary';
   $scope.loadResources(getRESTParameter('icons'));
-});
+}]);
