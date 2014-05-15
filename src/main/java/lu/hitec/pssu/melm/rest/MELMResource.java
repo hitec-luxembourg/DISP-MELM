@@ -136,7 +136,7 @@ public class MELMResource {
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  @Path("/libraries/icons/{id}")
+  @Path("/libraries/icons/json/{id}")
   public Response getLibraryIcons(@PathParam("id") final long id) {
     final MapElementLibrary library = melmService.getLibrary(id);
     // Convert to DTO in order to prevent jackson throwing LazyInitializationException.
@@ -152,21 +152,21 @@ public class MELMResource {
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  @Path("/icons")
+  @Path("/icons/json")
   public Response getListIcons() {
     return Response.ok(melmService.listAllIcons()).build();
   }
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  @Path("/libraries")
+  @Path("/libraries/json")
   public Response getListLibraries() {
     return Response.ok(melmService.listAllLibraries()).build();
   }
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  @Path("/libraries/icons/properties/{id}")
+  @Path("/libraries/icons/properties/json/{id}")
   public Response getProperties(@PathParam("id") final long id) {
     final List<MapElementCustomProperty> properties = melmService.getProperties(id);
     // Convert to DTO in order to prevent jackson throwing LazyInitializationException.

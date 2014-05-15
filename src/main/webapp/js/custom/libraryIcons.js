@@ -1,6 +1,6 @@
 app.controller('LibraryIconsCtrl', [ '$scope', '$http', '$location', 'Pagination', function($scope, $http, $location, Pagination) {
   $scope.loadResources = function(id) {
-    $http.get(melmContextRoot + '/rest/libraries/icons/'+id).success(function(data) {
+    $http.get(melmContextRoot + '/rest/libraries/icons/json/'+id).success(function(data) {
       $scope.libraryIconsModel = data;
       $scope.pagination.numPages = Math.ceil($scope.libraryIconsModel.icons.length / $scope.pagination.perPage);
     });

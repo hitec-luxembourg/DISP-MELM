@@ -1,6 +1,6 @@
 app.controller('PropertiesCtrl', [ '$scope', '$http', '$location', 'Pagination', function($scope, $http, $location, Pagination) {
   $scope.loadResources = function(id) {
-    $http.get(melmContextRoot + '/rest/libraries/icons/properties/' + id).success(function(data) {
+    $http.get(melmContextRoot + '/rest/libraries/icons/properties/json/' + id).success(function(data) {
       $scope.properties = data;
       $scope.pagination.numPages = Math.ceil($scope.properties.length / $scope.pagination.perPage);
     });

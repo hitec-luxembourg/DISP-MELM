@@ -1,6 +1,6 @@
 app.controller('LibrariesCtrl', [ '$scope', '$http', '$location', 'Pagination', function($scope, $http, $location, Pagination) {
   $scope.loadResources = function() {
-    $http.get(melmContextRoot + '/rest/libraries').success(function(data) {
+    $http.get(melmContextRoot + '/rest/libraries/json').success(function(data) {
       $scope.libraries = data;
       $scope.pagination.numPages = Math.ceil($scope.libraries.length / $scope.pagination.perPage);
     });
