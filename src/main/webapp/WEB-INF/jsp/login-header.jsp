@@ -2,7 +2,7 @@
   <div class="container">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
-      <a class="navbar-brand" href="#"><img src="${ctx}/img/library.png" width="25px" height="25px" />  MELM</a>
+      <a class="navbar-brand" href="${ctx}/rest/"><img alt="Map Assessment Library Management logo" src="${ctx}/img/library_ffdc00.png" />Map Assessment Library Management</a>
     </div>
   </div>
 </nav>

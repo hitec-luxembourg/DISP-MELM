@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>MELM - Login</title>
+<title>MALM - Login</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <jsp:include page="css-includes.jsp" />
@@ -24,23 +24,23 @@
     </div>
     <c:if test="${not empty it}">
       <div class="alert alert-danger">Wrong User id or Password!</div>
-    </c:if>
+    </c:if> 
     <form method="POST" action="" class="form-horizontal" role="form">
       <div class="form-group">
         <label for="userId" class="col-sm-2 control-label">User id</label>
         <div class="col-sm-10">
-          <input type="text" class="form-control" id="userId"  name="userId" placeholder="userId">
+          <input type="text" class="form-control" id="userId" name="userId" placeholder="userId" />
         </div>
       </div>
       <div class="form-group">
         <label for="password" class="col-sm-2 control-label">Password</label>
         <div class="col-sm-10">
-          <input type="password" class="form-control" id="password" name="password" placeholder="password">
+          <input type="password" class="form-control" id="password" name="password" placeholder="password" />
         </div>
       </div>
       <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
-          <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-log-in"></span>  Log-in</button>
+          <button type="submit" id="btn_login" class="btn btn-default">Log-in</button>
         </div>
       </div>
     </form>

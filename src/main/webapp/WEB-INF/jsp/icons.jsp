@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="app">
 <head>
-<title>MELM - List Icons</title>
+<title>MALM - List Icons</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <jsp:include page="css-includes.jsp" />
@@ -29,8 +29,8 @@
         <td align="left">{{icon.displayName}}</td>
         <td align="left"><a href="${ctx}/rest/icons/details/{{icon.id}}"><img src="${ctx}/rest/icons/file/{{icon.id}}/LARGE"></a></td>
         <td align="left">
-          <button class="btn btn-danger" ng-click="deleteResource(icon.id)">
-            <span class="glyphicon glyphicon-remove"></span> Delete
+          <button class="btn" ng-click="deleteResource(icon.id)">
+            <span class="glyphicon glyphicon-remove"></span>Delete
           </button>
         </td>
       </tr>
@@ -44,9 +44,7 @@
       </ul>
     </div>
     <hr />
-    <button class="btn btn-info" ng-click="go('/rest/icons/add')">
-      <span class="glyphicon glyphicon-plus"></span> Add
-    </button>
+    <button class="btn btn-add" ng-click="go('/rest/icons/add')">Add</button>
   </div>
   <hr />
   <jsp:include page="footer.jsp" />

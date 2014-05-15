@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="app">
 <head>
-<title>MELM - List Libraries</title>
+<title>MALM - List Libraries</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <jsp:include page="css-includes.jsp" />
@@ -32,21 +32,19 @@
         <td align="left"><img src="${ctx}/rest/libraries/icon/file/{{library.id}}"></td>
         <td align="left">
           <ul class="nav nav-pills">
-            <li><button class="btn btn-primary" ng-click="go('/rest/libraries/icons/'+library.id)">
-                <span class="glyphicon glyphicon-list"></span> Elements
+            <li><button class="btn btn-list" ng-click="go('/rest/libraries/icons/'+library.id)">Elements</button></li>
+            <li><button class="btn" ng-click="go('/rest/libraries/update/'+library.id)">
+                <span class="glyphicon glyphicon-refresh"></span>Update
               </button></li>
-            <li><button class="btn btn-primary" ng-click="go('/rest/libraries/update/'+library.id)">
-                <span class="glyphicon glyphicon-refresh"></span> Update
+            <li><button class="btn" ng-click="go('/rest/libraries/clone/'+library.id)">
+                <span class="glyphicon glyphicon-random"></span>Clone
               </button></li>
-            <li><button class="btn btn-primary" ng-click="go('/rest/libraries/clone/'+library.id)">
-                <span class="glyphicon glyphicon-random"></span> Clone
-              </button></li>
-            <li><button class="btn btn-primary"
+            <li><button class="btn"
                 ng-click="go('/rest/libraries/zip/'+library.name+'-'+library.majorVersion+'.'+library.minorVersion+'.zip')">
-                <span class="glyphicon glyphicon-download"></span> Zip
+                <span class="glyphicon glyphicon-download"></span>Zip
               </button></li>
-            <li><button class="btn btn-danger" ng-click="deleteResource(library.id)">
-                <span class="glyphicon glyphicon-remove"></span> Delete
+            <li><button class="btn" ng-click="deleteResource(library.id)">
+                <span class="glyphicon glyphicon-remove"></span>Delete
               </button></li>
           </ul>
         </td>
@@ -62,11 +60,11 @@
     </div>
     <hr />
     <ul class="nav nav-pills">
-      <li><button class="btn btn-info" ng-click="go('/rest/libraries/add')">
-          <span class="glyphicon glyphicon-plus"></span> Add
+      <li><button class="btn btn-add" ng-click="go('/rest/libraries/add')">
+          <span>Add</span>
         </button></li>
-      <li><button class="btn btn-info" ng-click="go('/rest/libraries/import')">
-          <span class="glyphicon glyphicon-cloud-upload"></span> Import
+      <li><button class="btn btn-import" ng-click="go('/rest/libraries/import')">
+          <span>Import</span>
         </button></li>
     </ul>
   </div>

@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>MELM - Update library</title>
+<title>MALM - Update library</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <jsp:include page="css-includes.jsp" />
@@ -46,7 +46,7 @@
       </div>
       <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
-          <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-refresh"></span>  Update</button>
+          <button type="submit" class="btn"><span class="glyphicon glyphicon-refresh"></span>  Update</button>
         </div>
       </div>
     </form>

@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="app">
 <head>
-<title>MELM - List Library elements</title>
+<title>MALM - List Library elements</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <jsp:include page="css-includes.jsp" />
@@ -36,14 +36,12 @@
         <td align="left"><img src="${ctx}/rest/icons/file/{{icon.icon.id}}/LARGE"></td>
         <td>
           <ul class="nav nav-pills">
-            <li><button class="btn btn-primary" ng-click="go('/rest/libraries/icons/update/'+icon.id)">
-                <span class="glyphicon glyphicon-refresh"></span> Update
+            <li><button class="btn btn-list" ng-click="go('/rest/libraries/icons/properties/'+icon.id)">Properties</button></li>
+            <li><button class="btn" ng-click="go('/rest/libraries/icons/update/'+icon.id)">
+                <span class="glyphicon glyphicon-refresh"></span>Update
               </button></li>
-            <li><button class="btn btn-primary" ng-click="go('/rest/libraries/icons/properties/'+icon.id)">
-                <span class="glyphicon glyphicon-certificate"></span> Properties
-              </button></li>
-            <li><button class="btn btn-danger" ng-click="deleteResource(icon.id)">
-                <span class="glyphicon glyphicon-remove"></span> Delete
+            <li><button class="btn" ng-click="deleteResource(icon.id)">
+                <span class="glyphicon glyphicon-remove"></span>Delete
               </button></li>
           </ul>
         </td>
@@ -58,9 +56,7 @@
       </ul>
     </div>
     <hr />
-    <button class="btn btn-info" ng-click="go('/rest/libraries/icons/add/'+libraryIconsModel.library.id)">
-      <span class="glyphicon glyphicon-plus"></span> Add
-    </button>
+    <button class="btn btn-add" ng-click="go('/rest/libraries/icons/add/'+libraryIconsModel.library.id)">Add</button>
   </div>
   <jsp:include page="footer.jsp" />
 </body>

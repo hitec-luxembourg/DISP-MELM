@@ -16,23 +16,18 @@
   <jsp:include page="header.jsp" />
   <div class="container">
     <div class="page-header">
-      <h1>Map Element Library Manager</h1>
+      <h1>Map Assessment Library Manager</h1>
     </div>
     <h2>Libraries</h2>
     <ul class="nav nav-pills">
-      <li><button class="btn btn-primary" ng-click="go('/rest/libraries')">
-          <span class="glyphicon glyphicon-list"></span>  List</button></li>
-      <li><button class="btn btn-info" ng-click="go('/rest/libraries/add')">
-          <span class="glyphicon glyphicon-plus"></span>  Add</button></li>
-      <li><button class="btn btn-info" ng-click="go('/rest/libraries/import')">
-          <span class="glyphicon glyphicon-cloud-upload"></span>  Import</button></li>
+      <li><button class="btn btn-list" ng-click="go('/rest/libraries')">List</button></li>
+      <li><button class="btn btn-add" ng-click="go('/rest/libraries/add')">Add</button></li>
+      <li><button class="btn btn-import" ng-click="go('/rest/libraries/import')">Import</button></li>
     </ul>
     <h2>Icons</h2>
     <ul class="nav nav-pills">
-      <li><button class="btn btn-primary" ng-click="go('/rest/icons')">
-          <span class="glyphicon glyphicon-list"></span>  List</button></li>
-      <li><button class="btn btn-info" ng-click="go('/rest/icons/add')">
-          <span class="glyphicon glyphicon-plus"></span>  Add</button></li>
+      <li><button class="btn btn-list" ng-click="go('/rest/icons')">List</button></li>
+      <li><button class="btn btn-add" ng-click="go('/rest/icons/add')">Add</button></li>
     </ul>
   </div>
   <jsp:include page="footer.jsp" />

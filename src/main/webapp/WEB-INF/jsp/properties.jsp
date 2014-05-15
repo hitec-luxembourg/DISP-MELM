@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="app">
 <head>
-<title>MELM - List Library element properties</title>
+<title>MALM - List Library element properties</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <jsp:include page="css-includes.jsp" />
@@ -51,15 +51,18 @@
         <td align="left"><span editable-select="property.type" e-class="form-control" e-name="type" e-form="rowform"
           e-ng-options="item.id as item.title for item in customPropertyTypes">{{property.type}}</span></td>
         <td>
-          <form editable-form name="rowform" onbeforesave="updateResource($data, property.id)" ng-show="rowform.$visible" class="form-buttons form-inline">
-            <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary btn-custom-default"><span class="glyphicon glyphicon-refresh"></span> Update</button>
+          <form editable-form name="rowform" onbeforesave="updateResource($data, property.id)" ng-show="rowform.$visible"
+            class="form-buttons form-inline">
+            <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary btn-custom-default">
+              <span class="glyphicon glyphicon-refresh"></span> Update
+            </button>
             <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-default btn-custom-cancel">Cancel</button>
           </form>
           <ul class="nav nav-pills" ng-show="!rowform.$visible">
-            <li><button class="btn btn-primary" ng-click="rowform.$show()">
+            <li><button class="btn" ng-click="rowform.$show()">
                 <span class="glyphicon glyphicon-refresh"></span> Edit
               </button></li>
-            <li><button class="btn btn-danger" ng-click="deleteResource(property.id)">
+            <li><button class="btn" ng-click="deleteResource(property.id)">
                 <span class="glyphicon glyphicon-remove"></span> Delete
               </button></li>
           </ul>

@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>MELM - Clone library</title>
+<title>MALM - Clone library</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <jsp:include page="css-includes.jsp" />
@@ -40,7 +40,7 @@
       </div>
       <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
-          <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-random"></span>  Clone</button>
+          <button type="submit" class="btn"><span class="glyphicon glyphicon-random"></span>Clone</button>
         </div>
       </div>
     </form>
