@@ -37,22 +37,22 @@
       <div class="form-group">
         <label for="iconIndex" class="col-sm-2 control-label">Icon index</label>
         <div class="col-sm-10">
-          <input type="text" class="form-control" id="iconIndex" name="iconIndex" placeholder="iconIndex"
-            value="${it.libraryIcon.indexOfIconInLibrary}">
+          <input type="number" class="form-control" id="iconIndex" name="iconIndex" placeholder="iconIndex"
+            value="${it.libraryIcon.indexOfIconInLibrary}" />
         </div>
       </div>
       <div class="form-group">
         <label for="iconName" class="col-sm-2 control-label">Icon name</label>
         <div class="col-sm-10">
           <input type="text" class="form-control" id="iconName" name="iconName" placeholder="iconName"
-            value="${it.libraryIcon.iconNameInLibrary}">
+            value="${it.libraryIcon.iconNameInLibrary}" />
         </div>
       </div>
       <div class="form-group">
         <label for="iconDescription" class="col-sm-2 control-label">Icon description</label>
         <div class="col-sm-10">
           <input type="text" class="form-control" id="iconDescription" name="iconDescription" placeholder="iconDescription"
-            value="${it.libraryIcon.iconDescriptionInLibrary}">
+            value="${it.libraryIcon.iconDescriptionInLibrary}" />
         </div>
       </div>
       <div class="form-group">

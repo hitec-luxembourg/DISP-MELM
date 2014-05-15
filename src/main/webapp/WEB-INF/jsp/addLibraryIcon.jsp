@@ -36,19 +36,19 @@
       <div class="form-group">
         <label for="iconIndex" class="col-sm-2 control-label">Icon index</label>
         <div class="col-sm-10">
-          <input type="text" class="form-control" id="iconIndex" name="iconIndex" placeholder="iconIndex">
+          <input type="number" class="form-control" id="iconIndex" name="iconIndex" placeholder="iconIndex" />
         </div>
       </div>
       <div class="form-group">
         <label for="iconName" class="col-sm-2 control-label">Icon name</label>
         <div class="col-sm-10">
-          <input type="text" class="form-control" id="iconName" name="iconName" placeholder="iconName">
+          <input type="text" class="form-control" id="iconName" name="iconName" placeholder="iconName" />
         </div>
       </div>
       <div class="form-group">
         <label for="iconDescription" class="col-sm-2 control-label">Icon description</label>
         <div class="col-sm-10">
-          <input type="text" class="form-control" id="iconDescription" name="iconDescription" placeholder="iconDescription">
+          <input type="text" class="form-control" id="iconDescription" name="iconDescription" placeholder="iconDescription" />
         </div>
       </div>
       <div class="form-group">

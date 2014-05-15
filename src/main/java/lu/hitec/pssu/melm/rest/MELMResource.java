@@ -346,8 +346,10 @@ public class MELMResource {
 
   @POST
   @Path("/libraries/icons/properties/add")
-  public Response performAddProperty(@FormParam("id") final long id, @FormParam("uniqueName") final String uniqueName,
-      @FormParam("type") final String type) throws MELMException {
+  public Response performAddProperty(@FormParam("id") final long id, @FormParam("uniqueName") @Nonnull final String uniqueName,
+      @FormParam("type") @Nonnull final String type) throws MELMException {
+    assert uniqueName != null : "uniqueName is null";
+    assert type != null : "type is null";
     melmService.addProperty(id, uniqueName, CustomPropertyType.valueOf(type.toUpperCase()));
     return Response.ok().build();
   }
@@ -479,6 +481,16 @@ public class MELMResource {
       LOGGER.warn("Error in performAddLibrary", e);
       return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
     }
+  }
+
+  @POST
+  @Path("/libraries/icons/properties/update")
+  public Response performUpdateProperty(@FormParam("id") final long id, @FormParam("uniqueName") @Nonnull final String uniqueName,
+      @FormParam("type") @Nonnull final String type) throws MELMException {
+    assert uniqueName != null : "uniqueName is null";
+    assert type != null : "type is null";
+    melmService.updateProperty(id, uniqueName, CustomPropertyType.valueOf(type.toUpperCase()));
+    return Response.ok().build();
   }
 
   @GET

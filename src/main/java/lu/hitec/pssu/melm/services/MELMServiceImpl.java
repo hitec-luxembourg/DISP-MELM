@@ -773,6 +773,11 @@ public class MELMServiceImpl implements MELMService {
   }
 
   @Override
+  public void updateProperty(final long id, @Nonnull final String uniqueName, @Nonnull final CustomPropertyType type) throws MELMException {
+    mapElementCustomPropertyDAO.updateCustomProperty(id, uniqueName, type);
+  }
+
+  @Override
   public NodeList validateImportedLibraryAndGetNodeList(@Nonnull final String libraryName, final int majorVersion, final int minorVersion)
       throws MELMException {
     assert libraryName != null : "Library name is null";

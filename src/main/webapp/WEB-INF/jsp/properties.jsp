@@ -21,20 +21,23 @@
     <div>
       <h3>Add property</h3>
       <form novalidate name="createResourceForm">
-      <input type="hidden" id="newResource_id" ng-model="newResource.id" value="${it}" />
+        <input type="hidden" id="newResource_id" ng-model="newResource.id" value="${it}" />
         <table class="table table-striped">
           <tr>
             <td><input type="text" class="form-control" placeholder="Unique name" id="newResource_unique_name"
               ng-model="newResource.uniqueName" required /></td>
-            <td><select id="newResource_type" class="form-control" ng-model="newResource.type" ng-options="item.id as item.title for item in customPropertyTypes"></select></td>
+            <td><select id="newResource_type" class="form-control" ng-model="newResource.type"
+              ng-options="item.id as item.title for item in customPropertyTypes"></select></td>
             <td style="white-space: nowrap">
-              <button class="btn btn-info btn-custom-default" ng-click="createResource(newResource)"><span class="glyphicon glyphicon-plus"></span> Add</button>
+              <button class="btn btn-info btn-custom-default" ng-click="createResource(newResource)">
+                <span class="glyphicon glyphicon-plus"></span> Add
+              </button>
             </td>
           </tr>
         </table>
       </form>
     </div>
-      <h3>List properties</h3>
+    <h3>List properties</h3>
     <table class="table table-striped">
       <tr>
         <td align="left"><a href="" ng-click="predicate='uniqueName'; reverse=!reverse">Unique name</a></td>
@@ -43,10 +46,19 @@
       </tr>
       <tr
         ng-repeat="property in properties | orderBy:predicate:reverse | startFrom: pagination.page * pagination.perPage | limitTo: pagination.perPage">
-        <td align="left">{{property.uniqueName}}</td>
-        <td align="left">{{property.type}}</td>
+        <td align="left"><span editable-text="property.uniqueName" e-class="form-control" e-name="uniqueName" e-form="rowform"
+          e-required>{{property.uniqueName}}</span></td>
+        <td align="left"><span editable-select="property.type" e-class="form-control" e-name="type" e-form="rowform"
+          e-ng-options="item.id as item.title for item in customPropertyTypes">{{property.type}}</span></td>
         <td>
-          <ul class="nav nav-pills">
+          <form editable-form name="rowform" onbeforesave="updateResource($data, property.id)" ng-show="rowform.$visible" class="form-buttons form-inline">
+            <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary btn-custom-default"><span class="glyphicon glyphicon-refresh"></span> Update</button>
+            <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-default btn-custom-cancel">Cancel</button>
+          </form>
+          <ul class="nav nav-pills" ng-show="!rowform.$visible">
+            <li><button class="btn btn-primary" ng-click="rowform.$show()">
+                <span class="glyphicon glyphicon-refresh"></span> Edit
+              </button></li>
             <li><button class="btn btn-danger" ng-click="deleteResource(property.id)">
                 <span class="glyphicon glyphicon-remove"></span> Delete
               </button></li>

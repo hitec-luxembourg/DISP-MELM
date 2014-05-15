@@ -8,16 +8,16 @@ app.controller('PropertiesCtrl', [ '$scope', '$http', '$location', 'Pagination',
 
   $scope.customPropertyTypes = [ {
     id : 'BOOLEAN',
-    title : 'Boolean'
+    title : 'BOOLEAN'
   }, {
     id : 'DATE',
-    title : 'Date'
+    title : 'DATE'
   }, {
     id : 'INTEGER',
-    title : 'Integer'
+    title : 'INTEGER'
   }, {
     id : 'STRING',
-    title : 'String'
+    title : 'STRING'
   } ];
 
   $scope.resetResource = function() {
@@ -48,11 +48,11 @@ app.controller('PropertiesCtrl', [ '$scope', '$http', '$location', 'Pagination',
     });
   };
 
-  /*$scope.updateResource = function(data, key, value) {
+  $scope.updateResource = function(data, id) {
     var uniqueName = data ? data.uniqueName : "";
     var type = data ? data.type : "";
     var params = encodeParams({
-      "id" : getRESTParameter('properties/'),
+      "id" : id,
       "uniqueName" : uniqueName,
       "type" : type
     });
@@ -61,12 +61,11 @@ app.controller('PropertiesCtrl', [ '$scope', '$http', '$location', 'Pagination',
         'Content-Type' : 'application/x-www-form-urlencoded'
       }
     }).success(function() {
-      $scope.resetResource();
       $scope.loadResources(getRESTParameter('properties'));
     }).error(function() {
       alert("Resource creation threw an error.");
     });
-  };*/
+  };
 
   $scope.deleteResource = function(id) {
     if (!confirm("Do you really want to delete this resource ?")) {

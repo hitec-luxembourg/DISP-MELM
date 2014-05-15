@@ -89,5 +89,7 @@ public interface MELMService {
   void updateLibraryIcon(long id, int iconIndex, @Nonnull String iconName, @Nonnull String iconDescription, long iconId)
       throws MELMException;
 
+  void updateProperty(long id, @Nonnull String uniqueName, @Nonnull CustomPropertyType type) throws MELMException;
+
   NodeList validateImportedLibraryAndGetNodeList(@Nonnull String libraryName, int majorVersion, int minorVersion) throws MELMException;
 }
