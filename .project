@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>DISP-MELM-UTILS</name>
-	<comment>Map Element Library Manager Utils.</comment>
+	<name>DISP-MELM</name>
+	<comment>Map Element Library Manager.</comment>
 	<projects>
 	</projects>
 	<buildSpec>
