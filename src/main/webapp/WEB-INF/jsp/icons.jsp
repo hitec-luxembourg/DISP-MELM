@@ -20,8 +20,8 @@
     </div>
     <table class="table table-striped">
       <tr>
-        <td align="left"><a href="" ng-click="predicate='displayName'; reverse=!reverse">Name</a></td>
-        <td align="left">Preview</td>
+        <td align="left" style="width:500px"><a href="" ng-click="predicate='displayName'; reverse=!reverse">Name</a></td>
+        <td align="left" style="width:300px">Preview</td>
         <td align="left">Actions</td>
       </tr>
       <tr

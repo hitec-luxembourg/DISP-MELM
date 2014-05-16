@@ -40,8 +40,8 @@
     <h3>List properties</h3>
     <table class="table table-striped">
       <tr>
-        <td align="left"><a href="" ng-click="predicate='uniqueName'; reverse=!reverse">Unique name</a></td>
-        <td align="left"><a href="" ng-click="predicate='type'; reverse=!reverse">Type</a></td>
+        <td align="left" style="width:300px"><a href="" ng-click="predicate='uniqueName'; reverse=!reverse">Unique name</a></td>
+        <td align="left" style="width:300px"><a href="" ng-click="predicate='type'; reverse=!reverse">Type</a></td>
         <td align="left">Actions</td>
       </tr>
       <tr

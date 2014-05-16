@@ -15,24 +15,12 @@
   <jsp:include page="header.jsp" />
   <div class="container">
     <div class="page-header">
-      <h1>Add library element <small>${it.library.name}-${it.library.majorVersion}.${it.library.minorVersion}</small></h1>
+      <h1>
+        Add library element <small>${it.library.name}-${it.library.majorVersion}.${it.library.minorVersion}</small>
+      </h1>
     </div>
-    <form method="POST" action="${ctx}/rest/libraries/icons/add" enctype='multipart/form-data' class="form-horizontal" role="form">
-      <input name="id" id="id" type="hidden" value="${it.library.id}" /> 
-      <table class="table table-striped">
-        <tr>
-          <td></td>
-          <td align="left">Name</td>
-          <td align="left">Preview</td>
-        </tr>
-        <c:forEach var="icon" items="${it.icons}">
-          <tr>
-            <td><input type="radio" name="iconId" value="${icon.id}" /></td>
-            <td align="left">${icon.displayName}</td>
-            <td align="left"><img src="${ctx}/rest/icons/file/${icon.id}/LARGE"></td>
-          </tr>
-        </c:forEach>
-      </table>
+    <form method="POST" action="${ctx}/rest/libraries/icons/add" class="form-horizontal" role="form">
+      <input name="id" id="id" type="hidden" value="${it.library.id}" />
       <div class="form-group">
         <label for="iconIndex" class="col-sm-2 control-label">Icon index</label>
         <div class="col-sm-10">
@@ -51,6 +39,20 @@
           <input type="text" class="form-control" id="iconDescription" name="iconDescription" placeholder="iconDescription" />
         </div>
       </div>
+      <table class="table table-striped">
+        <tr>
+          <td></td>
+          <td align="left">Name</td>
+          <td align="left">Preview</td>
+        </tr>
+        <c:forEach var="icon" items="${it.icons}">
+          <tr>
+            <td><input type="radio" name="iconId" value="${icon.id}" /></td>
+            <td align="left">${icon.displayName}</td>
+            <td align="left"><img src="${ctx}/rest/icons/file/${icon.id}/LARGE"></td>
+          </tr>
+        </c:forEach>
+      </table>
       <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
           <button type="submit" class="btn btn-add">Add</button>

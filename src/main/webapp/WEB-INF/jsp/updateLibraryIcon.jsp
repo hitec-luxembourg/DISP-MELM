@@ -19,23 +19,9 @@
         Update library element <small>${it.libraryIcon.library.name}-${it.libraryIcon.library.majorVersion}.${it.libraryIcon.library.minorVersion}</small>
       </h1>
     </div>
-    <form method="POST" action="${ctx}/rest/libraries/icons/update" enctype='multipart/form-data' class="form-horizontal" role="form">
+    <form method="POST" action="${ctx}/rest/libraries/icons/update" class="form-horizontal" role="form">
       <input name="libraryIconId" id="libraryIconId" type="hidden" value="${it.libraryIcon.id}" /> <input name="id" id="id" type="hidden"
         value="${it.libraryIcon.library.id}" />
-      <table class="table table-striped">
-        <tr>
-          <td></td>
-          <td align="left">Name</td>
-          <td align="left">Preview</td>
-        </tr>
-        <c:forEach var="icon" items="${it.icons}">
-          <tr>
-            <td><input type="radio" name="iconId" value="${icon.id}" ${it.libraryIcon.icon.id==icon.id?'checked':''} /></td>
-            <td align="left">${icon.displayName}</td>
-            <td align="left"><img src="${ctx}/rest/icons/file/${icon.id}/LARGE"></td>
-          </tr>
-        </c:forEach>
-      </table>
       <div class="form-group">
         <label for="iconIndex" class="col-sm-2 control-label">Icon index</label>
         <div class="col-sm-10">
@@ -57,6 +43,20 @@
             value="${it.libraryIcon.iconDescriptionInLibrary}" />
         </div>
       </div>
+      <table class="table table-striped">
+        <tr>
+          <td></td>
+          <td align="left">Name</td>
+          <td align="left">Preview</td>
+        </tr>
+        <c:forEach var="icon" items="${it.icons}">
+          <tr>
+            <td><input type="radio" name="iconId" value="${icon.id}" ${it.libraryIcon.icon.id==icon.id?'checked':''} /></td>
+            <td align="left">${icon.displayName}</td>
+            <td align="left"><img src="${ctx}/rest/icons/file/${icon.id}/LARGE"></td>
+          </tr>
+        </c:forEach>
+      </table>
       <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
           <button type="submit" class="btn">

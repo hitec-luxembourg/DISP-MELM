@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="app">
 <head>
-<title>MELM - MELM</title>
+<title>MALM</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <jsp:include page="css-includes.jsp" />

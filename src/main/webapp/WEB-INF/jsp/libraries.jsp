@@ -20,9 +20,9 @@
     </div>
     <table class="table table-striped">
       <tr>
-        <td align="left"><a href="" ng-click="predicate='name'; reverse=!reverse">Name</a></td>
-        <td align="left">Version</td>
-        <td align="left">Icon</td>
+        <td align="left" style="width:250px"><a href="" ng-click="predicate='name'; reverse=!reverse">Name</a></td>
+        <td align="left" style="width:100px">Version</td>
+        <td align="left" style="width:150px">Icon</td>
         <td align="left">Actions</td>
       </tr>
       <tr
