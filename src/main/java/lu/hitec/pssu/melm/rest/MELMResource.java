@@ -7,7 +7,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -33,13 +32,10 @@ import lu.hitec.pssu.melm.services.MELMService;
 import lu.hitec.pssu.melm.utils.CustomPropertyType;
 import lu.hitec.pssu.melm.utils.MELMUtils;
 
-import org.apache.commons.fileupload.FileItemIterator;
-import org.apache.commons.fileupload.FileItemStream;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.commons.fileupload.util.Streams;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.glassfish.jersey.server.mvc.Viewable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,9 +51,6 @@ public class MELMResource {
   private static final String DEFAULT_MEDIA_TYPE = "image/png";
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MELMResource.class);
-
-  // Limit in bytes for file upload (overidden by services limits)
-  private static final int MAX_FILE_SIZE = 8 * 1024 * 1024;
 
   @Autowired
   private MELMService melmService;
@@ -270,18 +263,16 @@ public class MELMResource {
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.TEXT_HTML)
   @Path("/icons/add")
-  public Response performAddIcon() {
-    if (!ServletFileUpload.isMultipartContent(request)) {
-      LOGGER.warn("Got invalid request, no multipart content");
-      return Response.status(Status.BAD_REQUEST).entity("Invalid request, no multipart content").build();
-    }
-
+  public Response performAddIcon(@FormDataParam("displayName") final String displayName,
+      @FormDataParam("largeIconFile") final InputStream file,
+      @FormDataParam("largeIconFile") final FormDataContentDisposition fileDisposition) {
     try {
-      final IconUpload iconUpload = parseIconUpload();
-      if (iconUpload.getLargeIconFile().length() == 0) {
-        return Response.status(Status.BAD_REQUEST).entity("Icon file is invalid").build();
+      final File largeIconFile = File.createTempFile("fromUpload", fileDisposition.getFileName());
+      FileUtils.writeByteArrayToFile(largeIconFile, IOUtils.toByteArray(file));
+      if ((largeIconFile != null) && (largeIconFile.length() <= 0)) {
+        return Response.status(Status.BAD_REQUEST).entity("Invalid large icon file").build();
       }
-      melmService.addIconAndFiles(iconUpload.getDisplayName(), iconUpload.getLargeIconFile());
+      melmService.addIconAndFiles(displayName, largeIconFile);
     } catch (final Exception e) {
       LOGGER.warn("Error in performAddIcon", e);
       return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
@@ -294,22 +285,23 @@ public class MELMResource {
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.TEXT_HTML)
   @Path("/libraries/add")
-  public Response performAddLibrary() throws MELMException {
-    if (!ServletFileUpload.isMultipartContent(request)) {
-      LOGGER.warn("Got invalid request, no multipart content");
-      return Response.status(Status.BAD_REQUEST).entity("Invalid request, no multipart content").build();
-    }
-
+  public Response performAddLibrary(@FormDataParam("libraryName") final String libraryName, @FormDataParam("version") final String version,
+      @FormDataParam("libraryIconFile") final InputStream file,
+      @FormDataParam("libraryIconFile") final FormDataContentDisposition fileDisposition) throws MELMException {
     try {
-      final LibraryUpload libraryUpload = parseLibraryUpload();
-      if (libraryUpload.getIconFile().length() == 0) {
-        return Response.status(Status.BAD_REQUEST).entity("Icon file is invalid").build();
+      final File libraryIconMaybeNull = File.createTempFile("fromUpload", fileDisposition.getFileName());
+      FileUtils.writeByteArrayToFile(libraryIconMaybeNull, IOUtils.toByteArray(file));
+      if ((libraryIconMaybeNull != null) && (libraryIconMaybeNull.length() <= 0)) {
+        return Response.status(Status.BAD_REQUEST).entity("Invalid icon file").build();
       }
-      final String hashForFile = melmService.addLibraryIcon(libraryUpload.getIconFile());
-      final int majorVersion = MELMUtils.getMajorVersion(libraryUpload.getVersion());
-      final int minorVersion = MELMUtils.getMinorVersion(libraryUpload.getVersion());
+      final String hashForFile = melmService.addLibraryIcon(libraryIconMaybeNull);
+      final int majorVersion = MELMUtils.getMajorVersion(version);
+      final int minorVersion = MELMUtils.getMinorVersion(version);
 
-      melmService.addLibrary(libraryUpload.getLibraryName(), majorVersion, minorVersion, hashForFile);
+      melmService.addLibrary(libraryName, majorVersion, minorVersion, hashForFile);
+    } catch (final IOException e) {
+      LOGGER.warn("Error in performAddLibrary", e);
+      return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
     } catch (final MELMException e) {
       LOGGER.warn("Error in performAddLibrary", e);
       return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
@@ -318,28 +310,17 @@ public class MELMResource {
   }
 
   @POST
-  @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.TEXT_HTML)
   @Path("/libraries/icons/add")
-  public Response performAddLibraryIcon(@Context final UriInfo uriInfo) throws MELMException {
-    if (!ServletFileUpload.isMultipartContent(request)) {
-      LOGGER.warn("Got invalid request, no multipart content");
-      return Response.status(Status.BAD_REQUEST).entity("Invalid request, no multipart content").build();
-    }
-
-    final LibraryIconUpload libraryIconUpload = parseLibraryIconUpload();
+  public Response performAddLibraryIcon(@Context final UriInfo uriInfo, @FormParam("id") final long id,
+      @FormParam("iconIndex") final int iconIndex, @FormParam("iconName") final String iconName,
+      @FormParam("iconDescription") final String iconDescription, @FormParam("iconId") final long iconId) throws MELMException {
     try {
-      if (libraryIconUpload == null) {
-        final String msg = "Failed to parse parameters";
-        LOGGER.warn(msg);
-        return Response.status(Status.BAD_REQUEST).entity(msg).build();
-      }
-      melmService.addLibraryIcon(Long.parseLong(libraryIconUpload.getId()), Integer.parseInt(libraryIconUpload.getIconIndex()),
-          libraryIconUpload.getIconName(), libraryIconUpload.getIconDescription(), Long.parseLong(libraryIconUpload.getIconId()));
-      final URI uri = uriInfo.getBaseUriBuilder().path("/rest/libraries/icons/" + Long.parseLong(libraryIconUpload.getId())).build();
+      melmService.addLibraryIcon(id, iconIndex, iconName, iconDescription, iconId);
+      final URI uri = uriInfo.getBaseUriBuilder().path("/rest/libraries/icons/" + id).build();
       return Response.seeOther(uri).build();
     } catch (final MELMException e) {
-      LOGGER.warn("Error in performAddLibrary", e);
+      LOGGER.warn("Error in performAddLibraryIcon", e);
       return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
     }
   }
@@ -358,22 +339,23 @@ public class MELMResource {
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.TEXT_HTML)
   @Path("/libraries/clone")
-  public Response performCloneLibrary() throws MELMException {
-    if (!ServletFileUpload.isMultipartContent(request)) {
-      LOGGER.warn("Got invalid request, no multipart content");
-      return Response.status(Status.BAD_REQUEST).entity("Invalid request, no multipart content").build();
-    }
-
+  public Response performCloneLibrary(@FormDataParam("id") final long id, @FormDataParam("libraryName") final String libraryName,
+      @FormDataParam("version") final String version, @FormDataParam("libraryIconFile") final InputStream file,
+      @FormDataParam("libraryIconFile") final FormDataContentDisposition fileDisposition) throws MELMException {
     try {
-      final LibraryUpload libraryUpload = parseLibraryUpload();
-      if (libraryUpload.getIconFile().length() == 0) {
-        return Response.status(Status.BAD_REQUEST).entity("Icon file is invalid").build();
+      final File libraryIconMaybeNull = File.createTempFile("fromUpload", fileDisposition.getFileName());
+      FileUtils.writeByteArrayToFile(libraryIconMaybeNull, IOUtils.toByteArray(file));
+      if ((libraryIconMaybeNull != null) && (libraryIconMaybeNull.length() <= 0)) {
+        return Response.status(Status.BAD_REQUEST).entity("Invalid icon file").build();
       }
-      final String hashForFile = melmService.addLibraryIcon(libraryUpload.getIconFile());
-      final int majorVersion = MELMUtils.getMajorVersion(libraryUpload.getVersion());
-      final int minorVersion = MELMUtils.getMinorVersion(libraryUpload.getVersion());
-      melmService.cloneLibrary(Long.parseLong(libraryUpload.getId()), libraryUpload.getLibraryName(), majorVersion, minorVersion,
-          hashForFile);
+      final String hashForFile = melmService.addLibraryIcon(libraryIconMaybeNull);
+      final int majorVersion = MELMUtils.getMajorVersion(version);
+      final int minorVersion = MELMUtils.getMinorVersion(version);
+
+      melmService.cloneLibrary(id, libraryName, majorVersion, minorVersion, hashForFile);
+    } catch (final IOException e) {
+      LOGGER.warn("Error in performCloneLibrary", e);
+      return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
     } catch (final MELMException e) {
       LOGGER.warn("Error in performCloneLibrary", e);
       return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
@@ -393,31 +375,29 @@ public class MELMResource {
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.TEXT_HTML)
   @Path("/libraries/import")
-  public Response performImportLibrary() {
-    if (!ServletFileUpload.isMultipartContent(request)) {
-      LOGGER.warn("Got invalid request, no multipart content");
-      return Response.status(Status.BAD_REQUEST).entity("Invalid request, no multipart content").build();
-    }
-
+  public Response performImportLibrary(@FormDataParam("libraryName") final String libraryName,
+      @FormDataParam("version") final String version, @FormDataParam("libraryFile") final InputStream file,
+      @FormDataParam("libraryFile") final FormDataContentDisposition fileDisposition) {
     try {
-      final LibraryUpload libraryUpload = parseLibraryUpload();
-      if (libraryUpload.getZipFile().length() == 0) {
-        return Response.status(Status.BAD_REQUEST).entity("Zip file is invalid").build();
+      final File zipFileMaybeNull = File.createTempFile("fromUpload", fileDisposition.getFileName());
+      FileUtils.writeByteArrayToFile(zipFileMaybeNull, IOUtils.toByteArray(file));
+      if ((zipFileMaybeNull != null) && (zipFileMaybeNull.length() <= 0)) {
+        return Response.status(Status.BAD_REQUEST).entity("Invalid zip file").build();
       }
-      final int majorVersion = MELMUtils.getMajorVersion(libraryUpload.getVersion());
-      final int minorVersion = MELMUtils.getMinorVersion(libraryUpload.getVersion());
-      final File zipFile = melmService
-          .importLibrary(libraryUpload.getLibraryName(), majorVersion, minorVersion, libraryUpload.getZipFile());
+      final int majorVersion = MELMUtils.getMajorVersion(version);
+      final int minorVersion = MELMUtils.getMinorVersion(version);
+      final File zipFile = melmService.importLibrary(libraryName, majorVersion, minorVersion, zipFileMaybeNull);
+
       final File libraryFolder = melmService.extractImportedLibrary(zipFile);
       if (libraryFolder != null) {
-        final String iconMd5 = melmService.moveImportedLibraryIcon(libraryFolder, libraryUpload.getLibraryName(), majorVersion,
-            minorVersion);
-        final MapElementLibrary mapElementLibrary = melmService.addLibrary(libraryUpload.getLibraryName(), majorVersion, minorVersion,
-            iconMd5);
-        final NodeList nodeList = melmService.validateImportedLibraryAndGetNodeList(libraryUpload.getLibraryName(), majorVersion,
-            minorVersion);
+        final String iconMd5 = melmService.moveImportedLibraryIcon(libraryFolder, libraryName, majorVersion, minorVersion);
+        final MapElementLibrary mapElementLibrary = melmService.addLibrary(libraryName, majorVersion, minorVersion, iconMd5);
+        final NodeList nodeList = melmService.validateImportedLibraryAndGetNodeList(libraryName, majorVersion, minorVersion);
         melmService.moveImportedIcons(mapElementLibrary, nodeList, libraryFolder);
       }
+    } catch (final IOException e) {
+      LOGGER.warn("Error in performImportLibrary", e);
+      return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
     } catch (final MELMException e) {
       LOGGER.warn("Error in performImportLibrary", e);
       return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
@@ -430,23 +410,23 @@ public class MELMResource {
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.TEXT_HTML)
   @Path("/libraries/update")
-  public Response performUpdateLibrary() throws MELMException {
-    if (!ServletFileUpload.isMultipartContent(request)) {
-      LOGGER.warn("Got invalid request, no multipart content");
-      return Response.status(Status.BAD_REQUEST).entity("Invalid request, no multipart content").build();
-    }
-
+  public Response performUpdateLibrary(@FormDataParam("id") final long id, @FormDataParam("libraryName") final String libraryName,
+      @FormDataParam("version") final String version, @FormDataParam("libraryIconFile") final InputStream file,
+      @FormDataParam("libraryIconFile") final FormDataContentDisposition fileDisposition) throws MELMException {
     try {
-      final LibraryUpload libraryUpload = parseLibraryUpload();
-      final int majorVersion = MELMUtils.getMajorVersion(libraryUpload.getVersion());
-      final int minorVersion = MELMUtils.getMinorVersion(libraryUpload.getVersion());
-      if (libraryUpload.getIconFile().length() != 0) {
-        final String hashForFile = melmService.addLibraryIcon(libraryUpload.getIconFile());
-        melmService.updateLibrary(Long.parseLong(libraryUpload.getId()), libraryUpload.getLibraryName(), majorVersion, minorVersion,
-            hashForFile);
+      final File libraryIconMaybeNull = File.createTempFile("fromUpload", fileDisposition.getFileName());
+      FileUtils.writeByteArrayToFile(libraryIconMaybeNull, IOUtils.toByteArray(file));
+      final int majorVersion = MELMUtils.getMajorVersion(version);
+      final int minorVersion = MELMUtils.getMinorVersion(version);
+      if ((libraryIconMaybeNull != null) && (libraryIconMaybeNull.length() > 0)) {
+        final String hashForFile = melmService.addLibraryIcon(libraryIconMaybeNull);
+        melmService.updateLibrary(id, libraryName, majorVersion, minorVersion, hashForFile);
       } else {
-        melmService.updateLibrary(Long.parseLong(libraryUpload.getId()), libraryUpload.getLibraryName(), majorVersion, minorVersion, null);
+        melmService.updateLibrary(id, libraryName, majorVersion, minorVersion, null);
       }
+    } catch (final IOException e) {
+      LOGGER.warn("Error in performCloneLibrary", e);
+      return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
     } catch (final MELMException e) {
       LOGGER.warn("Error in performUpdateLibrary", e);
       return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
@@ -455,26 +435,14 @@ public class MELMResource {
   }
 
   @POST
-  @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.TEXT_HTML)
   @Path("/libraries/icons/update")
-  public Response performUpdateLibraryIcon(@Context final UriInfo uriInfo) throws MELMException {
-    if (!ServletFileUpload.isMultipartContent(request)) {
-      LOGGER.warn("Got invalid request, no multipart content");
-      return Response.status(Status.BAD_REQUEST).entity("Invalid request, no multipart content").build();
-    }
-
-    final LibraryIconUpload libraryIconUpload = parseLibraryIconUpload();
+  public Response performUpdateLibraryIcon(@Context final UriInfo uriInfo, @FormParam("libraryIconId") final long libraryIconId,
+      @FormParam("iconIndex") final int iconIndex, @FormParam("iconName") final String iconName,
+      @FormParam("iconDescription") final String iconDescription, @FormParam("iconId") final long iconId) throws MELMException {
     try {
-      if (libraryIconUpload == null) {
-        final String msg = "Failed to parse parameters";
-        LOGGER.warn(msg);
-        return Response.status(Status.BAD_REQUEST).entity(msg).build();
-      }
-      final long libraryId = melmService.getLibraryIcon(Long.parseLong(libraryIconUpload.getLibraryIconId())).getLibrary().getId();
-      melmService.updateLibraryIcon(Long.parseLong(libraryIconUpload.getLibraryIconId()),
-          Integer.parseInt(libraryIconUpload.getIconIndex()), libraryIconUpload.getIconName(), libraryIconUpload.getIconDescription(),
-          Long.parseLong(libraryIconUpload.getIconId()));
+      final long libraryId = melmService.getLibraryIcon(libraryIconId).getLibrary().getId();
+      melmService.updateLibraryIcon(libraryIconId, iconIndex, iconName, iconDescription, iconId);
       final URI uri = uriInfo.getBaseUriBuilder().path("/rest/libraries/icons/" + libraryId).build();
       return Response.seeOther(uri).build();
     } catch (final MELMException e) {
@@ -504,228 +472,4 @@ public class MELMResource {
     return Response.ok(zipFile).build();
   }
 
-  private IconUpload parseIconUpload() {
-    File largeIconFile = null;
-    String displayName = null;
-
-    final ServletFileUpload upload = new ServletFileUpload();
-    upload.setFileSizeMax(MAX_FILE_SIZE);
-
-    InputStream stream = null;
-    try {
-      final FileItemIterator iter = upload.getItemIterator(request);
-      while (iter.hasNext()) {
-        final FileItemStream item = iter.next();
-        stream = item.openStream();
-        final String fieldName = item.getFieldName();
-        if (Params.DISPLAY_NAME.equalsIgnoreCase(fieldName)) {
-          displayName = Streams.asString(stream);
-        } else if (Params.LARGE_FILE.equalsIgnoreCase(fieldName)) {
-          // We are using temp dir because we don't know by advance the name and the version as we are inside a loop.
-          largeIconFile = File.createTempFile("fromUpload", null);
-          FileUtils.writeByteArrayToFile(largeIconFile, IOUtils.toByteArray(stream));
-        }
-      }
-    } catch (final IOException e) {
-      return null;
-    } catch (final FileUploadException e) {
-      return null;
-    } finally {
-      MELMUtils.closeResource(stream);
-    }
-    if ((displayName == null) || (largeIconFile == null)) {
-      return null;
-    }
-    return new IconUpload(displayName, largeIconFile);
-  }
-
-  @CheckReturnValue
-  private LibraryIconUpload parseLibraryIconUpload() {
-    String id = null;
-    String iconIndex = null;
-    String iconName = null;
-    String iconDescription = null;
-    String iconId = null;
-    String libraryIconId = null;
-
-    final ServletFileUpload upload = new ServletFileUpload();
-    upload.setFileSizeMax(MAX_FILE_SIZE);
-
-    InputStream stream = null;
-    try {
-      final FileItemIterator iter = upload.getItemIterator(request);
-      while (iter.hasNext()) {
-        final FileItemStream item = iter.next();
-        stream = item.openStream();
-        final String fieldName = item.getFieldName();
-        if (Params.ID.equalsIgnoreCase(fieldName)) {
-          id = Streams.asString(stream);
-        } else if (Params.ICON_INDEX.equalsIgnoreCase(fieldName)) {
-          iconIndex = Streams.asString(stream);
-        } else if (Params.ICON_NAME.equalsIgnoreCase(fieldName)) {
-          iconName = Streams.asString(stream);
-        } else if (Params.ICON_DESCRIPTION.equalsIgnoreCase(fieldName)) {
-          iconDescription = Streams.asString(stream);
-        } else if (Params.ICON_ID.equalsIgnoreCase(fieldName)) {
-          iconId = Streams.asString(stream);
-        } else if (Params.LIBRARY_ICON_ID.equalsIgnoreCase(fieldName)) {
-          libraryIconId = Streams.asString(stream);
-        }
-      }
-    } catch (final IOException e) {
-      return null;
-    } catch (final FileUploadException e) {
-      return null;
-    } finally {
-      MELMUtils.closeResource(stream);
-    }
-    if ((id == null) || (iconIndex == null) || (iconName == null) || (iconDescription == null) || (iconId == null)) {
-      return null;
-    }
-    return new LibraryIconUpload(libraryIconId, id, iconIndex, iconName, iconDescription, iconId);
-  }
-
-  private LibraryUpload parseLibraryUpload() {
-    String id = null;
-    String name = null;
-    String version = null;
-    File libraryZipMaybeNull = null;
-    File libraryIconMaybeNull = null;
-
-    final ServletFileUpload upload = new ServletFileUpload();
-    upload.setFileSizeMax(MAX_FILE_SIZE);
-
-    InputStream stream = null;
-    try {
-      final FileItemIterator iter = upload.getItemIterator(request);
-      while (iter.hasNext()) {
-        final FileItemStream item = iter.next();
-        stream = item.openStream();
-        final String fieldName = item.getFieldName();
-        if (Params.ID.equalsIgnoreCase(fieldName)) {
-          id = Streams.asString(stream);
-        } else if (Params.NAME.equalsIgnoreCase(fieldName)) {
-          name = Streams.asString(stream);
-        } else if (Params.VERSION.equalsIgnoreCase(fieldName)) {
-          version = Streams.asString(stream);
-        } else if (Params.FILE.equalsIgnoreCase(fieldName)) {
-          // We are using temp dir because we don't know by advance the name and the version as we are inside a loop.
-          libraryZipMaybeNull = File.createTempFile("fromUpload", null);
-          FileUtils.writeByteArrayToFile(libraryZipMaybeNull, IOUtils.toByteArray(stream));
-        } else if (Params.FILE_ICON.equalsIgnoreCase(fieldName)) {
-          // We are using temp dir because we don't know by advance the name and the version as we are inside a loop.
-          libraryIconMaybeNull = File.createTempFile("fromUpload", null);
-          FileUtils.writeByteArrayToFile(libraryIconMaybeNull, IOUtils.toByteArray(stream));
-        }
-      }
-    } catch (final IOException e) {
-      return null;
-    } catch (final FileUploadException e) {
-      return null;
-    } finally {
-      MELMUtils.closeResource(stream);
-    }
-    if ((name == null) || (version == null)) {
-      return null;
-    }
-    return new LibraryUpload(id, name, version, libraryZipMaybeNull, libraryIconMaybeNull);
-  }
-
-  private final class IconUpload {
-    private final String displayName;
-    private final File largeIconFile;
-
-    public IconUpload(final String displayName, final File largeIconFile) {
-      this.displayName = displayName;
-      this.largeIconFile = largeIconFile;
-    }
-
-    public String getDisplayName() {
-      return displayName;
-    }
-
-    public File getLargeIconFile() {
-      return largeIconFile;
-    }
-  }
-
-  private final class LibraryIconUpload {
-    private final String iconDescription;
-    private final String iconId;
-    private final String iconIndex;
-    private final String iconName;
-    private final String id;
-    private final String libraryIconId;
-
-    public LibraryIconUpload(final String libraryIconId, final String id, final String iconIndex, final String iconName,
-        final String iconDescription, final String iconId) {
-      this.libraryIconId = libraryIconId;
-      this.id = id;
-      this.iconIndex = iconIndex;
-      this.iconName = iconName;
-      this.iconDescription = iconDescription;
-      this.iconId = iconId;
-    }
-
-    public String getIconDescription() {
-      return iconDescription;
-    }
-
-    public String getIconId() {
-      return iconId;
-    }
-
-    public String getIconIndex() {
-      return iconIndex;
-    }
-
-    public String getIconName() {
-      return iconName;
-    }
-
-    public String getId() {
-      return id;
-    }
-
-    public String getLibraryIconId() {
-      return libraryIconId;
-    }
-
-  }
-
-  private final class LibraryUpload {
-    private final File iconFile;
-    private final String id;
-    private final String libraryName;
-    private final String version;
-    private final File zipFile;
-
-    public LibraryUpload(final String id, final String libraryName, final String version, final File zipFile, final File iconFile) {
-      this.id = id;
-      this.libraryName = libraryName;
-      this.version = version;
-      this.zipFile = zipFile;
-      this.iconFile = iconFile;
-    }
-
-    public File getIconFile() {
-      return iconFile;
-    }
-
-    public String getId() {
-      return id;
-    }
-
-    public String getLibraryName() {
-      return libraryName;
-    }
-
-    public String getVersion() {
-      return version;
-    }
-
-    public File getZipFile() {
-      return zipFile;
-    }
-  }
 }
