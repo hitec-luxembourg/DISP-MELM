@@ -38,39 +38,41 @@
       </form>
     </div>
     <h3>List properties</h3>
-    <table class="table table-striped">
-      <tr>
-        <td align="left" style="width: 300px"><a href="" ng-click="predicate='uniqueName'; reverse=!reverse">Unique name</a></td>
-        <td align="left" style="width: 200px"><a href="" ng-click="predicate='type'; reverse=!reverse">Type</a></td>
-        <td align="left">Actions</td>
-      </tr>
-      <tr
-        ng-repeat="property in properties | orderBy:predicate:reverse | startFrom: pagination.page * pagination.perPage | limitTo: pagination.perPage">
-        <td align="left"><span editable-text="property.uniqueName" e-class="form-control" e-name="uniqueName" e-form="rowform"
-          e-required>{{property.uniqueName}}</span></td>
-        <td align="left"><span editable-select="property.type" e-class="form-control" e-name="type" e-form="rowform"
-          e-ng-options="item.id as item.title for item in customPropertyTypes">{{property.type}}</span></td>
-        <td>
-          <form editable-form name="rowform" onbeforesave="updateResource($data, property.id)" ng-show="rowform.$visible"
-            class="form-buttons form-inline">
-            <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary btn-custom-default">
-              <span class="glyphicon glyphicon-refresh"></span><span class="hidden-xs hidden-sm">Update</span>
-            </button>
-            <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-default btn-custom-cancel">
-              <span class="glyphicon glyphicon glyphicon-step-backward"></span><span class="hidden-xs hidden-sm">Cancel</span>
-            </button>
-          </form>
-          <ul class="nav nav-pills" ng-show="!rowform.$visible">
-            <li><button class="btn" ng-click="rowform.$show()">
-                <span class="glyphicon glyphicon-refresh"></span><span class="hidden-xs hidden-sm">Edit</span>
-              </button></li>
-            <li><button class="btn" ng-click="deleteResource(property.id)">
-                <span class="glyphicon glyphicon-remove"></span><span class="hidden-xs hidden-sm">Delete</span>
-              </button></li>
-          </ul>
-        </td>
-      </tr>
-    </table>
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <tr>
+          <td align="left" style="width: 300px"><a href="" ng-click="predicate='uniqueName'; reverse=!reverse">Unique name</a></td>
+          <td align="left" style="width: 200px"><a href="" ng-click="predicate='type'; reverse=!reverse">Type</a></td>
+          <td align="left">Actions</td>
+        </tr>
+        <tr
+          ng-repeat="property in properties | orderBy:predicate:reverse | startFrom: pagination.page * pagination.perPage | limitTo: pagination.perPage">
+          <td align="left"><span editable-text="property.uniqueName" e-class="form-control" e-name="uniqueName" e-form="rowform"
+            e-required>{{property.uniqueName}}</span></td>
+          <td align="left"><span editable-select="property.type" e-class="form-control" e-name="type" e-form="rowform"
+            e-ng-options="item.id as item.title for item in customPropertyTypes">{{property.type}}</span></td>
+          <td>
+            <form editable-form name="rowform" onbeforesave="updateResource($data, property.id)" ng-show="rowform.$visible"
+              class="form-buttons form-inline">
+              <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary btn-custom-default">
+                <span class="glyphicon glyphicon-refresh"></span><span class="hidden-xs hidden-sm">Update</span>
+              </button>
+              <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-default btn-custom-cancel">
+                <span class="glyphicon glyphicon glyphicon-step-backward"></span><span class="hidden-xs hidden-sm">Cancel</span>
+              </button>
+            </form>
+            <ul class="nav nav-pills" ng-show="!rowform.$visible">
+              <li><button class="btn" ng-click="rowform.$show()">
+                  <span class="glyphicon glyphicon-refresh"></span><span class="hidden-xs hidden-sm">Edit</span>
+                </button></li>
+              <li><button class="btn" ng-click="deleteResource(property.id)">
+                  <span class="glyphicon glyphicon-remove"></span><span class="hidden-xs hidden-sm">Delete</span>
+                </button></li>
+            </ul>
+          </td>
+        </tr>
+      </table>
+    </div>
     <div class="pagination-centered">
       <ul class="pagination">
         <li><a ng-hide="pagination.page == 0" ng-click="pagination.prevPage()">&laquo;</a></li>

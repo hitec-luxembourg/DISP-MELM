@@ -18,23 +18,25 @@
     <div class="page-header">
       <h1>List Icons</h1>
     </div>
-    <table class="table table-striped">
-      <tr>
-        <td align="left" style="width:500px"><a href="" ng-click="predicate='displayName'; reverse=!reverse">Name</a></td>
-        <td align="left" style="width:300px">Preview</td>
-        <td align="left">Actions</td>
-      </tr>
-      <tr
-        ng-repeat="icon in icons | orderBy:predicate:reverse | startFrom: pagination.page * pagination.perPage | limitTo: pagination.perPage">
-        <td align="left">{{icon.displayName}}</td>
-        <td align="left"><a href="${ctx}/rest/icons/details/{{icon.id}}"><img src="${ctx}/rest/icons/file/{{icon.id}}/LARGE"></a></td>
-        <td align="left">
-          <button class="btn" ng-click="deleteResource(icon.id)">
-            <span class="glyphicon glyphicon-remove"></span>Delete
-          </button>
-        </td>
-      </tr>
-    </table>
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <tr>
+          <td align="left" style="width: 500px"><a href="" ng-click="predicate='displayName'; reverse=!reverse">Name</a></td>
+          <td align="left" style="width: 300px">Preview</td>
+          <td align="left">Actions</td>
+        </tr>
+        <tr
+          ng-repeat="icon in icons | orderBy:predicate:reverse | startFrom: pagination.page * pagination.perPage | limitTo: pagination.perPage">
+          <td align="left">{{icon.displayName}}</td>
+          <td align="left"><a href="${ctx}/rest/icons/details/{{icon.id}}"><img src="${ctx}/rest/icons/file/{{icon.id}}/LARGE"></a></td>
+          <td align="left">
+            <button class="btn" ng-click="deleteResource(icon.id)">
+              <span class="glyphicon glyphicon-remove"></span>Delete
+            </button>
+          </td>
+        </tr>
+      </table>
+    </div>
     <div class="pagination-centered">
       <ul class="pagination">
         <li><a ng-hide="pagination.page == 0" ng-click="pagination.prevPage()">&laquo;</a></li>

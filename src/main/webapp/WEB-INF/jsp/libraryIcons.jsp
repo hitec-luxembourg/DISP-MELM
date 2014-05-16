@@ -20,36 +20,38 @@
         List library elements <small>{{libraryIconsModel.library.name}}-{{libraryIconsModel.library.majorVersion}}.{{libraryIconsModel.library.minorVersion}}</small>
       </h1>
     </div>
-    <table class="table table-striped">
-      <tr>
-        <td align="left" style="width: 100px"><a href="" ng-click="predicate='indexOfIconInLibrary'; reverse=!reverse">Icon Index</a></td>
-        <td align="left" style="width: 250px"><a href="" ng-click="predicate='iconNameInLibrary'; reverse=!reverse">Icon Name</a></td>
-        <td align="left" style="width: 250px"><a href="" ng-click="predicate='iconDescriptionInLibrary'; reverse=!reverse">Icon
-            Description</a></td>
-        <td style="width: 110px">Preview</td>
-        <td align="left">Actions</td>
-      </tr>
-      <tr
-        ng-repeat="icon in libraryIconsModel.icons | orderBy:predicate:reverse | startFrom: pagination.page * pagination.perPage | limitTo: pagination.perPage">
-        <td align="left">{{icon.indexOfIconInLibrary}}</td>
-        <td align="left">{{icon.iconNameInLibrary}}</td>
-        <td align="left">{{icon.iconDescriptionInLibrary}}</td>
-        <td align="left"><img src="${ctx}/rest/icons/file/{{icon.icon.id}}/LARGE"></td>
-        <td>
-          <ul class="nav nav-pills">
-            <li><button class="btn btn-list" ng-click="go('/rest/libraries/icons/properties/'+icon.id)">
-                <span class="hidden-xs hidden-sm hidden-md">Properties</span>
-              </button></li>
-            <li><button class="btn" ng-click="go('/rest/libraries/icons/update/'+icon.id)">
-                <span class="glyphicon glyphicon-refresh"></span><span class="hidden-xs hidden-sm hidden-md">Update</span>
-              </button></li>
-            <li><button class="btn" ng-click="deleteResource(icon.id)">
-                <span class="glyphicon glyphicon-remove"></span><span class="hidden-xs hidden-sm hidden-md">Delete</span>
-              </button></li>
-          </ul>
-        </td>
-      </tr>
-    </table>
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <tr>
+          <td align="left" style="width: 100px"><a href="" ng-click="predicate='indexOfIconInLibrary'; reverse=!reverse">Icon Index</a></td>
+          <td align="left" style="width: 250px"><a href="" ng-click="predicate='iconNameInLibrary'; reverse=!reverse">Icon Name</a></td>
+          <td align="left" style="width: 250px"><a href="" ng-click="predicate='iconDescriptionInLibrary'; reverse=!reverse">Icon
+              Description</a></td>
+          <td style="width: 110px">Preview</td>
+          <td align="left">Actions</td>
+        </tr>
+        <tr
+          ng-repeat="icon in libraryIconsModel.icons | orderBy:predicate:reverse | startFrom: pagination.page * pagination.perPage | limitTo: pagination.perPage">
+          <td align="left">{{icon.indexOfIconInLibrary}}</td>
+          <td align="left">{{icon.iconNameInLibrary}}</td>
+          <td align="left">{{icon.iconDescriptionInLibrary}}</td>
+          <td align="left"><img src="${ctx}/rest/icons/file/{{icon.icon.id}}/LARGE"></td>
+          <td>
+            <ul class="nav nav-pills">
+              <li><button class="btn btn-list" ng-click="go('/rest/libraries/icons/properties/'+icon.id)">
+                  <span class="hidden-xs hidden-sm hidden-md">Properties</span>
+                </button></li>
+              <li><button class="btn" ng-click="go('/rest/libraries/icons/update/'+icon.id)">
+                  <span class="glyphicon glyphicon-refresh"></span><span class="hidden-xs hidden-sm hidden-md">Update</span>
+                </button></li>
+              <li><button class="btn" ng-click="deleteResource(icon.id)">
+                  <span class="glyphicon glyphicon-remove"></span><span class="hidden-xs hidden-sm hidden-md">Delete</span>
+                </button></li>
+            </ul>
+          </td>
+        </tr>
+      </table>
+    </div>
     <div class="pagination-centered">
       <ul class="pagination">
         <li><a ng-hide="pagination.page == 0" ng-click="pagination.prevPage()">&laquo;</a></li>
