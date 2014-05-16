@@ -14,6 +14,8 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.imageio.ImageIO;
 
+import lu.hitec.pssu.melm.exceptions.MELMException;
+
 import org.apache.commons.codec.digest.DigestUtils;
 
 public final class MELMUtils {
@@ -35,6 +37,26 @@ public final class MELMUtils {
     assert file != null : "File is null";
     final FileInputStream fis = new FileInputStream(file);
     return DigestUtils.md5Hex(fis);
+  }
+
+  public static int getMajorVersion(@Nonnull final String version) throws MELMException {
+    try {
+      final String majorVersion = version.substring(0, version.indexOf('.'));
+      return Integer.parseInt(majorVersion);
+    } catch (final StringIndexOutOfBoundsException e) {
+      final String msg = String.format("Invalid version %s", version);
+      throw new MELMException(msg, e);
+    }
+  }
+
+  public static int getMinorVersion(@Nonnull final String version) throws MELMException {
+    try {
+      final String minorVersion = version.substring(version.indexOf('.') + 1);
+      return Integer.parseInt(minorVersion);
+    } catch (final StringIndexOutOfBoundsException e) {
+      final String msg = String.format("Invalid version %s", version);
+      throw new MELMException(msg, e);
+    }
   }
 
   /**
@@ -96,15 +118,4 @@ public final class MELMUtils {
     // The image type is unknown when 0. This may cause problems down the line, return null instead.
     return image.getType() != 0 ? image : null;
   }
-
-  public static int getMajorVersion(@Nonnull final String version) {
-    final String majorVersion = version.substring(0, version.indexOf('.'));
-    return Integer.parseInt(majorVersion);
-  }
-
-  public static int getMinorVersion(@Nonnull final String version) {
-    final String minorVersion = version.substring(version.indexOf('.') + 1);
-    return Integer.parseInt(minorVersion);
-  }
-
 }

@@ -1,6 +1,7 @@
 package lu.hitec.pssu.melm.utils;
 
 import static org.junit.Assert.assertEquals;
+import lu.hitec.pssu.melm.exceptions.MELMException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -18,7 +19,7 @@ public class MELMUtilsTest {
   }
 
   @Test
-  public void testVersions() {
+  public void testVersions() throws MELMException {
     assertEquals(11, MELMUtils.getMajorVersion("11.0"));
     assertEquals(12, MELMUtils.getMinorVersion("11.12"));
   }
