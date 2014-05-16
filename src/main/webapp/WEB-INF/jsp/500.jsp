@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>MALM - 404 error</title>
+<title>MALM - 500 error</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <jsp:include page="css-includes.jsp" />
@@ -14,8 +14,8 @@
   <jsp:include page="login-header.jsp" />
   <div class="container">
     <div class="jumbotron">
-      <h1>Resource not found</h1>
-      <p>Sorry, but we could not find the resource you are looking for.</p>
+      <h1>Server error</h1>
+      <p>Sorry, but something went wrong.</p>
       <p>Please find more informations on the <a href="http://www.hitec.lu/techblog">blog</a></p>
     </div>
   </div>
