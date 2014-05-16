@@ -18,7 +18,7 @@ app.controller('LibraryIconsCtrl', [ '$scope', '$http', '$location', 'Pagination
         'Content-Type' : 'application/x-www-form-urlencoded'
       }
     }).success(function() {
-      $scope.loadResources(getRESTParameter('icons'));
+      $scope.loadResources(getRESTParameter('icons/'));
     }).error(function() {
       alert("Resource deletion threw an error.");
     });
@@ -30,5 +30,5 @@ app.controller('LibraryIconsCtrl', [ '$scope', '$http', '$location', 'Pagination
 
   $scope.pagination = Pagination.getNew(10);
   $scope.predicate = 'indexOfIconInLibrary';
-  $scope.loadResources(getRESTParameter('icons'));
+  $scope.loadResources(getRESTParameter('icons/'));
 }]);

@@ -42,7 +42,7 @@ app.controller('PropertiesCtrl', [ '$scope', '$http', '$location', 'Pagination',
       }
     }).success(function() {
       $scope.resetResource();
-      $scope.loadResources(getRESTParameter('properties'));
+      $scope.loadResources(getRESTParameter('properties/'));
     }).error(function() {
       alert("Resource creation threw an error.");
     });
@@ -61,7 +61,7 @@ app.controller('PropertiesCtrl', [ '$scope', '$http', '$location', 'Pagination',
         'Content-Type' : 'application/x-www-form-urlencoded'
       }
     }).success(function() {
-      $scope.loadResources(getRESTParameter('properties'));
+      $scope.loadResources(getRESTParameter('properties/'));
     }).error(function() {
       alert("Resource creation threw an error.");
     });
@@ -79,7 +79,7 @@ app.controller('PropertiesCtrl', [ '$scope', '$http', '$location', 'Pagination',
         'Content-Type' : 'application/x-www-form-urlencoded'
       }
     }).success(function() {
-      $scope.loadResources(getRESTParameter('properties'));
+      $scope.loadResources(getRESTParameter('properties/'));
     }).error(function() {
       alert("Resource deletion threw an error.");
     });
@@ -87,5 +87,5 @@ app.controller('PropertiesCtrl', [ '$scope', '$http', '$location', 'Pagination',
 
   $scope.pagination = Pagination.getNew(10);
   $scope.predicate = 'uniqueName';
-  $scope.loadResources(getRESTParameter('properties'));
+  $scope.loadResources(getRESTParameter('properties/'));
 } ]);
