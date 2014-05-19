@@ -10,7 +10,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <jsp:include page="css-includes.jsp" />
 <jsp:include page="js-includes.jsp" />
-<script type="text/javascript" src="${ctx}/js/custom/addLibraryIcon.js"></script>
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('input:radio').on('click', function() {
+      $('input:radio').parent().parent().removeClass('icon_selected');
+      $(this).parent().parent().addClass('icon_selected');
+    });
+  });
+</script>
 </head>
 <body>
   <jsp:include page="header.jsp" />

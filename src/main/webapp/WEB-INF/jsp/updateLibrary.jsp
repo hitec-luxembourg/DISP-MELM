@@ -3,15 +3,16 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/xml" prefix="x"%>
 <c:set value="${pageContext.request.contextPath}" var="ctx" scope="request" />
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="app">
 <head>
 <title>MALM - Update library</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <jsp:include page="css-includes.jsp" />
 <jsp:include page="js-includes.jsp" />
+<script type="text/javascript" src="${ctx}/js/custom/updateLibrary.js"></script>
 </head>
-<body>
+<body ng-controller="UpdateLibraryCtrl">
   <jsp:include page="header.jsp" />
   <div class="container">
     <div class="page-header">
@@ -46,7 +47,12 @@
       </div>
       <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
-          <button type="submit" class="btn"><span class="glyphicon glyphicon-refresh"></span>  Update</button>
+          <button type="submit" class="btn">
+            <span class="glyphicon glyphicon-refresh"></span>Update
+          </button>
+          <button type="button" ng-click="go('/rest/libraries')" class="btn btn-default btn-custom-cancel">
+            <span class="glyphicon glyphicon glyphicon-step-backward"></span><span class="hidden-xs hidden-sm">Cancel</span>
+          </button>
         </div>
       </div>
     </form>

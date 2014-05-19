@@ -1,4 +1,4 @@
-app.controller('PropertiesCtrl', [ '$scope', '$http', '$location', 'Pagination', function($scope, $http, $location, Pagination) {
+app.controller('PropertiesCtrl', [ '$scope', '$http', '$window', 'Pagination', function($scope, $http, $window, Pagination) {
   $scope.loadResources = function(id) {
     $http.get(melmContextRoot + '/rest/libraries/icons/properties/json/' + id).success(function(data) {
       $scope.properties = data;
@@ -83,6 +83,10 @@ app.controller('PropertiesCtrl', [ '$scope', '$http', '$location', 'Pagination',
     }).error(function() {
       alert("Resource deletion threw an error.");
     });
+  };
+  
+  $scope.back = function() {
+    $window.history.back();
   };
 
   $scope.pagination = Pagination.getNew(10);

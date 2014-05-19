@@ -28,7 +28,7 @@
         <tr
           ng-repeat="icon in icons | orderBy:predicate:reverse | startFrom: pagination.page * pagination.perPage | limitTo: pagination.perPage">
           <td align="left">{{icon.displayName}}</td>
-          <td align="left"><a href="${ctx}/rest/icons/details/{{icon.id}}"><img src="${ctx}/rest/icons/file/{{icon.id}}/LARGE"></a></td>
+          <td align="left"><a href="${ctx}/rest/icons/details/{{icon.id}}"><img src="${ctx}/rest/icons/file/{{icon.id}}/MEDIUM"></a></td>
           <td align="left">
             <button class="btn" ng-click="deleteResource(icon.id)">
               <span class="glyphicon glyphicon-remove"></span>Delete

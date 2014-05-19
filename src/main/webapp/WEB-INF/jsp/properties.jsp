@@ -81,6 +81,10 @@
         <li><a ng-hide="pagination.page + 1 >= pagination.numPages" ng-click="pagination.nextPage()">&raquo;</a></li>
       </ul>
     </div>
+    <hr />
+    <button type="button" ng-click="back()" class="btn btn-default btn-custom-cancel">
+      <span class="glyphicon glyphicon glyphicon-step-backward"></span><span class="hidden-xs hidden-sm">Cancel</span>
+    </button>
   </div>
   <jsp:include page="footer.jsp" />
 </body>

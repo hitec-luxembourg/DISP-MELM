@@ -1,4 +1,4 @@
-app.controller('LibraryIconsCtrl', [ '$scope', '$http', '$location', 'Pagination', function($scope, $http, $location, Pagination) {
+app.controller('LibraryIconsCtrl', [ '$scope', '$http', '$location', '$window', 'Pagination', function($scope, $http, $location, $window, Pagination) {
   $scope.loadResources = function(id) {
     $http.get(melmContextRoot + '/rest/libraries/icons/json/'+id).success(function(data) {
       $scope.libraryIconsModel = data;

@@ -1,4 +1,4 @@
-app.controller('LibrariesCtrl', [ '$scope', '$http', '$location', 'Pagination', function($scope, $http, $location, Pagination) {
+app.controller('LibrariesCtrl', [ '$scope', '$http', 'Pagination', function($scope, $http, Pagination) {
   $scope.loadResources = function() {
     $http.get(melmContextRoot + '/rest/libraries/json').success(function(data) {
       $scope.libraries = data;

@@ -35,7 +35,7 @@
           <td align="left">{{icon.indexOfIconInLibrary}}</td>
           <td align="left">{{icon.iconNameInLibrary}}</td>
           <td align="left">{{icon.iconDescriptionInLibrary}}</td>
-          <td align="left"><img src="${ctx}/rest/icons/file/{{icon.icon.id}}/LARGE"></td>
+          <td align="left"><img src="${ctx}/rest/icons/file/{{icon.icon.id}}/MEDIUM"></td>
           <td>
             <ul class="nav nav-pills">
               <li><button class="btn btn-list" ng-click="go('/rest/libraries/icons/properties/'+icon.id)">
@@ -62,6 +62,9 @@
     </div>
     <hr />
     <button class="btn btn-add" ng-click="go('/rest/libraries/icons/add/'+libraryIconsModel.library.id)">Add</button>
+    <button type="button" ng-click="go('/rest/libraries')" class="btn btn-default btn-custom-cancel">
+      <span class="glyphicon glyphicon glyphicon-step-backward"></span><span class="hidden-xs hidden-sm">Cancel</span>
+    </button>
   </div>
   <jsp:include page="footer.jsp" />
 </body>
