@@ -65,7 +65,7 @@ public class LoginResource {
 			session.setMaxInactiveInterval(1800);
 
 			// Dummy implementation of authentication.
-			if ("toto".equalsIgnoreCase(userId) && "titi".equalsIgnoreCase(password)) {
+			if ("disp".equalsIgnoreCase(userId) && "melm".equalsIgnoreCase(password)) {
 				return buildRedirectResponse(uriInfo, "/rest/");
 			} else {
 				return Response.ok(new Viewable("/login", "error")).build();
