@@ -47,7 +47,6 @@ public class LoginResource {
 		return Response.ok(new Viewable("/login")).build();
 	}
 
-
 	@POST
 	@Produces(MediaType.TEXT_HTML)
 	@SuppressWarnings("unused")
