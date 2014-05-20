@@ -64,8 +64,9 @@ app.controller('PropertiesCtrl', [ '$scope', '$http', '$window', 'Pagination', f
       }
     }).success(function() {
       $scope.loadResources(getRESTParameter('properties/'));
-    }).error(function() {
-      alert("Resource update threw an error.");
+    }).error(function(responseData) {
+      $scope.error = responseData;
+      $scope.loadResources(getRESTParameter('properties/'));
     });
   };
 
@@ -85,8 +86,8 @@ app.controller('PropertiesCtrl', [ '$scope', '$http', '$window', 'Pagination', f
     }).error(function() {
       alert("Resource deletion threw an error.");
     });
-  };
-
+  }; 
+  
   $scope.back = function() {
     $window.history.back();
   };

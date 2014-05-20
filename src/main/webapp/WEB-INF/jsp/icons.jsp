@@ -18,6 +18,7 @@
     <div class="page-header">
       <h1>List Icons</h1>
     </div>
+    <div class="alert alert-danger" ng-show="error!=null">{{error}}</div>
     <div class="table-responsive">
       <table class="table table-striped">
         <tr>
