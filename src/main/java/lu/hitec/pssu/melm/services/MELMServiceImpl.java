@@ -1,5 +1,6 @@
 package lu.hitec.pssu.melm.services;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -13,6 +14,7 @@ import java.util.zip.ZipFile;
 
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
+import javax.imageio.ImageIO;
 import javax.transaction.Transactional;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -116,25 +118,25 @@ public class MELMServiceImpl implements MELMService {
     }
     final MapElementIcon mapElementIcon = mapElementIconDAO.addMapElementIcon(hashForLargeFile, largeIconFile.length(), displayName);
 
-    FileInputStream fileInputStream = null;
+    BufferedImage originalImage = null;
     try {
       copyFile(mapElementIcon, largeIconFile, IconSize.LARGE);
-      fileInputStream = new FileInputStream(largeIconFile);
-      final byte[] fileData = IOUtils.toByteArray(fileInputStream);
-      final File mediumIconFile = File.createTempFile("fromUpload", null);
-      FileUtils.writeByteArrayToFile(mediumIconFile, MELMUtils.scaleImage(fileData, 60, 60));
+      originalImage = ImageIO.read(largeIconFile);
+
+      final File mediumIconFile = File.createTempFile("fromUpload", IconSize.MEDIUM.name());
+      ImageIO.write(MELMUtils.resizeImageWithHint(originalImage, 60, 60), "png", mediumIconFile);
       copyFile(mapElementIcon, mediumIconFile, IconSize.MEDIUM);
-      final File smallIconFile = File.createTempFile("fromUpload", null);
-      FileUtils.writeByteArrayToFile(smallIconFile, MELMUtils.scaleImage(fileData, 40, 40));
+
+      final File smallIconFile = File.createTempFile("fromUpload", IconSize.SMALL.name());
+      ImageIO.write(MELMUtils.resizeImageWithHint(originalImage, 40, 40), "png", smallIconFile);
       copyFile(mapElementIcon, smallIconFile, IconSize.SMALL);
-      final File tinyIconFile = File.createTempFile("fromUpload", null);
-      FileUtils.writeByteArrayToFile(tinyIconFile, MELMUtils.scaleImage(fileData, 20, 20));
+
+      final File tinyIconFile = File.createTempFile("fromUpload", IconSize.TINY.name());
+      ImageIO.write(MELMUtils.resizeImageWithHint(originalImage, 20, 20), "png", tinyIconFile);
       copyFile(mapElementIcon, tinyIconFile, IconSize.TINY);
     } catch (final IOException e) {
       final String msg = "Failed to copy a file";
       throw new MELMException(msg, e);
-    } finally {
-      MELMUtils.closeResource(fileInputStream);
     }
     return mapElementIcon;
   }
