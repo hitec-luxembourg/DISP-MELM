@@ -46,10 +46,9 @@
           <td align="left" style="width: 200px"><a href="" ng-click="predicate='type'; reverse=!reverse">Type</a></td>
           <td align="left">Actions</td>
         </tr>
-        <tr>
+        <tr
           ng-repeat="property in properties | orderBy:predicate:reverse | startFrom: pagination.page * pagination.perPage | limitTo: pagination.perPage">
-          <td align="left"><span editable-text="property.uniqueName" e-class="form-control" e-name="uniqueName" e-form="rowform"
-            e-required>{{property.uniqueName}}</span></td>
+          <td align="left"><span editable-text="property.uniqueName" e-class="form-control" e-name="uniqueName" e-form="rowform">{{property.uniqueName}}</span></td>
           <td align="left"><span editable-select="property.type" e-class="form-control" e-name="type" e-form="rowform"
             e-ng-options="item.id as item.title for item in customPropertyTypes">{{property.type}}</span></td>
           <td>

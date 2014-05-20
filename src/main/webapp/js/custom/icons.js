@@ -7,6 +7,7 @@ app.controller('IconsCtrl', ['$scope', '$http', 'Pagination', function($scope, $
   };
 
   $scope.deleteResource = function(id) {
+    $scope.error = null;
     if (!confirm("Do you really want to delete this resource ?")) {
       return;
     }
@@ -19,8 +20,8 @@ app.controller('IconsCtrl', ['$scope', '$http', 'Pagination', function($scope, $
       }
     }).success(function() {
       $scope.loadResources();
-    }).error(function() {
-      alert("Resource deletion threw an error.");
+    }).error(function(responseData) {
+      $scope.error = responseData;
     });
   };
 
@@ -28,6 +29,7 @@ app.controller('IconsCtrl', ['$scope', '$http', 'Pagination', function($scope, $
     window.location = melmContextRoot + path;
   };
 
+  $scope.error = null;
   $scope.pagination = Pagination.getNew(10);
   $scope.predicate = 'displayName';
   $scope.loadResources();
