@@ -43,18 +43,18 @@ public final class MELMUtils {
     try {
       final String majorVersion = version.substring(0, version.indexOf('.'));
       return Integer.parseInt(majorVersion);
-    } catch (final StringIndexOutOfBoundsException e) {
-      final String msg = String.format("Invalid version %s", version);
+    } catch (final NumberFormatException | StringIndexOutOfBoundsException e) {
+      final String msg = String.format("Invalid version %s, should be something like 1.0", version);
       throw new MELMException(msg, e);
-    }
+    } 
   }
 
   public static int getMinorVersion(@Nonnull final String version) throws MELMException {
     try {
       final String minorVersion = version.substring(version.indexOf('.') + 1);
       return Integer.parseInt(minorVersion);
-    } catch (final StringIndexOutOfBoundsException e) {
-      final String msg = String.format("Invalid version %s", version);
+    } catch (final NumberFormatException | StringIndexOutOfBoundsException e) {
+      final String msg = String.format("Invalid version %s, should be something like 1.0", version);
       throw new MELMException(msg, e);
     }
   }

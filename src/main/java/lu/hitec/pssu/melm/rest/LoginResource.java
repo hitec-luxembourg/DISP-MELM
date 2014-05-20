@@ -67,7 +67,7 @@ public class LoginResource {
 			if ("disp".equalsIgnoreCase(userId) && "melm".equalsIgnoreCase(password)) {
 				return buildRedirectResponse(uriInfo, "/rest/");
 			} else {
-				return Response.ok(new Viewable("/login", "error")).build();
+				return Response.ok(new Viewable("/login", "Wrong User id or Password!")).build();
 			}
 		}
 		throw new AuthenticationException();

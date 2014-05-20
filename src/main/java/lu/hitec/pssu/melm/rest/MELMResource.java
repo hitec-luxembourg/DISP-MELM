@@ -60,7 +60,7 @@ public class MELMResource {
 
   @POST
   @Path("/icons/delete")
-  public Response deleteIcon(@FormParam("id") final long id) throws MELMException {
+  public Response deleteIcon(@FormParam("id") final long id) {
     try {
       melmService.deleteIconAndFiles(id);
       return Response.ok().build();
@@ -105,7 +105,6 @@ public class MELMResource {
   @Produces("image/*")
   @Path("/icons/file/{id}/{size}")
   public Response getIconFile(@PathParam("id") final long id, @PathParam("size") @Nonnull final String size) {
-    assert size != null : "Size is null";
     final File file = melmService.getIconFile(id, size);
     if (!file.exists()) {
       return Response.status(Status.NOT_FOUND).build();
@@ -189,9 +188,9 @@ public class MELMResource {
   @GET
   @Produces(MediaType.TEXT_HTML)
   @Path("/libraries/icons/add/{id}")
-  public Response gotoAddLibraryIcon(@PathParam("id") final int id) {
+  public Response gotoAddLibraryIcon(@PathParam("id") final long id) {
     final MapElementLibrary library = melmService.getLibrary(id);
-    return Response.ok(new Viewable("/addLibraryIcon", new AddLibraryIconsModel(library, melmService.listAllIcons()))).build();
+    return Response.ok(new Viewable("/addLibraryIcon", new AddLibraryIconsModel(library))).build();
   }
 
   @GET
@@ -199,7 +198,7 @@ public class MELMResource {
   @Path("/libraries/clone/{id}")
   public Response gotoCloneLibrary(@PathParam("id") final long id) {
     final MapElementLibrary library = melmService.getLibrary(id);
-    return Response.ok(new Viewable("/cloneLibrary", library)).build();
+    return Response.ok(new Viewable("/cloneLibrary", new CloneLibraryModel(library))).build();
   }
 
   @GET
@@ -248,7 +247,7 @@ public class MELMResource {
   @Path("/libraries/update/{id}")
   public Response gotoUpdateLibrary(@PathParam("id") final long id) {
     final MapElementLibrary library = melmService.getLibrary(id);
-    return Response.ok(new Viewable("/updateLibrary", library)).build();
+    return Response.ok(new Viewable("/updateLibrary", new UpdateLibraryModel(library))).build();
   }
 
   @GET
@@ -256,43 +255,53 @@ public class MELMResource {
   @Path("/libraries/icons/update/{libraryIconId}")
   public Response gotoUpdateLibraryIcon(@PathParam("libraryIconId") final long libraryIconId) {
     final MapElementLibraryIcon libraryIcon = melmService.getLibraryIcon(libraryIconId);
-    return Response.ok(new Viewable("/updateLibraryIcon", new UpdateLibraryIconsModel(libraryIcon, melmService.listAllIcons()))).build();
+    return Response.ok(new Viewable("/updateLibraryIcon", new UpdateLibraryIconsModel(libraryIcon))).build();
   }
 
   @POST
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.TEXT_HTML)
   @Path("/icons/add")
-  public Response performAddIcon(@FormDataParam("displayName") final String displayName,
+  public Response performAddIcon(@Context final UriInfo uriInfo, @FormDataParam("displayName") final String displayName,
       @FormDataParam("largeIconFile") final InputStream file,
       @FormDataParam("largeIconFile") final FormDataContentDisposition fileDisposition) {
+    if ((displayName == null) || displayName.equalsIgnoreCase("")) {
+      return Response.ok(new Viewable("/addIcon", "Display name is mandatory")).build();
+    }
     try {
       final File largeIconFile = File.createTempFile("fromUpload", fileDisposition.getFileName());
       FileUtils.writeByteArrayToFile(largeIconFile, IOUtils.toByteArray(file));
       if ((largeIconFile != null) && (largeIconFile.length() <= 0)) {
-        return Response.status(Status.BAD_REQUEST).entity("Invalid large icon file").build();
+        return Response.ok(new Viewable("/addIcon", "Invalid large icon file")).build();
       }
       melmService.addIconAndFiles(displayName, largeIconFile);
-    } catch (final Exception e) {
+    } catch (final IOException e) {
       LOGGER.warn("Error in performAddIcon", e);
       return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+    } catch (final MELMException e) {
+      LOGGER.warn("Error in performAddIcon", e);
+      return Response.ok(new Viewable("/addIcon", e.getMessage())).build();
     }
 
-    return gotoListIcons();
+    final URI uri = uriInfo.getBaseUriBuilder().path("/rest/icons").build();
+    return Response.seeOther(uri).build();
   }
 
   @POST
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.TEXT_HTML)
   @Path("/libraries/add")
-  public Response performAddLibrary(@FormDataParam("libraryName") final String libraryName, @FormDataParam("version") final String version,
-      @FormDataParam("libraryIconFile") final InputStream file,
-      @FormDataParam("libraryIconFile") final FormDataContentDisposition fileDisposition) throws MELMException {
+  public Response performAddLibrary(@Context final UriInfo uriInfo, @FormDataParam("libraryName") final String libraryName,
+      @FormDataParam("version") final String version, @FormDataParam("libraryIconFile") final InputStream file,
+      @FormDataParam("libraryIconFile") final FormDataContentDisposition fileDisposition) {
+    if ((libraryName == null) || libraryName.equalsIgnoreCase("") || (version == null) || version.equalsIgnoreCase("")) {
+      return Response.ok(new Viewable("/addLibrary", "Library name and version are mandatory")).build();
+    }
     try {
       final File libraryIconMaybeNull = File.createTempFile("fromUpload", fileDisposition.getFileName());
       FileUtils.writeByteArrayToFile(libraryIconMaybeNull, IOUtils.toByteArray(file));
       if ((libraryIconMaybeNull != null) && (libraryIconMaybeNull.length() <= 0)) {
-        return Response.status(Status.BAD_REQUEST).entity("Invalid icon file").build();
+        return Response.ok(new Viewable("/addLibrary", "Invalid icon file")).build();
       }
       final String hashForFile = melmService.addLibraryIcon(libraryIconMaybeNull);
       final int majorVersion = MELMUtils.getMajorVersion(version);
@@ -304,9 +313,10 @@ public class MELMResource {
       return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
     } catch (final MELMException e) {
       LOGGER.warn("Error in performAddLibrary", e);
-      return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+      return Response.ok(new Viewable("/addLibrary", e.getMessage())).build();
     }
-    return gotoListLibraries();
+    final URI uri = uriInfo.getBaseUriBuilder().path("/rest/libraries").build();
+    return Response.seeOther(uri).build();
   }
 
   @POST
@@ -314,39 +324,63 @@ public class MELMResource {
   @Path("/libraries/icons/add")
   public Response performAddLibraryIcon(@Context final UriInfo uriInfo, @FormParam("id") final long id,
       @FormParam("iconIndex") final int iconIndex, @FormParam("iconName") final String iconName,
-      @FormParam("iconDescription") final String iconDescription, @FormParam("iconId") final long iconId) throws MELMException {
+      @FormParam("iconDescription") final String iconDescription, @FormParam("iconId") final long iconId) {
+    if ((iconId == -1) || (iconName == null) || iconName.equalsIgnoreCase("") || (iconDescription == null)
+        || iconDescription.equalsIgnoreCase("")) {
+      final MapElementLibrary library = melmService.getLibrary(id);
+      final String error = "Icon, Element name and description are mandatory";
+      return Response.ok(new Viewable("/addLibraryIcon", new AddLibraryIconsModel(library, error))).build();
+    }
     try {
       melmService.addLibraryIcon(id, iconIndex, iconName, iconDescription, iconId);
       final URI uri = uriInfo.getBaseUriBuilder().path("/rest/libraries/icons/" + id).build();
       return Response.seeOther(uri).build();
     } catch (final MELMException e) {
       LOGGER.warn("Error in performAddLibraryIcon", e);
-      return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+      final MapElementLibrary library = melmService.getLibrary(id);
+      final String error = e.getMessage();
+      return Response.ok(new Viewable("/addLibraryIcon", new AddLibraryIconsModel(library, error))).build();
     }
   }
 
   @POST
   @Path("/libraries/icons/properties/add")
   public Response performAddProperty(@FormParam("id") final long id, @FormParam("uniqueName") @Nonnull final String uniqueName,
-      @FormParam("type") @Nonnull final String type) throws MELMException {
-    assert uniqueName != null : "uniqueName is null";
-    assert type != null : "type is null";
-    melmService.addProperty(id, uniqueName, CustomPropertyType.valueOf(type.toUpperCase()));
-    return Response.ok().build();
+      @FormParam("type") @Nonnull final String type) {
+    if ((uniqueName == null) || uniqueName.equalsIgnoreCase("") || (type == null) || type.equalsIgnoreCase("")) {
+      final String error = "Property name and type are mandatory";
+      return Response.status(Status.BAD_REQUEST).entity(error).build();
+    }
+    try {
+      melmService.addProperty(id, uniqueName, CustomPropertyType.valueOf(type.toUpperCase()));
+      return Response.ok().build();
+    } catch (final MELMException e) {
+      LOGGER.warn("Error in performAddProperty", e);
+      final String error = e.getMessage();
+      return Response.status(Status.BAD_REQUEST).entity(error).build();
+    }
   }
 
   @POST
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.TEXT_HTML)
   @Path("/libraries/clone")
-  public Response performCloneLibrary(@FormDataParam("id") final long id, @FormDataParam("libraryName") final String libraryName,
-      @FormDataParam("version") final String version, @FormDataParam("libraryIconFile") final InputStream file,
-      @FormDataParam("libraryIconFile") final FormDataContentDisposition fileDisposition) throws MELMException {
+  public Response performCloneLibrary(@Context final UriInfo uriInfo, @FormDataParam("id") final long id,
+      @FormDataParam("libraryName") final String libraryName, @FormDataParam("version") final String version,
+      @FormDataParam("libraryIconFile") final InputStream file,
+      @FormDataParam("libraryIconFile") final FormDataContentDisposition fileDisposition) {
+    if ((libraryName == null) || libraryName.equalsIgnoreCase("") || (version == null) || version.equalsIgnoreCase("")) {
+      final MapElementLibrary library = melmService.getLibrary(id);
+      final String error = "Library name and version are mandatory";
+      return Response.ok(new Viewable("/cloneLibrary", new CloneLibraryModel(library, error))).build();
+    }
     try {
       final File libraryIconMaybeNull = File.createTempFile("fromUpload", fileDisposition.getFileName());
       FileUtils.writeByteArrayToFile(libraryIconMaybeNull, IOUtils.toByteArray(file));
       if ((libraryIconMaybeNull != null) && (libraryIconMaybeNull.length() <= 0)) {
-        return Response.status(Status.BAD_REQUEST).entity("Invalid icon file").build();
+        final MapElementLibrary library = melmService.getLibrary(id);
+        final String error = "Invalid icon file";
+        return Response.ok(new Viewable("/cloneLibrary", new CloneLibraryModel(library, error))).build();
       }
       final String hashForFile = melmService.addLibraryIcon(libraryIconMaybeNull);
       final int majorVersion = MELMUtils.getMajorVersion(version);
@@ -358,15 +392,18 @@ public class MELMResource {
       return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
     } catch (final MELMException e) {
       LOGGER.warn("Error in performCloneLibrary", e);
-      return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+      final MapElementLibrary library = melmService.getLibrary(id);
+      final String error = e.getMessage();
+      return Response.ok(new Viewable("/cloneLibrary", new CloneLibraryModel(library, error))).build();
     }
-    return gotoListLibraries();
+    final URI uri = uriInfo.getBaseUriBuilder().path("/rest/libraries").build();
+    return Response.seeOther(uri).build();
   }
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   @Path("/hello/{value}")
-  public Response performHelloWorld(@PathParam("value") final String value) throws MELMException {
+  public Response performHelloWorld(@PathParam("value") final String value) {
     final String result = String.format("Hello %s", value);
     return Response.status(Response.Status.OK).entity(result).build();
   }
@@ -375,14 +412,14 @@ public class MELMResource {
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.TEXT_HTML)
   @Path("/libraries/import")
-  public Response performImportLibrary(@FormDataParam("libraryName") final String libraryName,
+  public Response performImportLibrary(@Context final UriInfo uriInfo, @FormDataParam("libraryName") final String libraryName,
       @FormDataParam("version") final String version, @FormDataParam("libraryFile") final InputStream file,
       @FormDataParam("libraryFile") final FormDataContentDisposition fileDisposition) {
     try {
       final File zipFileMaybeNull = File.createTempFile("fromUpload", fileDisposition.getFileName());
       FileUtils.writeByteArrayToFile(zipFileMaybeNull, IOUtils.toByteArray(file));
       if ((zipFileMaybeNull != null) && (zipFileMaybeNull.length() <= 0)) {
-        return Response.status(Status.BAD_REQUEST).entity("Invalid zip file").build();
+        return Response.ok(new Viewable("/importLibrary", "Invalid zip file")).build();
       }
       final int majorVersion = MELMUtils.getMajorVersion(version);
       final int minorVersion = MELMUtils.getMinorVersion(version);
@@ -400,19 +437,25 @@ public class MELMResource {
       return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
     } catch (final MELMException e) {
       LOGGER.warn("Error in performImportLibrary", e);
-      return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+      return Response.ok(new Viewable("/importLibrary", e.getMessage())).build();
     }
-
-    return gotoListLibraries();
+    final URI uri = uriInfo.getBaseUriBuilder().path("/rest/libraries").build();
+    return Response.seeOther(uri).build();
   }
 
   @POST
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.TEXT_HTML)
   @Path("/libraries/update")
-  public Response performUpdateLibrary(@FormDataParam("id") final long id, @FormDataParam("libraryName") final String libraryName,
-      @FormDataParam("version") final String version, @FormDataParam("libraryIconFile") final InputStream file,
-      @FormDataParam("libraryIconFile") final FormDataContentDisposition fileDisposition) throws MELMException {
+  public Response performUpdateLibrary(@Context final UriInfo uriInfo, @FormDataParam("id") final long id,
+      @FormDataParam("libraryName") final String libraryName, @FormDataParam("version") final String version,
+      @FormDataParam("libraryIconFile") final InputStream file,
+      @FormDataParam("libraryIconFile") final FormDataContentDisposition fileDisposition) {
+    if ((libraryName == null) || libraryName.equalsIgnoreCase("") || (version == null) || version.equalsIgnoreCase("")) {
+      final MapElementLibrary library = melmService.getLibrary(id);
+      final String error = "Library name and version are mandatory";
+      return Response.ok(new Viewable("/updateLibrary", new UpdateLibraryModel(library, error))).build();
+    }
     try {
       final File libraryIconMaybeNull = File.createTempFile("fromUpload", fileDisposition.getFileName());
       FileUtils.writeByteArrayToFile(libraryIconMaybeNull, IOUtils.toByteArray(file));
@@ -425,13 +468,16 @@ public class MELMResource {
         melmService.updateLibrary(id, libraryName, majorVersion, minorVersion, null);
       }
     } catch (final IOException e) {
-      LOGGER.warn("Error in performCloneLibrary", e);
+      LOGGER.warn("Error in performUpdateLibrary", e);
       return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
     } catch (final MELMException e) {
       LOGGER.warn("Error in performUpdateLibrary", e);
-      return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+      final MapElementLibrary library = melmService.getLibrary(id);
+      final String error = e.getMessage();
+      return Response.ok(new Viewable("/updateLibrary", new UpdateLibraryModel(library, error))).build();
     }
-    return gotoListLibraries();
+    final URI uri = uriInfo.getBaseUriBuilder().path("/rest/libraries").build();
+    return Response.seeOther(uri).build();
   }
 
   @POST
@@ -439,37 +485,56 @@ public class MELMResource {
   @Path("/libraries/icons/update")
   public Response performUpdateLibraryIcon(@Context final UriInfo uriInfo, @FormParam("libraryIconId") final long libraryIconId,
       @FormParam("iconIndex") final int iconIndex, @FormParam("iconName") final String iconName,
-      @FormParam("iconDescription") final String iconDescription, @FormParam("iconId") final long iconId) throws MELMException {
+      @FormParam("iconDescription") final String iconDescription, @FormParam("iconId") final long iconId) {
+    if ((iconName == null) || iconName.equalsIgnoreCase("") || (iconDescription == null) || iconDescription.equalsIgnoreCase("")) {
+      final MapElementLibraryIcon libraryIcon = melmService.getLibraryIcon(libraryIconId);
+      final String error = "Element name and description are mandatory";
+      return Response.ok(new Viewable("/updateLibraryIcon", new UpdateLibraryIconsModel(libraryIcon, error))).build();
+    }
     try {
       final long libraryId = melmService.getLibraryIcon(libraryIconId).getLibrary().getId();
       melmService.updateLibraryIcon(libraryIconId, iconIndex, iconName, iconDescription, iconId);
       final URI uri = uriInfo.getBaseUriBuilder().path("/rest/libraries/icons/" + libraryId).build();
       return Response.seeOther(uri).build();
     } catch (final MELMException e) {
-      LOGGER.warn("Error in performAddLibrary", e);
-      return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+      LOGGER.warn("Error in performUpdateLibraryIcon", e);
+      final MapElementLibraryIcon libraryIcon = melmService.getLibraryIcon(libraryIconId);
+      final String error = e.getMessage();
+      return Response.ok(new Viewable("/updateLibraryIcon", new UpdateLibraryIconsModel(libraryIcon, error))).build();
     }
   }
 
   @POST
   @Path("/libraries/icons/properties/update")
   public Response performUpdateProperty(@FormParam("id") final long id, @FormParam("uniqueName") @Nonnull final String uniqueName,
-      @FormParam("type") @Nonnull final String type) throws MELMException {
-    assert uniqueName != null : "uniqueName is null";
-    assert type != null : "type is null";
-    melmService.updateProperty(id, uniqueName, CustomPropertyType.valueOf(type.toUpperCase()));
-    return Response.ok().build();
+      @FormParam("type") @Nonnull final String type) {
+    if ((uniqueName == null) || uniqueName.equalsIgnoreCase("") || (type == null) || type.equalsIgnoreCase("")) {
+      return Response.status(Status.BAD_REQUEST).entity("Element unique name and type are mandatory").build();
+    }
+    try {
+      melmService.updateProperty(id, uniqueName, CustomPropertyType.valueOf(type.toUpperCase()));
+      return Response.ok().build();
+    } catch (final MELMException e) {
+      LOGGER.warn("Error in performUpdateProperty", e);
+      final String error = e.getMessage();
+      return Response.status(Status.BAD_REQUEST).entity(error).build();
+    }
   }
 
   @GET
   @Produces("application/zip")
   @Path("/libraries/zip/{name}-{majorVersion}.{minorVersion}.zip")
   public Response performZipLibrary(@PathParam("name") @Nonnull final String name, @PathParam("majorVersion") final int majorVersion,
-      @PathParam("minorVersion") final int minorVersion) throws MELMException {
-    assert name != null : "name is null";
-    final File zipFolder = melmService.generateXmlAndPrepareZipFile(name, majorVersion, minorVersion);
-    final File zipFile = melmService.generateZipFile(zipFolder);
-    return Response.ok(zipFile).build();
+      @PathParam("minorVersion") final int minorVersion) {
+    try {
+      final File zipFolder = melmService.generateXmlAndPrepareZipFile(name, majorVersion, minorVersion);
+      final File zipFile = melmService.generateZipFile(zipFolder);
+      return Response.ok(zipFile).build();
+    } catch (final MELMException e) {
+      LOGGER.warn("Error in performZipLibrary", e);
+      final String error = e.getMessage();
+      return Response.status(Status.BAD_REQUEST).entity(error).build();
+    }
   }
 
 }

@@ -18,25 +18,28 @@
     <div class="page-header">
       <h1>Update library</h1>
     </div>
+    <c:if test="${not empty it.error}">
+      <div class="alert alert-danger">${it.error}</div>
+    </c:if>
     <form method="POST" action="${ctx}/rest/libraries/update" enctype='multipart/form-data' class="form-horizontal" role="form">
-      <input name="id" id="id" type="hidden" value="${it.id}" />
+      <input name="id" id="id" type="hidden" value="${it.library.id}" />
       <div class="form-group">
         <label for="libraryName" class="col-sm-2 control-label">Name</label>
         <div class="col-sm-10">
-          <input type="text" class="form-control" id="libraryName" name="libraryName" placeholder="libraryName" value="${it.name}">
+          <input type="text" class="form-control" id="libraryName" name="libraryName" placeholder="Specify a library name" value="${it.library.name}">
         </div>
       </div>
       <div class="form-group">
         <label for="version" class="col-sm-2 control-label">Version</label>
         <div class="col-sm-10">
-          <input type="text" class="form-control" id="version" name="version" placeholder="version"
-            value="${it.majorVersion}.${it.minorVersion}">
+          <input type="text" class="form-control" id="version" name="version" placeholder="Specify a library version"
+            value="${it.library.majorVersion}.${it.library.minorVersion}">
         </div>
       </div>
       <div class="form-group">
         <label class="col-sm-2 control-label">Current Icon</label>
         <div class="col-sm-10">
-          <img src="${ctx}/rest/libraries/icon/file/${it.id}">
+          <img src="${ctx}/rest/libraries/icon/file/${it.library.id}">
         </div>
       </div>
       <div class="form-group">

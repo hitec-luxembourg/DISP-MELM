@@ -23,9 +23,9 @@
     <div class="table-responsive">
       <table class="table table-striped">
         <tr>
-          <td align="left" style="width: 100px"><a href="" ng-click="predicate='indexOfIconInLibrary'; reverse=!reverse">Icon Index</a></td>
-          <td align="left" style="width: 250px"><a href="" ng-click="predicate='iconNameInLibrary'; reverse=!reverse">Icon Name</a></td>
-          <td align="left" style="width: 250px"><a href="" ng-click="predicate='iconDescriptionInLibrary'; reverse=!reverse">Icon
+          <td align="left" style="width: 150px"><a href="" ng-click="predicate='indexOfIconInLibrary'; reverse=!reverse">Element Index</a></td>
+          <td align="left" style="width: 250px"><a href="" ng-click="predicate='iconNameInLibrary'; reverse=!reverse">Element Name</a></td>
+          <td align="left" style="width: 250px"><a href="" ng-click="predicate='iconDescriptionInLibrary'; reverse=!reverse">Element
               Description</a></td>
           <td style="width: 110px">Preview</td>
           <td align="left">Actions</td>

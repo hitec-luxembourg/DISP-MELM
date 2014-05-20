@@ -99,8 +99,9 @@ public class MELMServiceImpl implements MELMService {
   @Override
   @Transactional
   public MapElementIcon addIconAndFiles(@Nonnull final String displayName, @Nonnull final File largeIconFile) throws MELMException {
-    assert displayName != null : "Display name is null";
-    assert largeIconFile != null : "Large icon is null";
+    assert displayName != null : "display name is null";
+    assert displayName.length() != 0 : "display name is empty";
+    assert largeIconFile != null : "large icon is null";
     String hashForLargeFile;
     try {
       hashForLargeFile = MELMUtils.getHashForFile(largeIconFile);
@@ -142,7 +143,8 @@ public class MELMServiceImpl implements MELMService {
   @Transactional
   public MapElementLibrary addLibrary(@Nonnull final String libraryName, final int majorVersion, final int minorVersion,
       @Nonnull final String iconMd5) throws MELMException {
-    assert libraryName != null : "libraryName is null";
+    assert libraryName != null : "library name is null";
+    assert libraryName.length() != 0 : "library name is empty";
     assert iconMd5 != null : "iconMd5 is null";
     try {
       mapElementLibraryDAO.getMapElementLibrary(libraryName, majorVersion, minorVersion);
@@ -158,7 +160,7 @@ public class MELMServiceImpl implements MELMService {
 
   @Override
   public String addLibraryIcon(@Nonnull final File sourceIconFile) throws MELMException {
-    assert sourceIconFile != null : "sourceIconFile is null";
+    assert sourceIconFile != null : "source icon file is null";
     final File libraryIconFolder = new File(librariesDirectory, "icons");
     try {
       final String hashForFile = MELMUtils.getHashForFile(sourceIconFile);
@@ -204,7 +206,8 @@ public class MELMServiceImpl implements MELMService {
   @Nonnull
   @Override
   public String buildArchiveFilename(@Nonnull final String libraryName, final int majorVersion, final int minorVersion) {
-    assert libraryName != null : "Library name is null";
+    assert libraryName != null : "library name is null";
+    assert libraryName.length() != 0 : "library name is empty";
     return String.format("%s-%s.%s.zip", libraryName, majorVersion, minorVersion);
   }
 
@@ -212,7 +215,8 @@ public class MELMServiceImpl implements MELMService {
   @Transactional
   public MapElementLibrary cloneLibrary(final long id, @Nonnull final String libraryName, final int majorVersion, final int minorVersion,
       @Nonnull final String iconMd5) throws MELMException {
-    assert libraryName != null : "libraryName is null";
+    assert libraryName != null : "library name is null";
+    assert libraryName.length() != 0 : "library name is empty";
 
     try {
       mapElementLibraryDAO.getMapElementLibrary(libraryName, majorVersion, minorVersion);
@@ -582,7 +586,8 @@ public class MELMServiceImpl implements MELMService {
 
   @Override
   public File getTargetArchiveFile(@Nonnull final String libraryName, final int majorVersion, final int minorVersion) throws MELMException {
-    assert libraryName != null : "Library name is null";
+    assert libraryName != null : "library name is null";
+    assert libraryName.length() != 0 : "library name is empty";
     final File archiveDirectory = LibraryValidator.buildDirectoryForLibraryVersion(
         new File(librariesDirectory, "imported").getAbsolutePath(), libraryName, String.format("%s.%s", majorVersion, minorVersion));
     if (archiveDirectory == null) {
@@ -598,8 +603,9 @@ public class MELMServiceImpl implements MELMService {
   @Override
   public File importLibrary(@Nonnull final String libraryName, final int majorVersion, final int minorVersion,
       @Nonnull final File libraryFile) throws MELMException {
-    assert libraryName != null : "Library name is null";
-    assert libraryFile != null : "Library file is null";
+    assert libraryName != null : "library name is null";
+    assert libraryName.length() != 0 : "library name is empty";
+    assert libraryFile != null : "library file is null";
     final File targetArchiveFile = getTargetArchiveFile(libraryName, majorVersion, minorVersion);
 
     if (targetArchiveFile.isFile()) {
@@ -650,9 +656,9 @@ public class MELMServiceImpl implements MELMService {
   @Transactional
   public void moveImportedIcons(@Nonnull final MapElementLibrary mapElementLibrary, @Nonnull final NodeList nodeList,
       @Nonnull final File libraryFolder) throws MELMException {
-    assert mapElementLibrary != null : "mapElementLibrary si null";
-    assert nodeList != null : "nodeList is null";
-    assert libraryFolder != null : "libraryFolder is null";
+    assert mapElementLibrary != null : "map element library si null";
+    assert nodeList != null : "node list is null";
+    assert libraryFolder != null : "library folder is null";
     final File largeFileFolder = new File(libraryFolder, IconSize.LARGE.getSize());
     final XPath xPath = XPathFactory.newInstance().newXPath();
     try {
@@ -708,8 +714,9 @@ public class MELMServiceImpl implements MELMService {
   @Override
   public String moveImportedLibraryIcon(@Nonnull final File libraryFolder, @Nonnull final String libraryName, final int majorVersion,
       final int minorVersion) throws MELMException {
-    assert libraryFolder != null : "libraryFolder is null";
-    assert libraryName != null : "Library name is null";
+    assert libraryFolder != null : "library folder is null";
+    assert libraryName != null : "library name is null";
+    assert libraryName.length() != 0 : "library name is empty";
 
     String iconFileName;
     final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -780,7 +787,8 @@ public class MELMServiceImpl implements MELMService {
   @Override
   public NodeList validateImportedLibraryAndGetNodeList(@Nonnull final String libraryName, final int majorVersion, final int minorVersion)
       throws MELMException {
-    assert libraryName != null : "Library name is null";
+    assert libraryName != null : "library name is null";
+    assert libraryName.length() != 0 : "library name is empty";
 
     final String xsdPath = this.getClass().getResource(LibraryValidator.XSD_PATH).getPath();
     final File xmlFile;
@@ -807,9 +815,9 @@ public class MELMServiceImpl implements MELMService {
 
   private void copyFile(@Nonnull final MapElementIcon mapElementIcon, @Nonnull final File file, @Nonnull final IconSize size)
       throws IOException {
-    assert mapElementIcon != null : "mapElementIcon is null";
-    assert file != null : "File is null";
-    assert size != null : "Size is null";
+    assert mapElementIcon != null : "map element icon is null";
+    assert file != null : "file is null";
+    assert size != null : "size is null";
     final File targetIconFile = new File(iconsDirectory, mapElementIcon.getFilePath(size));
     if (targetIconFile.getParentFile().mkdirs()) {
       if (LOGGER.isDebugEnabled()) {
@@ -821,10 +829,10 @@ public class MELMServiceImpl implements MELMService {
 
   private void moveImportedFile(@Nonnull final File libraryFolder, @Nonnull final String fileNameWithExtension,
       @Nonnull final IconSize size, @Nonnull final MapElementIcon mapElementIcon) throws IOException {
-    assert libraryFolder != null : "Library folder is null";
-    assert fileNameWithExtension != null : "File name with extension is null";
-    assert size != null : "Size is null";
-    assert mapElementIcon != null : "mapElementIcon is null";
+    assert libraryFolder != null : "library folder is null";
+    assert fileNameWithExtension != null : "file name with extension is null";
+    assert size != null : "size is null";
+    assert mapElementIcon != null : "map element icon is null";
     final File sourceIconFolder = new File(libraryFolder, size.getSize());
     final File sourceIconFile = new File(sourceIconFolder, fileNameWithExtension);
     final File targetIconFile = new File(iconsDirectory, mapElementIcon.getFilePath(size));
@@ -843,8 +851,8 @@ public class MELMServiceImpl implements MELMService {
   }
 
   private static void deleteFile(@Nonnull final MapElementIcon mapElementIcon, @Nonnull final IconSize size) {
-    assert mapElementIcon != null : "mapElementIcon si null";
-    assert size != null : "Size is null";
+    assert mapElementIcon != null : "map element icon si null";
+    assert size != null : "size is null";
     final String filePath = mapElementIcon.getFilePath(size);
     final File file = new File(filePath);
     FileUtils.deleteQuietly(file);

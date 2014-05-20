@@ -152,6 +152,7 @@ nav#main_nav {
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+  cursor: pointer;
 }
 
 .icon>input[type=radio] {

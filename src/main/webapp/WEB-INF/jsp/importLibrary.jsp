@@ -31,17 +31,20 @@
     <div class="page-header">
       <h1>Import library</h1>
     </div>
+    <c:if test="${not empty it}">
+      <div class="alert alert-danger">${it}</div>
+    </c:if>
     <form method="POST" action="${ctx}/rest/libraries/import" enctype='multipart/form-data' class="form-horizontal" role="form">
       <div class="form-group">
         <label for="libraryName" class="col-sm-2 control-label">Detected Name</label>
         <div class="col-sm-10">
-          <input type="text" class="form-control" id="libraryName" name="libraryName" placeholder="libraryName">
+          <input type="text" class="form-control" id="libraryName" name="libraryName" placeholder="Detected library name" readonly="readonly">
         </div>
       </div>
       <div class="form-group">
         <label for="version" class="col-sm-2 control-label">Detected Version</label>
         <div class="col-sm-10">
-          <input type="text" class="form-control" id="version" name="version" placeholder="version">
+          <input type="text" class="form-control" id="version" name="version" placeholder="Detected library version" readonly="readonly">
         </div>
       </div>
       <div class="form-group">

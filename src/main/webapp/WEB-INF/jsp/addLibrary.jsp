@@ -18,17 +18,20 @@
     <div class="page-header">
       <h1>Add library</h1>
     </div>
+    <c:if test="${not empty it}">
+      <div class="alert alert-danger">${it}</div>
+    </c:if>
     <form method="POST" action="${ctx}/rest/libraries/add" enctype='multipart/form-data' class="form-horizontal" role="form">
       <div class="form-group">
         <label for="libraryName" class="col-sm-2 control-label">Name</label>
         <div class="col-sm-10">
-          <input type="text" class="form-control" id="libraryName" name="libraryName" placeholder="libraryName">
+          <input type="text" class="form-control" id="libraryName" name="libraryName" placeholder="Specify a library name">
         </div>
       </div>
       <div class="form-group">
         <label for="version" class="col-sm-2 control-label">Version</label>
         <div class="col-sm-10">
-          <input type="text" class="form-control" id="version" name="version" placeholder="version">
+          <input type="text" class="form-control" id="version" name="version" placeholder="Specify a library version">
         </div>
       </div>
       <div class="form-group">

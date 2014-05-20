@@ -17,11 +17,14 @@
     <div class="page-header">
       <h1>Add icon</h1>
     </div>
+    <c:if test="${not empty it}">
+      <div class="alert alert-danger">${it}</div>
+    </c:if>
     <form method="POST" action="${ctx}/rest/icons/add" enctype='multipart/form-data' class="form-horizontal" role="form">
       <div class="form-group">
         <label for="displayName" class="col-sm-2 control-label">Display Name</label>
         <div class="col-sm-10">
-          <input type="text" class="form-control" id="displayName" name="displayName" placeholder="displayName">
+          <input type="text" class="form-control" id="displayName" name="displayName" placeholder="Specify a display name">
         </div>
       </div>
       <div class="form-group">

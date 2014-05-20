@@ -4,19 +4,19 @@ import javax.annotation.Nonnull;
 
 import lu.hitec.pssu.melm.persistence.entity.MapElementLibrary;
 
-public class AddLibraryIconsModel {
+public class UpdateLibraryModel {
 
   private final String error;
 
   private final MapElementLibrary library;
 
-  public AddLibraryIconsModel(@Nonnull final MapElementLibrary library) {
+  public UpdateLibraryModel(@Nonnull final MapElementLibrary library) {
     assert library != null : "library is null";
     this.library = library;
     error = null;
   }
 
-  public AddLibraryIconsModel(@Nonnull final MapElementLibrary library, @Nonnull final String error) {
+  public UpdateLibraryModel(@Nonnull final MapElementLibrary library, @Nonnull final String error) {
     assert library != null : "library is null";
     assert error != null : "error is null";
     assert error.length() != 0 : "error is empty";

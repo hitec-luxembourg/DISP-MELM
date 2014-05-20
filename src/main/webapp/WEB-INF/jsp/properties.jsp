@@ -18,13 +18,14 @@
     <div class="page-header">
       <h1>Properties</h1>
     </div>
+    <div class="alert alert-danger" ng-show="error!=null">{{error}}</div>
     <div>
       <h3>Add property</h3>
       <form novalidate name="createResourceForm">
         <input type="hidden" id="newResource_id" ng-model="newResource.id" value="${it}" />
         <table class="table table-striped">
           <tr>
-            <td><input type="text" class="form-control" placeholder="Unique name" id="newResource_unique_name"
+            <td><input type="text" class="form-control" placeholder="Specify a property unique name" id="newResource_unique_name"
               ng-model="newResource.uniqueName" required /></td>
             <td><select id="newResource_type" class="form-control" ng-model="newResource.type"
               ng-options="item.id as item.title for item in customPropertyTypes"></select></td>
@@ -45,7 +46,7 @@
           <td align="left" style="width: 200px"><a href="" ng-click="predicate='type'; reverse=!reverse">Type</a></td>
           <td align="left">Actions</td>
         </tr>
-        <tr
+        <tr>
           ng-repeat="property in properties | orderBy:predicate:reverse | startFrom: pagination.page * pagination.perPage | limitTo: pagination.perPage">
           <td align="left"><span editable-text="property.uniqueName" e-class="form-control" e-name="uniqueName" e-form="rowform"
             e-required>{{property.uniqueName}}</span></td>

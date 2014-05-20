@@ -23,19 +23,19 @@
       <h1>Login</h1>
     </div>
     <c:if test="${not empty it}">
-      <div class="alert alert-danger">Wrong User id or Password!</div>
-    </c:if> 
+      <div class="alert alert-danger">${it}</div>
+    </c:if>
     <form method="POST" action="" class="form-horizontal" role="form">
       <div class="form-group">
         <label for="userId" class="col-sm-2 control-label">User id</label>
         <div class="col-sm-10">
-          <input type="text" class="form-control" id="userId" name="userId" placeholder="userId" />
+          <input type="text" class="form-control" id="userId" name="userId" placeholder="Specify a user id" />
         </div>
       </div>
       <div class="form-group">
         <label for="password" class="col-sm-2 control-label">Password</label>
         <div class="col-sm-10">
-          <input type="password" class="form-control" id="password" name="password" placeholder="password" />
+          <input type="password" class="form-control" id="password" name="password" placeholder="Specify a user password" />
         </div>
       </div>
       <div class="form-group">

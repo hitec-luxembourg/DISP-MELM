@@ -21,6 +21,8 @@ app.controller('PropertiesCtrl', [ '$scope', '$http', '$window', 'Pagination', f
   } ];
 
   $scope.resetResource = function() {
+    $scope.error = null;
+
     if (!$scope.newResource) {
       $scope.newResource = {};
     }
@@ -33,8 +35,8 @@ app.controller('PropertiesCtrl', [ '$scope', '$http', '$window', 'Pagination', f
     var type = data ? data.type : "";
     var params = encodeParams({
       "id" : getRESTParameter('properties/'),
-      "uniqueName" : uniqueName,
-      "type" : type
+      "uniqueName" : typeof uniqueName !== "undefined" ? uniqueName : "",
+      "type" : typeof type !== "undefined" ? type : ""
     });
     $http.post(melmContextRoot + '/rest/libraries/icons/properties/add', params, {
       headers : {
@@ -43,8 +45,8 @@ app.controller('PropertiesCtrl', [ '$scope', '$http', '$window', 'Pagination', f
     }).success(function() {
       $scope.resetResource();
       $scope.loadResources(getRESTParameter('properties/'));
-    }).error(function() {
-      alert("Resource creation threw an error.");
+    }).error(function(responseData) {
+      $scope.error = responseData;
     });
   };
 
@@ -53,8 +55,8 @@ app.controller('PropertiesCtrl', [ '$scope', '$http', '$window', 'Pagination', f
     var type = data ? data.type : "";
     var params = encodeParams({
       "id" : id,
-      "uniqueName" : uniqueName,
-      "type" : type
+      "uniqueName" : typeof uniqueName !== "undefined" ? uniqueName : "",
+      "type" : typeof type !== "undefined" ? type : ""
     });
     $http.post(melmContextRoot + '/rest/libraries/icons/properties/update', params, {
       headers : {
@@ -63,7 +65,7 @@ app.controller('PropertiesCtrl', [ '$scope', '$http', '$window', 'Pagination', f
     }).success(function() {
       $scope.loadResources(getRESTParameter('properties/'));
     }).error(function() {
-      alert("Resource creation threw an error.");
+      alert("Resource update threw an error.");
     });
   };
 
@@ -84,11 +86,12 @@ app.controller('PropertiesCtrl', [ '$scope', '$http', '$window', 'Pagination', f
       alert("Resource deletion threw an error.");
     });
   };
-  
+
   $scope.back = function() {
     $window.history.back();
   };
 
+  $scope.error = null;
   $scope.pagination = Pagination.getNew(10);
   $scope.predicate = 'uniqueName';
   $scope.loadResources(getRESTParameter('properties/'));
