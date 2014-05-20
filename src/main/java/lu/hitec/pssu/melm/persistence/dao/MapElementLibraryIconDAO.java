@@ -10,19 +10,23 @@ import lu.hitec.pssu.melm.persistence.entity.MapElementLibraryIcon;
 
 public interface MapElementLibraryIconDAO {
 
-  MapElementLibraryIcon addIconToLibrary(final MapElementLibrary library, final MapElementIcon icon, final int indexOfIconInLibrary,
-      final String iconNameInLibrary, final String iconDescriptionInLibrary);
-  
-  void updateLibraryIcon(final long id, final MapElementIcon icon, final int indexOfIconInLibrary,
-      final String iconNameInLibrary, final String iconDescriptionInLibrary);
+	MapElementLibraryIcon addIconToLibrary(final MapElementLibrary library, final MapElementIcon icon, final int indexOfIconInLibrary, final String iconNameInLibrary,
+			final String iconDescriptionInLibrary);
 
-  void deleteLibraryIcon(final long id);
+	void updateLibraryIcon(final long id, final MapElementIcon icon, final int indexOfIconInLibrary, final String iconNameInLibrary, final String iconDescriptionInLibrary);
 
-  List<MapElementLibraryIcon> getIconsInLibrary(final MapElementLibrary library);
-  
-  MapElementLibraryIcon getLibraryIcon(final long id);
-  
-  boolean checkIconInLibrary(@Nonnull final MapElementIcon icon);
-  
-  boolean checkIconInLibrary(@Nonnull final MapElementLibrary library, @Nonnull final MapElementIcon icon);
+	void deleteLibraryIcon(final long id);
+
+	List<MapElementLibraryIcon> getIconsInLibrary(final MapElementLibrary library);
+
+	MapElementLibraryIcon getLibraryIcon(final long id);
+
+	MapElementLibraryIcon getPreviousLibraryIcon(MapElementLibraryIcon libraryIcon);
+
+	MapElementLibraryIcon getNextLibraryIcon(MapElementLibraryIcon libraryIcon);
+
+	boolean checkIconInLibrary(@Nonnull final MapElementIcon icon);
+
+	boolean checkIconInLibrary(@Nonnull final MapElementLibrary library, @Nonnull final MapElementIcon icon);
+
 }

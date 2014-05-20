@@ -15,81 +15,80 @@ import lu.hitec.pssu.melm.utils.CustomPropertyType;
 import org.w3c.dom.NodeList;
 
 public interface MELMService {
-  MapElementIcon addIconAndFiles(@Nonnull String displayName, @Nonnull File iconLargeFile) throws MELMException;
+	
+	public static final int ORDER_INCREMENT = 1000000;
 
-  MapElementLibrary addLibrary(@Nonnull String libraryName, int majorVersion, int minorVersion, @Nonnull String iconMd5)
-      throws MELMException;
+	MapElementIcon addIconAndFiles(@Nonnull String displayName, @Nonnull File iconLargeFile) throws MELMException;
 
-  String addLibraryIcon(@Nonnull File sourceIconFile) throws MELMException;
+	MapElementLibrary addLibrary(@Nonnull String libraryName, int majorVersion, int minorVersion, @Nonnull String iconMd5) throws MELMException;
 
-  void addLibraryIcon(long id, int iconIndex, @Nonnull String iconName, @Nonnull String iconDescription, long iconId) throws MELMException;
+	String addLibraryIcon(@Nonnull File sourceIconFile) throws MELMException;
 
-  void addProperty(long id, @Nonnull String uniqueName, @Nonnull CustomPropertyType type) throws MELMException;
+	void addLibraryIcon(long id, int iconIndex, @Nonnull String iconName, @Nonnull String iconDescription, long iconId) throws MELMException;
 
-  String buildArchiveFilename(@Nonnull String libraryName, int majorVersion, int minorVersion);
+	void addProperty(long id, @Nonnull String uniqueName, @Nonnull CustomPropertyType type) throws MELMException;
 
-  MapElementLibrary cloneLibrary(long id, @Nonnull String libraryName, int majorVersion, int minorVersion, @Nonnull String iconMd5)
-      throws MELMException;
+	String buildArchiveFilename(@Nonnull String libraryName, int majorVersion, int minorVersion);
 
-  void deleteCustomProperty(long id);
+	MapElementLibrary cloneLibrary(long id, @Nonnull String libraryName, int majorVersion, int minorVersion, @Nonnull String iconMd5) throws MELMException;
 
-  void deleteIconAndFiles(long id) throws MELMException;
+	void deleteCustomProperty(long id);
 
-  void deleteLibrary(long id);
+	void deleteIconAndFiles(long id) throws MELMException;
 
-  void deleteLibraryIcon(long id);
+	void deleteLibrary(long id);
 
-  void deleteProperty(long id);
+	void deleteLibraryIcon(long id);
 
-  File extractImportedLibrary(@Nonnull File file) throws MELMException;
+	void moveLibraryIcon(long id, String which);
 
-  File generateXmlAndPrepareZipFile(@Nonnull String name, int majorVersion, int minorVersion) throws MELMException;
+	void deleteProperty(long id);
 
-  File generateZipFile(@Nonnull File zipFolder) throws MELMException;
+	File extractImportedLibrary(@Nonnull File file) throws MELMException;
 
-  MapElementIcon getIcon(long id);
+	File generateXmlAndPrepareZipFile(@Nonnull String name, int majorVersion, int minorVersion) throws MELMException;
 
-  File getIconFile(long id, @Nonnull String size);
+	File generateZipFile(@Nonnull File zipFolder) throws MELMException;
 
-  File getIconsDirectory();
+	MapElementIcon getIcon(long id);
 
-  File getLibrariesDirectory();
+	File getIconFile(long id, @Nonnull String size);
 
-  MapElementLibrary getLibrary(long id);
+	File getIconsDirectory();
 
-  MapElementLibrary getLibrary(@Nonnull String libraryName, int majorVersion, int minorVersion);
+	File getLibrariesDirectory();
 
-  MapElementLibraryIcon getLibraryIcon(long id);
+	MapElementLibrary getLibrary(long id);
 
-  File getLibraryIconFile(long id);
+	MapElementLibrary getLibrary(@Nonnull String libraryName, int majorVersion, int minorVersion);
 
-  List<MapElementLibraryIcon> getLibraryIcons(long id);
+	MapElementLibraryIcon getLibraryIcon(long id);
 
-  List<MapElementLibraryIcon> getLibraryIcons(@Nonnull String libraryName, int majorVersion, int minorVersion);
+	File getLibraryIconFile(long id);
 
-  List<MapElementCustomProperty> getProperties(long id);
+	List<MapElementLibraryIcon> getLibraryIcons(long id);
 
-  File getTargetArchiveFile(@Nonnull String libraryName, int majorVersion, int minorVersion) throws MELMException;
+	List<MapElementLibraryIcon> getLibraryIcons(@Nonnull String libraryName, int majorVersion, int minorVersion);
 
-  File importLibrary(@Nonnull String name, int majorVersion, int minorVersion, @Nonnull File libraryFile) throws MELMException;
+	List<MapElementCustomProperty> getProperties(long id);
 
-  List<MapElementIcon> listAllIcons();
+	File getTargetArchiveFile(@Nonnull String libraryName, int majorVersion, int minorVersion) throws MELMException;
 
-  List<MapElementLibrary> listAllLibraries();
+	File importLibrary(@Nonnull String name, int majorVersion, int minorVersion, @Nonnull File libraryFile) throws MELMException;
 
-  void moveImportedIcons(@Nonnull MapElementLibrary mapElementLibrary, @Nonnull NodeList nodeList, @Nonnull File libraryFolder)
-      throws MELMException;
+	List<MapElementIcon> listAllIcons();
 
-  String moveImportedLibraryIcon(@Nonnull File libraryFolder, @Nonnull String libraryName, int majorVersion, int minorVersion)
-      throws MELMException;
+	List<MapElementLibrary> listAllLibraries();
 
-  void updateLibrary(long id, @Nonnull String libraryName, int majorVersion, int minorVersion, String iconMd5MaybeNull)
-      throws MELMException;
+	void moveImportedIcons(@Nonnull MapElementLibrary mapElementLibrary, @Nonnull NodeList nodeList, @Nonnull File libraryFolder) throws MELMException;
 
-  void updateLibraryIcon(long id, int iconIndex, @Nonnull String iconName, @Nonnull String iconDescription, long iconId)
-      throws MELMException;
+	String moveImportedLibraryIcon(@Nonnull File libraryFolder, @Nonnull String libraryName, int majorVersion, int minorVersion) throws MELMException;
 
-  void updateProperty(long id, @Nonnull String uniqueName, @Nonnull CustomPropertyType type) throws MELMException;
+	void updateLibrary(long id, @Nonnull String libraryName, int majorVersion, int minorVersion, String iconMd5MaybeNull) throws MELMException;
 
-  NodeList validateImportedLibraryAndGetNodeList(@Nonnull String libraryName, int majorVersion, int minorVersion) throws MELMException;
+	void updateLibraryIcon(long id, int iconIndex, @Nonnull String iconName, @Nonnull String iconDescription, long iconId) throws MELMException;
+
+	void updateProperty(long id, @Nonnull String uniqueName, @Nonnull CustomPropertyType type) throws MELMException;
+
+	NodeList validateImportedLibraryAndGetNodeList(@Nonnull String libraryName, int majorVersion, int minorVersion) throws MELMException;
 }

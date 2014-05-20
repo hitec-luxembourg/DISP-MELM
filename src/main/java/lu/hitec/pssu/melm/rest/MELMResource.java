@@ -85,6 +85,13 @@ public class MELMResource {
   }
 
   @POST
+  @Path("/libraries/icons/move")
+  public Response moveLibraryIcon(@FormParam("id") final long id, @FormParam("which") final String which) {
+    melmService.moveLibraryIcon(id, which);
+    return Response.ok().build();
+  }
+
+  @POST
   @Path("/libraries/icons/properties/delete")
   public Response deleteProperty(@FormParam("id") final long id) {
     melmService.deleteProperty(id);

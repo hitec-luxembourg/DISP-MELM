@@ -27,7 +27,24 @@ app.controller('LibraryIconsCtrl', [ '$scope', '$http', '$location', '$window', 
   $scope.go = function(path) {
     window.location = melmContextRoot + path;
   };
-
+  
+  $scope.move = function(which, id) {
+    var params = encodeParams({
+      "id" : id,
+      "which" : which
+    });
+    $http.post(melmContextRoot + '/rest/libraries/icons/move', params, {
+      headers : {
+        'Content-Type' : 'application/x-www-form-urlencoded'
+      }
+    }).success(function() {
+      $scope.loadResources(getRESTParameter('icons/'));
+    }).error(function() {
+      $scope.loadResources(getRESTParameter('icons/'));
+      alert("Resource move threw an error.");
+    });
+  };
+  
   $scope.pagination = Pagination.getNew(10);
   $scope.predicate = 'indexOfIconInLibrary';
   $scope.loadResources(getRESTParameter('icons/'));
