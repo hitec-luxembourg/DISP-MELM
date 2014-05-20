@@ -35,7 +35,7 @@
           <td align="left">{{icon.indexOfIconInLibrary}}</td>
           <td align="left">{{icon.iconNameInLibrary}}</td>
           <td align="left">{{icon.iconDescriptionInLibrary}}</td>
-          <td align="left"><img src="${ctx}/rest/icons/file/{{icon.icon.id}}/MEDIUM"></td>
+          <td align="left"><a href="${ctx}/rest/icons/details/{{icon.icon.id}}"><img src="${ctx}/rest/icons/file/{{icon.icon.id}}/MEDIUM"></a></td>
           <td>
             <ul class="nav nav-pills">
               <li><button class="btn btn-list" ng-click="go('/rest/libraries/icons/properties/'+icon.id)">

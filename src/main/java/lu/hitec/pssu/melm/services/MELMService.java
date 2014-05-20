@@ -2,6 +2,7 @@ package lu.hitec.pssu.melm.services;
 
 import java.io.File;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 
@@ -66,6 +67,8 @@ public interface MELMService {
   List<MapElementLibraryIcon> getLibraryIcons(long id);
 
   List<MapElementLibraryIcon> getLibraryIcons(@Nonnull String libraryName, int majorVersion, int minorVersion);
+
+  Set<MapElementLibrary> getLinkedLibraries(MapElementIcon icon);
 
   List<MapElementCustomProperty> getProperties(long id);
 
