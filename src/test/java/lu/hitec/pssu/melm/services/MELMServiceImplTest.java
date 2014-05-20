@@ -9,6 +9,7 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -63,10 +64,15 @@ public class MELMServiceImplTest {
     final File iconsDirectory = melmService.getIconsDirectory();
     FileUtils.deleteQuietly(iconsDirectory);
 
-    // final List<MapElementIcon> icons = mapElementIconDAO.listAllIcons();
-    // for (final MapElementIcon icon : icons) {
-    // mapElementIconDAO.delete(icon.getId());
-    // }
+    final List<MapElementLibrary> libraries = melmService.listAllLibraries();
+    for (final MapElementLibrary library : libraries) {
+      melmService.deleteLibrary(library.getId());
+    }
+    
+    final List<MapElementIcon> icons = mapElementIconDAO.listAllIcons();
+    for (final MapElementIcon icon : icons) {
+      mapElementIconDAO.delete(icon.getId());
+    }
   }
 
   @Test
@@ -144,7 +150,8 @@ public class MELMServiceImplTest {
     final DocumentBuilder builder = factory.newDocumentBuilder();
     final Document document = builder.parse(xmlFile);
     final XPath xPath = XPathFactory.newInstance().newXPath();
-    final NodeList nodeList = (NodeList) xPath.compile(MELMServiceImpl.XPATH_LIBRARY_ELEMENTS_EXPRESSION).evaluate(document, XPathConstants.NODESET);
+    final NodeList nodeList = (NodeList) xPath.compile(MELMServiceImpl.XPATH_LIBRARY_ELEMENTS_EXPRESSION).evaluate(document,
+        XPathConstants.NODESET);
     for (int i = 0; i < nodeList.getLength(); i++) {
       final Node node = nodeList.item(i);
       final Element element = (Element) node;
@@ -157,8 +164,9 @@ public class MELMServiceImplTest {
       final Element subElement = (Element) subNode;
       final String fileName = subElement.getAttribute("file");
       assertNotNull(fileName);
-      
-      final NodeList nodeList2 = (NodeList) xPath.compile(MELMServiceImpl.XPATH_LIBRARY_ELEMENTS_CUSTOM_PROPERTY_EXPRESSION).evaluate(node, XPathConstants.NODESET);
+
+      final NodeList nodeList2 = (NodeList) xPath.compile(MELMServiceImpl.XPATH_LIBRARY_ELEMENTS_CUSTOM_PROPERTY_EXPRESSION).evaluate(node,
+          XPathConstants.NODESET);
       for (int j = 0; j < nodeList2.getLength(); j++) {
         final Node node2 = nodeList2.item(j);
         final Element element2 = (Element) node2;

@@ -24,8 +24,10 @@ import javax.ws.rs.core.UriInfo;
 
 import lu.hitec.pssu.melm.exceptions.MELMException;
 import lu.hitec.pssu.melm.persistence.dto.DTOMapElementCustomProperty;
+import lu.hitec.pssu.melm.persistence.dto.DTOMapElementIcon;
 import lu.hitec.pssu.melm.persistence.dto.DTOMapElementLibraryIcon;
 import lu.hitec.pssu.melm.persistence.entity.MapElementCustomProperty;
+import lu.hitec.pssu.melm.persistence.entity.MapElementIcon;
 import lu.hitec.pssu.melm.persistence.entity.MapElementLibrary;
 import lu.hitec.pssu.melm.persistence.entity.MapElementLibraryIcon;
 import lu.hitec.pssu.melm.services.MELMService;
@@ -154,6 +156,18 @@ public class MELMResource {
   @Path("/libraries/json")
   public Response getListLibraries() {
     return Response.ok(melmService.listAllLibraries()).build();
+  }
+
+  @GET
+  @Produces(MediaType.APPLICATION_JSON)
+  @Path("/icons/linked/json")
+  public Response getListLinkedIcons() {
+    final List<DTOMapElementIcon> results = new ArrayList<>();
+    final List<MapElementIcon> listAllIcons = melmService.listAllIcons();
+    for (final MapElementIcon mapElementIcon : listAllIcons) {
+      results.add(new DTOMapElementIcon(mapElementIcon, melmService.getLinkedLibraries(mapElementIcon)));
+    }
+    return Response.ok(results).build();
   }
 
   @GET

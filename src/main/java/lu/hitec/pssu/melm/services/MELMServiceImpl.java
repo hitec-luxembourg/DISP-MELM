@@ -8,7 +8,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -250,9 +252,13 @@ public class MELMServiceImpl implements MELMService {
   @Transactional
   public void deleteIconAndFiles(final long id) throws MELMException {
     final MapElementIcon mapElementIcon = mapElementIconDAO.getMapElementIcon(id);
-    if (mapElementLibraryIconDAO.checkIconInLibrary(mapElementIcon)) {
-      // FIXME we should tell to which libraries the icon is linked.
-      final String msg = String.format("Icon %s is still linked to some libraries", mapElementIcon.getDisplayName());
+    final Set<MapElementLibrary> linkedLibraries = mapElementLibraryIconDAO.getLinkedLibraries(mapElementIcon);
+    if (!linkedLibraries.isEmpty()) {
+      final Set<String> libraryNames = new HashSet<>();
+      for (final MapElementLibrary mapElementLibrary : linkedLibraries) {
+        libraryNames.add(mapElementLibrary.getName());
+      }
+      final String msg = String.format("Icon %s is still linked to some libraries %s", mapElementIcon.getDisplayName(), libraryNames);
       throw new MELMException(msg);
     }
     mapElementIconDAO.delete(id);
@@ -342,12 +348,6 @@ public class MELMServiceImpl implements MELMService {
             }
             dest.flush();
           }
-
-          // TODO: it is useful?
-          // if (currentEntry.endsWith(".zip")) {
-          // // Found a zip file, try to open.
-          // extractZipFile(destFile);
-          // }
         }
       } catch (final IOException e) {
         final String msg = "Failed to process zip entry";
@@ -578,6 +578,12 @@ public class MELMServiceImpl implements MELMService {
   public List<MapElementLibraryIcon> getLibraryIcons(@Nonnull final String libraryName, final int majorVersion, final int minorVersion) {
     final MapElementLibrary library = mapElementLibraryDAO.getMapElementLibrary(libraryName, majorVersion, minorVersion);
     return mapElementLibraryIconDAO.getIconsInLibrary(library);
+  }
+
+  @Override
+  public Set<MapElementLibrary> getLinkedLibraries(@Nonnull final MapElementIcon mapElementIcon) {
+    assert mapElementIcon != null : "map element icon is null";
+    return mapElementLibraryIconDAO.getLinkedLibraries(mapElementIcon);
   }
 
   @Override

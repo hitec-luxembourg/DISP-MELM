@@ -1,6 +1,6 @@
 app.controller('IconsCtrl', ['$scope', '$http', 'Pagination', function($scope, $http, Pagination) {
   $scope.loadResources = function() {
-    $http.get(melmContextRoot + '/rest/icons/json').success(function(data) {
+    $http.get(melmContextRoot + '/rest/icons/linked/json').success(function(data) {
       $scope.icons = data;
       $scope.pagination.numPages = Math.ceil($scope.icons.length/$scope.pagination.perPage);
     });
@@ -31,6 +31,6 @@ app.controller('IconsCtrl', ['$scope', '$http', 'Pagination', function($scope, $
 
   $scope.error = null;
   $scope.pagination = Pagination.getNew(10);
-  $scope.predicate = 'displayName';
+  $scope.predicate = 'icon.displayName';
   $scope.loadResources();
 }]);

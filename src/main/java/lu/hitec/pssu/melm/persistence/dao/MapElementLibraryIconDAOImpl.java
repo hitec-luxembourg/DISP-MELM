@@ -1,6 +1,8 @@
 package lu.hitec.pssu.melm.persistence.dao;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.persistence.EntityManager;
@@ -33,11 +35,17 @@ public class MapElementLibraryIconDAOImpl implements MapElementLibraryIconDAO {
   }
 
   @Override
-  public boolean checkIconInLibrary(final MapElementIcon icon) {
+  @Nonnull
+  public Set<MapElementLibrary> getLinkedLibraries(final MapElementIcon icon) {
     final TypedQuery<MapElementLibraryIcon> query = em.createQuery("SELECT meli FROM MapElementLibraryIcon meli WHERE meli.icon = :icon",
         MapElementLibraryIcon.class);
     query.setParameter("icon", icon);
-    return !query.getResultList().isEmpty();
+    final List<MapElementLibraryIcon> list = query.getResultList();
+    final Set<MapElementLibrary> results = new HashSet<>();
+    for (final MapElementLibraryIcon mapElementLibraryIcon : list) {
+      results.add(mapElementLibraryIcon.getLibrary());
+    }
+    return results;
   }
 
   @Override
