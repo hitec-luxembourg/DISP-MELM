@@ -18,6 +18,7 @@
     <div class="page-header">
       <h1>List Libraries</h1>
     </div>
+    <progressbar class="progress-striped active" value="100" type="info" ng-show="loadingVisible"><i>Loading</i></progressbar>
     <div class="table-responsive">
       <table class="table table-striped">
         <tr>
