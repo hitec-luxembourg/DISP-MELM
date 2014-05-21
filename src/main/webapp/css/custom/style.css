@@ -156,7 +156,7 @@ nav#main-nav {
 }
 
 .icon-wrapper-disabled {
-  cursor:initial;
+  cursor: initial;
 }
 
 .icon>input[type=radio] {
@@ -181,4 +181,8 @@ nav#main-nav {
 
 .icon-disabled>input[type=radio]+img {
   opacity: 0.4;
+}
+
+.library-icons .btn {
+  padding: 6px 0 6px 10px;
 }

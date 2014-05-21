@@ -20,8 +20,8 @@
         List library elements <small>{{libraryIconsModel.library.name}}-{{libraryIconsModel.library.majorVersion}}.{{libraryIconsModel.library.minorVersion}}</small>
       </h1>
     </div>
-    <progressbar class="progress-striped active" value="100" type="warning" ng-show="loadingVisible"><i>Loading resources</i></progressbar>
-    <div class="table-responsive">
+    <progressbar class="progress-striped active" value="100" type="warning" ng-show="loadingVisible"> <i>Loading resources</i></progressbar>
+    <div class="table-responsive library-icons">
       <table class="table table-striped">
         <tr>
           <!-- td align="left" style="width: 150px"><a href="" ng-click="predicate='indexOfIconInLibrary'; reverse=!reverse">Element Index</a></td -->
@@ -36,20 +36,25 @@
           <!-- td align="left">{{icon.indexOfIconInLibrary}}</td -->
           <td align="left">{{icon.iconNameInLibrary}}</td>
           <td align="left">{{icon.iconDescriptionInLibrary}}</td>
-          <td align="left"><a href="${ctx}/rest/icons/details/{{icon.icon.id}}"><img src="${ctx}/rest/icons/file/{{icon.icon.id}}/MEDIUM"></a></td>
+          <td align="left"><a href="${ctx}/rest/icons/details/{{icon.icon.id}}"><img
+              src="${ctx}/rest/icons/file/{{icon.icon.id}}/MEDIUM"></a></td>
           <td>
             <ul class="nav nav-pills">
-              <li><button class="btn btn-list" ng-click="go('/rest/libraries/icons/properties/'+icon.id)">
-                  <span class="hidden-xs hidden-sm hidden-md">Properties</span>
+              <li><button class="btn" ng-click="go('/rest/libraries/icons/properties/'+icon.id)">
+                  <span class="glyphicon glyphicon-pencil"></span>
                 </button></li>
               <li><button class="btn" ng-click="go('/rest/libraries/icons/update/'+icon.id)">
-                  <span class="glyphicon glyphicon-refresh"></span><span class="hidden-xs hidden-sm hidden-md">Update</span>
+                  <span class="glyphicon glyphicon-refresh"></span>
                 </button></li>
               <li><button class="btn" ng-click="deleteResource(icon.id)">
-                  <span class="glyphicon glyphicon-remove"></span><span class="hidden-xs hidden-sm hidden-md">Delete</span>
+                  <span class="glyphicon glyphicon-remove"></span>
                 </button></li>
-              <li><button class="btn" ng-click="move('up', icon.id)" ng-style="isFirst(icon.id) && {'display': 'none'}"><span class="glyphicon glyphicon-arrow-up"></span></button></li>
-              <li><button class="btn" ng-click="move('down', icon.id)" ng-style="isLast(icon.id) && {'display': 'none'}"><span class="glyphicon glyphicon-arrow-down"></span></button></li>
+              <li><button class="btn" ng-click="move('up', icon.id)" ng-style="isFirst(icon.id) && {'display': 'none'}">
+                  <span class="glyphicon glyphicon-arrow-up"></span>
+                </button></li>
+              <li><button class="btn" ng-click="move('down', icon.id)" ng-style="isLast(icon.id) && {'display': 'none'}">
+                  <span class="glyphicon glyphicon-arrow-down"></span>
+                </button></li>
             </ul>
           </td>
         </tr>
@@ -64,7 +69,8 @@
       </ul>
     </div>
     <hr />
-    <button class="btn btn-add" ng-disabled="!libraryIconsModel.iconsAvailable" ng-click="go('/rest/libraries/icons/add/'+libraryIconsModel.library.id)">Add</button>
+    <button class="btn btn-add" ng-disabled="!libraryIconsModel.iconsAvailable"
+      ng-click="go('/rest/libraries/icons/add/'+libraryIconsModel.library.id)">Add</button>
     <button type="button" ng-click="go('/rest/libraries')" class="btn btn-default btn-custom-cancel">
       <span class="glyphicon glyphicon glyphicon-step-backward"></span>Back
     </button>
