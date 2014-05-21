@@ -1,23 +1,39 @@
 app.controller('UpdateLibraryIconCtrl', [ '$scope', '$http', '$window', 'Pagination', function($scope, $http, $window, Pagination) {
   $scope.loadResources = function() {
-    $http.get(melmContextRoot + '/rest/icons/json').success(function(data) {
+    $http.get(melmContextRoot + '/rest/icons/linked/json').success(function(data) {
       $scope.icons = data;
-      $scope.pagination.numPages = Math.ceil($scope.icons.length/$scope.pagination.perPage);
+      $scope.pagination.numPages = Math.ceil($scope.icons.length / $scope.pagination.perPage);
     });
   };
-  
+
   $scope.back = function() {
     $window.history.back();
   };
-  
-  $scope.selectImage = function(id){
-    $scope.id=id;
+
+  $scope.selectImage = function(id) {
+    $scope.id = id;
   };
-  
-  $scope.isSelected = function(id){
-    return $scope.id===id;
+
+  $scope.isSelected = function(id) {
+    return $scope.id === id;
   };
-  
+
+  $scope.getClasses = function(id, libraries) {
+    var mainClasses = 'col-xs-4 col-sm-2 col-md-1 icon-wrapper';
+    if (libraries.length > 0) {
+      for (var i = 0; i < libraries.length; i++) {
+        if (libraries[i].id === $scope.libraryId) {
+          return mainClasses + ' icon-wrapper-disabled icon-disabled';
+        }
+      }
+    }
+    if ($scope.id === id) {
+      return mainClasses + ' icon-selected';
+    } else {
+      return mainClasses;
+    }
+  };
+
   $scope.id = $window.id;
   $scope.pagination = Pagination.getNew(36);
   $scope.loadResources();

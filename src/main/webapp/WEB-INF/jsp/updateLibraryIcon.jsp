@@ -30,11 +30,11 @@
       <input name="libraryIconId" id="libraryIconId" type="hidden" value="${it.libraryIcon.id}" /> <input name="id" id="id" type="hidden"
         value="${it.libraryIcon.library.id}" />
       <div class="row">
-        <div ng-click="selectImage(icon.id)"
-          ng-class="isSelected(icon.id) ? 'col-xs-4 col-sm-2 col-md-1 icon-wrapper icon_selected' : 'col-xs-4 col-sm-2 col-md-1 icon-wrapper'"
+        <div ng-click="selectImage(icon.icon.id)" ng-class="getClasses(icon.icon.id, icon.libraries)"
           ng-repeat="icon in icons | startFrom: pagination.page * pagination.perPage | limitTo: pagination.perPage">
-          <label class="icon" for="iconId-{{icon.id}}"><input type="radio" id="iconId-{{icon.id}}" name="iconId" value="{{icon.id}}"
-            ng-checked="isSelected(icon.id)" /><img src="${ctx}/rest/icons/file/{{icon.id}}/MEDIUM" alt="{{icon.displayName}}" /></label><br />{{icon.displayName}}
+          <label class="icon" for="iconId-{{icon.icon.id}}"><input type="radio" id="iconId-{{icon.icon.id}}" name="iconId"
+            value="{{icon.icon.id}}" ng-checked="isSelected(icon.icon.id)" /><img src="${ctx}/rest/icons/file/{{icon.icon.id}}/MEDIUM"
+            alt="{{icon.icon.displayName}}" /></label><br />{{icon.icon.displayName}}
         </div>
       </div>
       <div class="pagination-centered">
