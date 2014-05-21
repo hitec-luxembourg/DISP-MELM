@@ -45,6 +45,16 @@ app.controller('LibraryIconsCtrl', [ '$scope', '$http', '$location', '$window', 
     });
   };
   
+  $scope.isFirst = function(id) {
+    var result = $scope.libraryIconsModel && $scope.libraryIconsModel.icons && 0 < $scope.libraryIconsModel.icons.length && $scope.libraryIconsModel.icons[0].id === id;
+    return result;
+  };
+  
+  $scope.isLast = function(id) {
+    var result = $scope.libraryIconsModel && $scope.libraryIconsModel.icons && 0 < $scope.libraryIconsModel.icons.length && $scope.libraryIconsModel.icons[$scope.libraryIconsModel.icons.length-1].id === id;
+    return result;
+  };
+  
   $scope.pagination = Pagination.getNew(10);
   $scope.predicate = 'indexOfIconInLibrary';
   $scope.loadResources(getRESTParameter('icons/'));
