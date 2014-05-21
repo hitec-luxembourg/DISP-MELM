@@ -35,7 +35,7 @@
     </table>
     <hr />
     <button type="button" ng-click="go('/rest/icons')" class="btn btn-default btn-custom-cancel">
-      <span class="glyphicon glyphicon glyphicon-step-backward"></span><span class="hidden-xs hidden-sm">Cancel</span>
+      <span class="glyphicon glyphicon glyphicon-step-backward"></span><span class="hidden-xs hidden-sm">Back</span>
     </button>
   </div>
   <jsp:include page="footer.jsp" />

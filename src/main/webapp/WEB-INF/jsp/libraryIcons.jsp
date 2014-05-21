@@ -20,6 +20,7 @@
         List library elements <small>{{libraryIconsModel.library.name}}-{{libraryIconsModel.library.majorVersion}}.{{libraryIconsModel.library.minorVersion}}</small>
       </h1>
     </div>
+    <progressbar class="progress-striped active" value="100" type="warning" ng-show="loadingVisible"><i>Loading resources</i></progressbar>
     <div class="table-responsive">
       <table class="table table-striped">
         <tr>
@@ -65,7 +66,7 @@
     <hr />
     <button class="btn btn-add" ng-disabled="!libraryIconsModel.iconsAvailable" ng-click="go('/rest/libraries/icons/add/'+libraryIconsModel.library.id)">Add</button>
     <button type="button" ng-click="go('/rest/libraries')" class="btn btn-default btn-custom-cancel">
-      <span class="glyphicon glyphicon glyphicon-step-backward"></span><span class="hidden-xs hidden-sm">Cancel</span>
+      <span class="glyphicon glyphicon glyphicon-step-backward"></span><span class="hidden-xs hidden-sm">Back</span>
     </button>
   </div>
   <jsp:include page="footer.jsp" />

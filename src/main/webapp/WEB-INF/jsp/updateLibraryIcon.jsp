@@ -24,6 +24,7 @@
         Update library element <small>${it.libraryIcon.library.name}-${it.libraryIcon.library.majorVersion}.${it.libraryIcon.library.minorVersion}</small>
       </h1>
     </div>
+    <progressbar class="progress-striped active" value="100" type="warning" ng-show="loadingVisible"><i>Loading resources</i></progressbar>
     <c:if test="${not empty it.error}">
       <div class="alert alert-danger">${it.error}</div>
     </c:if>

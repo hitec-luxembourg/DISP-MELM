@@ -1,6 +1,8 @@
 app.controller('LibraryIconsCtrl', [ '$scope', '$http', '$location', '$window', 'Pagination', function($scope, $http, $location, $window, Pagination) {
   $scope.loadResources = function(id) {
+    $scope.loadingVisible = true;
     $http.get(melmContextRoot + '/rest/libraries/icons/json/'+id).success(function(data) {
+      $scope.loadingVisible = false;
       $scope.libraryIconsModel = data;
       $scope.pagination.numPages = Math.ceil($scope.libraryIconsModel.icons.length / $scope.pagination.perPage);
     });
@@ -54,7 +56,8 @@ app.controller('LibraryIconsCtrl', [ '$scope', '$http', '$location', '$window', 
     var result = $scope.libraryIconsModel && $scope.libraryIconsModel.icons && 0 < $scope.libraryIconsModel.icons.length && $scope.libraryIconsModel.icons[$scope.libraryIconsModel.icons.length-1].id === id;
     return result;
   };
-  
+
+  $scope.loadingVisible = false;
   $scope.pagination = Pagination.getNew(10);
   $scope.predicate = 'indexOfIconInLibrary';
   $scope.loadResources(getRESTParameter('icons/'));
