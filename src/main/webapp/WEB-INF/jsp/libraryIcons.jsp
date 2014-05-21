@@ -23,16 +23,16 @@
     <div class="table-responsive">
       <table class="table table-striped">
         <tr>
-          <td align="left" style="width: 150px"><a href="" ng-click="predicate='indexOfIconInLibrary'; reverse=!reverse">Element Index</a></td>
-          <td align="left" style="width: 250px"><a href="" ng-click="predicate='iconNameInLibrary'; reverse=!reverse">Element Name</a></td>
-          <td align="left" style="width: 250px"><a href="" ng-click="predicate='iconDescriptionInLibrary'; reverse=!reverse">Element
+          <!-- td align="left" style="width: 150px"><a href="" ng-click="predicate='indexOfIconInLibrary'; reverse=!reverse">Element Index</a></td -->
+          <td align="left" style="width: 300px"><a href="" ng-click="predicate='iconNameInLibrary'; reverse=!reverse">Element Name</a></td>
+          <td align="left" style="width: 300px"><a href="" ng-click="predicate='iconDescriptionInLibrary'; reverse=!reverse">Element
               Description</a></td>
           <td style="width: 110px">Preview</td>
-          <td align="left">Actions</td>
+          <td align="left" style="width: 300px">Actions</td>
         </tr>
         <tr
           ng-repeat="icon in libraryIconsModel.icons | orderBy:predicate:reverse | startFrom: pagination.page * pagination.perPage | limitTo: pagination.perPage">
-          <td align="left">{{icon.indexOfIconInLibrary}}</td>
+          <!-- td align="left">{{icon.indexOfIconInLibrary}}</td -->
           <td align="left">{{icon.iconNameInLibrary}}</td>
           <td align="left">{{icon.iconDescriptionInLibrary}}</td>
           <td align="left"><a href="${ctx}/rest/icons/details/{{icon.icon.id}}"><img src="${ctx}/rest/icons/file/{{icon.icon.id}}/MEDIUM"></a></td>

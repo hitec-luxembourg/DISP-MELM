@@ -24,8 +24,9 @@
       <div class="alert alert-danger">${it.error}</div>
     </c:if>
     <form method="POST" action="${ctx}/rest/libraries/icons/add" class="form-horizontal" role="form">
-      <input name="id" id="id" type="hidden" value="${it.library.id}" /> <input type="radio" name="iconId" value="-1"
-        ng-checked="isSelected(-1)" style="display:none" />
+      <input name="id" id="id" type="hidden" value="${it.library.id}" /> 
+      <input name="iconIndex" id="iconIndex" type="hidden" value="-1" />
+      <input type="radio" name="iconId" value="-1" ng-checked="isSelected(-1)" style="display:none" />
       <div class="row">
         <div ng-click="selectImage(icon.id)"
           ng-class="isSelected(icon.id) ? 'col-xs-4 col-sm-2 col-md-1 icon-wrapper icon_selected' : 'col-xs-4 col-sm-2 col-md-1 icon-wrapper'"
@@ -41,12 +42,6 @@
             ng-click="pagination.toPageId(n)">{{n + 1}}</a></li>
           <li><a ng-hide="pagination.page + 1 >= pagination.numPages" ng-click="pagination.nextPage()">&raquo;</a></li>
         </ul>
-      </div>
-      <div class="form-group">
-        <label for="iconIndex" class="col-sm-2 control-label">Element index</label>
-        <div class="col-sm-10">
-          <input type="number" class="form-control" id="iconIndex" name="iconIndex" placeholder="Specify an element index" />
-        </div>
       </div>
       <div class="form-group">
         <label for="iconName" class="col-sm-2 control-label">Element name</label>

@@ -192,7 +192,18 @@ public class MELMServiceImpl implements MELMService {
 			final String msg = String.format("Icon %s is already linked to this library", mapElementIcon.getDisplayName());
 			throw new MELMException(msg);
 		}
-		mapElementLibraryIconDAO.addIconToLibrary(library, mapElementIcon, iconIndex, iconName, iconDescription);
+		int indexToSupply = iconIndex;
+		if(-1 == iconIndex) {
+			final List<MapElementLibraryIcon> iconsInLibrary = mapElementLibraryIconDAO.getIconsInLibrary(library);
+			if((null != iconsInLibrary) && (0 < iconsInLibrary.size())) {
+				final MapElementLibraryIcon mapElementLibraryIcon = iconsInLibrary.get(iconsInLibrary.size()-1);
+				indexToSupply = mapElementLibraryIcon.getIndexOfIconInLibrary() + MELMService.ORDER_INCREMENT;
+			}
+			else {
+				indexToSupply = MELMService.ORDER_INCREMENT;
+			}
+		}
+		mapElementLibraryIconDAO.addIconToLibrary(library, mapElementIcon, indexToSupply, iconName, iconDescription);
 	}
 
 	@Override
