@@ -9,6 +9,7 @@
 </script>
 <script type="text/javascript" src="${ctx}/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="${ctx}/js/ui-bootstrap-tpls-0.11.0.min.js"></script>
+<script type="text/javascript" src="${ctx}/js/bootstrap-dialog.min.js"></script>
 <script type="text/javascript" src="${ctx}/js/simplePagination.js"></script>
 <script type="text/javascript" src="${ctx}/js/xeditable.min.js"></script>
 <script type="text/javascript" src="${ctx}/js/custom/functions.js"></script>

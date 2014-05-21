@@ -22,7 +22,15 @@ app.controller('LibrariesCtrl', [ '$scope', '$http', 'Pagination', function($sco
     }).success(function() {
       $scope.loadResources();
     }).error(function() {
-      alert("Resource deletion threw an error.");
+      BootstrapDialog.alert({
+        title : 'ERROR',
+        message : 'Resource deletion threw an error.',
+        type : BootstrapDialog.TYPE_DANGER, // <-- Default value is BootstrapDialog.TYPE_PRIMARY
+        closable : true, // <-- Default value is true
+        buttonLabel : 'Close', // <-- Default value is 'OK',
+        callback : function(result) {
+        }
+      });
     });
   };
 
