@@ -28,7 +28,7 @@
           <td align="left">Actions</td>
         </tr>
         <tr
-          ng-repeat="library in libraries | orderBy:predicate:reverse | startFrom: pagination.page * pagination.perPage | limitTo: pagination.perPage">
+          ng-repeat="library in libraries | orderBy:predicate:reverse | startFrom: (currentPage - 1) * itemsPerPage | limitTo: itemsPerPage">
           <td align="left">{{library.name}}</td>
           <td align="left">{{library.majorVersion}}.{{library.minorVersion}}</td>
           <td align="left"><img src="${ctx}/rest/libraries/icon/file/{{library.id}}"></td>
@@ -56,12 +56,8 @@
       </table>
     </div>
     <div class="pagination-centered">
-      <ul class="pagination">
-        <li><a ng-hide="pagination.page == 0" ng-click="pagination.prevPage()">&laquo;</a></li>
-        <li ng-repeat="n in [] | range: pagination.numPages" ng-class="{current: n == pagination.page}"><a
-          ng-click="pagination.toPageId(n)">{{n + 1}}</a></li>
-        <li><a ng-hide="pagination.page + 1 >= pagination.numPages" ng-click="pagination.nextPage()">&raquo;</a></li>
-      </ul>
+      <pagination total-items="totalItems" ng-model="currentPage" max-size="5" class="pagination-sm" boundary-links="true" rotate="false"
+        items-per-page="itemsPerPage"></pagination>
     </div>
     <hr />
     <ul class="nav nav-pills">

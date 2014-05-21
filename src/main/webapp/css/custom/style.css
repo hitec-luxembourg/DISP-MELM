@@ -116,7 +116,7 @@ nav#main-nav {
 }
 
 .btn-list {
-  background: url("../../img/list.png") no-repeat 5px, linear-gradient(to bottom, #444444 0%, #777777 49%, #444444 52%, #777777 100%) repeat
+  background: url("../../img/list.png") no-repeat 5px, linear-gradient(to bottom, #000000 0%, #0F0F0F 49%, #000000 52%, #595959 100%) repeat
     scroll 0 0 rgba(0, 0, 0, 0) !important;
   padding-left: 40px;
   height: 36px;

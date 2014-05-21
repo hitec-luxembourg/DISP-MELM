@@ -40,19 +40,22 @@
               src="${ctx}/rest/icons/file/{{icon.icon.id}}/MEDIUM"></a></td>
           <td>
             <ul class="nav nav-pills">
-              <li><button class="btn" ng-click="go('/rest/libraries/icons/properties/'+icon.id)">
+              <li><button class="btn" ng-click="go('/rest/libraries/icons/properties/'+icon.id)" tooltip-placement="top"
+                  tooltip="Properties">
                   <span class="glyphicon glyphicon-pencil"></span>
                 </button></li>
-              <li><button class="btn" ng-click="go('/rest/libraries/icons/update/'+icon.id)">
+              <li><button class="btn" ng-click="go('/rest/libraries/icons/update/'+icon.id)" tooltip-placement="top" tooltip="Update">
                   <span class="glyphicon glyphicon-refresh"></span>
                 </button></li>
-              <li><button class="btn" ng-click="deleteResource(icon.id)">
+              <li><button class="btn" ng-click="deleteResource(icon.id)" tooltip-placement="top" tooltip="Delete">
                   <span class="glyphicon glyphicon-remove"></span>
                 </button></li>
-              <li><button class="btn" ng-click="move('up', icon.id)" ng-style="isFirst(icon.id) && {'display': 'none'}">
+              <li><button class="btn" ng-click="move('up', icon.id)" ng-style="isFirst(icon.id) && {'display': 'none'}"
+                  tooltip-placement="top" tooltip="Move up">
                   <span class="glyphicon glyphicon-arrow-up"></span>
                 </button></li>
-              <li><button class="btn" ng-click="move('down', icon.id)" ng-style="isLast(icon.id) && {'display': 'none'}">
+              <li><button class="btn" ng-click="move('down', icon.id)" ng-style="isLast(icon.id) && {'display': 'none'}"
+                  tooltip-placement="top" tooltip="Move down">
                   <span class="glyphicon glyphicon-arrow-down"></span>
                 </button></li>
             </ul>
@@ -61,7 +64,7 @@
       </table>
     </div>
     <div class="pagination-centered">
-      <pagination total-items="bigTotalItems" ng-model="currentPage" max-size="5" class="pagination-sm" boundary-links="true" rotate="false"
+      <pagination total-items="totalItems" ng-model="currentPage" max-size="5" class="pagination-sm" boundary-links="true" rotate="false"
         items-per-page="itemsPerPage"></pagination>
     </div>
     <hr />

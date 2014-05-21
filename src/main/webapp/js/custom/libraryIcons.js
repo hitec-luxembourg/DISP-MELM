@@ -3,14 +3,13 @@ app.controller('LibraryIconsCtrl', [
     '$http',
     '$location',
     '$window',
-    'Pagination',
-    function($scope, $http, $location, $window, Pagination) {
+    function($scope, $http, $location, $window) {
       $scope.loadResources = function(id) {
         $scope.loadingVisible = true;
         $http.get(melmContextRoot + '/rest/libraries/icons/json/' + id).success(function(data) {
           $scope.loadingVisible = false;
           $scope.libraryIconsModel = data;
-          $scope.bigTotalItems = data.icons.length;
+          $scope.totalItems = data.icons.length;
         });
       };
 

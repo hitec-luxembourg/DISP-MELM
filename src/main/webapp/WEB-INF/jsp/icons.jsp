@@ -29,7 +29,7 @@
           <td align="left">Actions</td>
         </tr>
         <tr
-          ng-repeat="icon in icons | orderBy:predicate:reverse | startFrom: pagination.page * pagination.perPage | limitTo: pagination.perPage">
+          ng-repeat="icon in icons | orderBy:predicate:reverse | startFrom: (currentPage - 1) * itemsPerPage | limitTo: itemsPerPage">
           <td align="left">{{icon.icon.displayName}}</td>
           <td align="left"><div ng-repeat="library in icon.libraries"><a href="" ng-click="go('/rest/libraries/icons/'+library.id)">{{library.name}}</a></div></td>
           <td align="left"><a href="${ctx}/rest/icons/details/{{icon.icon.id}}"><img src="${ctx}/rest/icons/file/{{icon.icon.id}}/MEDIUM"></a></td>
@@ -42,12 +42,8 @@
       </table>
     </div>
     <div class="pagination-centered">
-      <ul class="pagination">
-        <li><a ng-hide="pagination.page == 0" ng-click="pagination.prevPage()">&laquo;</a></li>
-        <li ng-repeat="n in [] | range: pagination.numPages" ng-class="{current: n == pagination.page}"><a
-          ng-click="pagination.toPageId(n)">{{n + 1}}</a></li>
-        <li><a ng-hide="pagination.page + 1 >= pagination.numPages" ng-click="pagination.nextPage()">&raquo;</a></li>
-      </ul>
+      <pagination total-items="totalItems" ng-model="currentPage" max-size="5" class="pagination-sm" boundary-links="true" rotate="false"
+        items-per-page="itemsPerPage"></pagination>
     </div>
     <hr />
     <button class="btn btn-add" ng-click="go('/rest/icons/add')">Add</button>
