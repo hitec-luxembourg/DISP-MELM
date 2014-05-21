@@ -63,7 +63,7 @@
       </ul>
     </div>
     <hr />
-    <button class="btn btn-add" ng-click="go('/rest/libraries/icons/add/'+libraryIconsModel.library.id)">Add</button>
+    <button class="btn btn-add" ng-disabled="!libraryIconsModel.iconsAvailable" ng-click="go('/rest/libraries/icons/add/'+libraryIconsModel.library.id)">Add</button>
     <button type="button" ng-click="go('/rest/libraries')" class="btn btn-default btn-custom-cancel">
       <span class="glyphicon glyphicon glyphicon-step-backward"></span><span class="hidden-xs hidden-sm">Cancel</span>
     </button>

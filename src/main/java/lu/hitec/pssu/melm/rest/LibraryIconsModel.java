@@ -10,25 +10,35 @@ import lu.hitec.pssu.melm.persistence.entity.MapElementLibrary;
 
 public class LibraryIconsModel {
 
-  private final List<DTOMapElementLibraryIcon> icons = new ArrayList<>();
+	private final List<DTOMapElementLibraryIcon> icons = new ArrayList<>();
 
-  private final MapElementLibrary library;
+	private final MapElementLibrary library;
 
-  public LibraryIconsModel(@Nonnull final MapElementLibrary library, @Nonnull final List<DTOMapElementLibraryIcon> icons) {
-    assert library != null : "library is null";
-    assert icons != null : "Icons are null";
-    this.library = library;
-    this.icons.addAll(icons);
-  }
+	/**
+	 * This flag indicates if there are some icons not linked to a library
+	 */
+	private final boolean iconsAvailable;
 
-  @Nonnull
-  public List<DTOMapElementLibraryIcon> getIcons() {
-    return icons;
-  }
+	public LibraryIconsModel(@Nonnull final MapElementLibrary library, @Nonnull final List<DTOMapElementLibraryIcon> icons, final boolean iconsAvailable) {
+		assert library != null : "library is null";
+		assert icons != null : "Icons are null";
+		this.library = library;
+		this.icons.addAll(icons);
+		this.iconsAvailable =iconsAvailable;
+	}
 
-  @Nonnull
-  public MapElementLibrary getLibrary() {
-    return library;
-  }
+	@Nonnull
+	public List<DTOMapElementLibraryIcon> getIcons() {
+		return icons;
+	}
+
+	@Nonnull
+	public MapElementLibrary getLibrary() {
+		return library;
+	}
+
+	public boolean getIconsAvailable() {
+		return iconsAvailable;
+	}
 
 }
