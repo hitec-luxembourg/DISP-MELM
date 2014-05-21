@@ -12,7 +12,6 @@ import lu.hitec.pssu.melm.persistence.entity.MapElementLibraryIcon;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +63,6 @@ public class MapElementLibraryIconDAOImplTest {
 	}
 	
 	@Test
-	@Ignore
 	public void testGetPrevious() {
 		final MapElementLibrary library = mapElementLibraryDAO.getMapElementLibrary("IntegrationTest", 1, 0);
 
@@ -127,7 +125,6 @@ public class MapElementLibraryIconDAOImplTest {
 	}
 	
 	@Test
-	@Ignore
 	public void testGetNext() {
 		final MapElementLibrary library = mapElementLibraryDAO.getMapElementLibrary("IntegrationTest", 1, 0);
 
