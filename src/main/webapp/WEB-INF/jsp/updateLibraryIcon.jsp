@@ -11,7 +11,8 @@
 <jsp:include page="css-includes.jsp" />
 <jsp:include page="js-includes.jsp" />
 <script type="text/javascript">
-  var id = parseInt("${it.libraryIcon.icon.id}", 10);
+  var iconId = parseInt("${it.libraryIcon.icon.id}", 10);
+  var libraryId = parseInt("${it.libraryIcon.library.id}", 10);
 </script>
 <script type="text/javascript" src="${ctx}/js/custom/updateLibraryIcon.js"></script>
 </head>
@@ -28,13 +29,11 @@
     </c:if>
     <form method="POST" action="${ctx}/rest/libraries/icons/update" class="form-horizontal" role="form">
       <input name="libraryIconId" id="libraryIconId" type="hidden" value="${it.libraryIcon.id}" /> <input name="id" id="id" type="hidden"
-        value="${it.libraryIcon.library.id}" />
+        value="${it.libraryIcon.library.id}" /><input type="text" id="iconId" name="iconId" ng-value="iconId" style="display: none" />
       <div class="row">
-        <div ng-click="selectImage(icon.icon.id)" ng-class="getClasses(icon.icon.id, icon.libraries)"
+        <div ng-click="selectImage(icon.icon.id, icon.libraries)" ng-class="getClasses(icon.icon.id, icon.libraries)"
           ng-repeat="icon in icons | startFrom: pagination.page * pagination.perPage | limitTo: pagination.perPage">
-          <label class="icon" for="iconId-{{icon.icon.id}}"><input type="radio" id="iconId-{{icon.icon.id}}" name="iconId"
-            value="{{icon.icon.id}}" ng-checked="isSelected(icon.icon.id)" /><img src="${ctx}/rest/icons/file/{{icon.icon.id}}/MEDIUM"
-            alt="{{icon.icon.displayName}}" /></label><br />{{icon.icon.displayName}}
+          <img src="${ctx}/rest/icons/file/{{icon.icon.id}}/MEDIUM" alt="{{icon.icon.displayName}}" /><br />{{icon.icon.displayName}}
         </div>
       </div>
       <div class="pagination-centered">
@@ -69,10 +68,10 @@
       <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
           <button type="submit" class="btn">
-            <span class="glyphicon glyphicon-refresh"></span> Update
+            <span class="glyphicon glyphicon-refresh"></span>Update
           </button>
           <button type="button" ng-click="back()" class="btn btn-default btn-custom-cancel">
-            <span class="glyphicon glyphicon glyphicon-step-backward"></span><span class="hidden-xs hidden-sm">Cancel</span>
+            <span class="glyphicon glyphicon glyphicon-step-backward"></span><span class="hidden-xs hidden-sm">Back</span>
           </button>
         </div>
       </div>

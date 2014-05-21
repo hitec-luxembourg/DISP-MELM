@@ -13,7 +13,7 @@ app.controller('AddLibraryIconCtrl', [ '$scope', '$http', '$window', 'Pagination
   $scope.selectImage = function(id, libraries) {
     if (libraries.length > 0) {
       for (var i = 0; i < libraries.length; i++) {
-        if(libraries[i].id===$scope.libraryId){
+        if (libraries[i].id === $scope.libraryId) {
           return;
         }
       }
@@ -36,9 +36,8 @@ app.controller('AddLibraryIconCtrl', [ '$scope', '$http', '$window', 'Pagination
     }
     if ($scope.id === id) {
       return mainClasses + ' icon-selected';
-    } else {
-      return mainClasses;
     }
+    return mainClasses;
   };
 
   $scope.libraryId = $window.libraryId;
