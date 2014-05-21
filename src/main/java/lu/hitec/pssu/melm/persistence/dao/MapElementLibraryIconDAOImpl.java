@@ -4,8 +4,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
@@ -77,6 +79,42 @@ public class MapElementLibraryIconDAOImpl implements MapElementLibraryIconDAO {
   @Override
   public MapElementLibraryIcon getLibraryIcon(final long id) {
     return em.find(MapElementLibraryIcon.class, id);
+  }
+
+  @Override
+  @CheckReturnValue
+  public MapElementLibraryIcon getPreviousLibraryIcon(final MapElementLibraryIcon libraryIcon) {
+    MapElementLibraryIcon result = null;
+    assert libraryIcon != null : "Library icon is null";
+    final TypedQuery<MapElementLibraryIcon> query = em
+        .createQuery(
+            "SELECT meli FROM MapElementLibraryIcon meli WHERE meli.indexOfIconInLibrary < :indexOfIconInLibrary ORDER BY meli.indexOfIconInLibrary DESC",
+            MapElementLibraryIcon.class).setMaxResults(1);
+    query.setParameter("indexOfIconInLibrary", libraryIcon.getIndexOfIconInLibrary());
+    try {
+      result = query.getSingleResult();
+    } catch (final NoResultException e) {
+      // Nothing to do
+    }
+    return result;
+  }
+
+  @Override
+  @CheckReturnValue
+  public MapElementLibraryIcon getNextLibraryIcon(final MapElementLibraryIcon libraryIcon) {
+    MapElementLibraryIcon result = null;
+    assert libraryIcon != null : "Library icon is null";
+    final TypedQuery<MapElementLibraryIcon> query = em
+        .createQuery(
+            "SELECT meli FROM MapElementLibraryIcon meli WHERE meli.indexOfIconInLibrary > :indexOfIconInLibrary ORDER BY meli.indexOfIconInLibrary ASC",
+            MapElementLibraryIcon.class).setMaxResults(1);
+    query.setParameter("indexOfIconInLibrary", libraryIcon.getIndexOfIconInLibrary());
+    try {
+      result = query.getSingleResult();
+    } catch (final NoResultException e) {
+      // Nothing to do
+    }
+    return result;
   }
 
   @Override

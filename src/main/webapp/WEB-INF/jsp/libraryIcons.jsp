@@ -47,6 +47,8 @@
               <li><button class="btn" ng-click="deleteResource(icon.id)">
                   <span class="glyphicon glyphicon-remove"></span><span class="hidden-xs hidden-sm hidden-md">Delete</span>
                 </button></li>
+              <li ng-click="move('up', icon.id)"><span class="glyphicon glyphicon-arrow-up"></span><span class="hidden-xs hidden-sm hidden-md">Move up</span></li>
+              <li ng-click="move('down', icon.id)"><span class="glyphicon glyphicon-arrow-down"></span><span class="hidden-xs hidden-sm hidden-md">Move down</span></li>
             </ul>
           </td>
         </tr>

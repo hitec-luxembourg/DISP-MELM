@@ -63,19 +63,16 @@ public final class MELMUtils {
     }
   }
 
-  private static BufferedImage blurImage(final BufferedImage image) {
-    final float ninth = 1.0f / 9.0f;
-    final float[] blurKernel = { ninth, ninth, ninth, ninth, ninth, ninth, ninth, ninth, ninth };
+  public static int getNewIndex(final int i1, final int i2) {
+    assert i1 >= 0;
+    assert i2 >= 0;
 
-    final Map<RenderingHints.Key, Object> map = new HashMap<>();
-
-    map.put(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-    map.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-    map.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-    final RenderingHints hints = new RenderingHints(map);
-    final BufferedImageOp op = new ConvolveOp(new Kernel(3, 3, blurKernel), ConvolveOp.EDGE_NO_OP, hints);
-    return op.filter(image, null);
+    int result = -1;
+    final int distance = Math.abs(i1 - i2);
+    if (1 < distance) {
+      result = Math.min(i1, i2) + (distance / 2);
+    }
+    return result;
   }
 
   public static BufferedImage resizeImageWithHint(@Nonnull final BufferedImage originalImage, final int widthPx, final int heightPx) {
@@ -92,5 +89,20 @@ public final class MELMUtils {
     graphics2D.drawImage(blurImage, 0, 0, widthPx, heightPx, null);
     graphics2D.dispose();
     return bufferedImage;
+  }
+
+  private static BufferedImage blurImage(final BufferedImage image) {
+    final float ninth = 1.0f / 9.0f;
+    final float[] blurKernel = { ninth, ninth, ninth, ninth, ninth, ninth, ninth, ninth, ninth };
+
+    final Map<RenderingHints.Key, Object> map = new HashMap<>();
+
+    map.put(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+    map.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+    map.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+    final RenderingHints hints = new RenderingHints(map);
+    final BufferedImageOp op = new ConvolveOp(new Kernel(3, 3, blurKernel), ConvolveOp.EDGE_NO_OP, hints);
+    return op.filter(image, null);
   }
 }

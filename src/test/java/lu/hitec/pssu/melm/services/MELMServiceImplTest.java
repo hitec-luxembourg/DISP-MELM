@@ -20,13 +20,16 @@ import javax.xml.xpath.XPathFactory;
 import lu.hitec.pssu.melm.exceptions.MELMException;
 import lu.hitec.pssu.melm.persistence.dao.MapElementIconDAO;
 import lu.hitec.pssu.melm.persistence.dao.MapElementLibraryDAO;
+import lu.hitec.pssu.melm.persistence.dao.MapElementLibraryIconDAO;
 import lu.hitec.pssu.melm.persistence.entity.MapElementIcon;
 import lu.hitec.pssu.melm.persistence.entity.MapElementLibrary;
+import lu.hitec.pssu.melm.persistence.entity.MapElementLibraryIcon;
 import lu.hitec.pssu.melm.services.MELMServiceImpl.IconSize;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +53,12 @@ public class MELMServiceImplTest {
   private MapElementLibraryDAO mapElementLibraryDAO;
 
   @Autowired
+  private MapElementLibraryIconDAO mapElementLibraryIconDAO;
+
+  @Autowired
   private MELMService melmService;
+
+  private final int testLibrarySize = 6;
 
   @Before
   public void setUp() throws Exception {
@@ -68,7 +76,7 @@ public class MELMServiceImplTest {
     for (final MapElementLibrary library : libraries) {
       melmService.deleteLibrary(library.getId());
     }
-    
+
     final List<MapElementIcon> icons = mapElementIconDAO.listAllIcons();
     for (final MapElementIcon icon : icons) {
       mapElementIconDAO.delete(icon.getId());
@@ -134,6 +142,107 @@ public class MELMServiceImplTest {
   }
 
   @Test
+  @Ignore
+  public void testMoveIconLibrary() {
+    final MapElementLibrary library = mapElementLibraryDAO.addMapElementLibrary("IntegrationTest", 1, 0, "");
+    for (int i = 0; i < testLibrarySize; i++) {
+      final MapElementIcon icon = mapElementIconDAO.getMapElementIcon("Hash_0" + i, 100);
+      mapElementLibraryIconDAO.addIconToLibrary(library, icon, i + 1, "in_0" + i, "id_0" + i);
+    }
+
+    final List<MapElementLibraryIcon> iconsInLibrary = mapElementLibraryIconDAO.getIconsInLibrary(library);
+    List<MapElementLibraryIcon> updatedIconsInLibrary = null;
+    assertEquals(testLibrarySize, iconsInLibrary.size());
+
+    MapElementLibraryIcon icon = null;
+
+    // Test moving the first one up --> nothing happens
+    icon = iconsInLibrary.get(0);
+    melmService.moveLibraryIcon(icon.getId(), "up");
+    updatedIconsInLibrary = mapElementLibraryIconDAO.getIconsInLibrary(library);
+    for (int i = 0; i < testLibrarySize; i++) {
+      final MapElementLibraryIcon i1 = iconsInLibrary.get(i);
+      final MapElementLibraryIcon i2 = updatedIconsInLibrary.get(i);
+      assertEquals(i1.getIndexOfIconInLibrary(), i2.getIndexOfIconInLibrary());
+    }
+
+    // Test moving the second one up --> the second one becomes first and all the others are shifted back
+    icon = iconsInLibrary.get(1);
+    melmService.moveLibraryIcon(icon.getId(), "up");
+    updatedIconsInLibrary = mapElementLibraryIconDAO.getIconsInLibrary(library);
+    for (int i = 0; i < testLibrarySize; i++) {
+      final MapElementLibraryIcon i1 = iconsInLibrary.get(i);
+      final MapElementLibraryIcon i2 = updatedIconsInLibrary.get(i);
+      if (0 == i) {
+        assertEquals(i2.getId(), iconsInLibrary.get(1).getId());
+        assertEquals(i2.getIndexOfIconInLibrary(), MELMService.ORDER_INCREMENT * (1 + i));
+      } else if (1 == i) {
+        assertEquals(i2.getId(), iconsInLibrary.get(0).getId());
+        assertEquals(i2.getIndexOfIconInLibrary(), MELMService.ORDER_INCREMENT * (1 + i));
+      } else {
+        assertEquals(i1.getId(), i2.getId());
+        assertEquals(i2.getIndexOfIconInLibrary(), MELMService.ORDER_INCREMENT * (1 + i));
+      }
+    }
+
+    // Test moving the last one up --> the last one becomes last-1, last-1 becomes last and all the others don't move
+    icon = iconsInLibrary.get(testLibrarySize - 1);
+    melmService.moveLibraryIcon(icon.getId(), "up");
+    updatedIconsInLibrary = mapElementLibraryIconDAO.getIconsInLibrary(library);
+    for (int i = 0; i < testLibrarySize; i++) {
+      final MapElementLibraryIcon i1 = iconsInLibrary.get(i);
+      final MapElementLibraryIcon i2 = updatedIconsInLibrary.get(i);
+      if (0 == i) {
+        assertEquals(i2.getId(), iconsInLibrary.get(1).getId());
+        assertEquals(i2.getIndexOfIconInLibrary(), MELMService.ORDER_INCREMENT * (1 + i));
+      } else if (1 == i) {
+        assertEquals(i2.getId(), iconsInLibrary.get(0).getId());
+        assertEquals(i2.getIndexOfIconInLibrary(), MELMService.ORDER_INCREMENT * (1 + i));
+      } else if ((testLibrarySize - 2) == i) {
+        assertEquals(i2.getId(), iconsInLibrary.get(testLibrarySize - 1).getId());
+        assertEquals(i2.getIndexOfIconInLibrary(), (MELMService.ORDER_INCREMENT * (1 + i)) - (MELMService.ORDER_INCREMENT / 2));
+      } else if ((testLibrarySize - 1) == i) {
+        assertEquals(i2.getId(), iconsInLibrary.get(testLibrarySize - 2).getId());
+        assertEquals(i2.getIndexOfIconInLibrary(), MELMService.ORDER_INCREMENT * (i));
+      } else {
+        assertEquals(i1.getId(), i2.getId());
+        assertEquals(i2.getIndexOfIconInLibrary(), MELMService.ORDER_INCREMENT * (1 + i));
+      }
+    }
+
+    // Test moving the 4th one up --> the 4th becomes 3rd, 3rd becomes 4th and all the others don't move
+    icon = iconsInLibrary.get(3);
+    melmService.moveLibraryIcon(icon.getId(), "up");
+    updatedIconsInLibrary = mapElementLibraryIconDAO.getIconsInLibrary(library);
+    for (int i = 0; i < testLibrarySize; i++) {
+      final MapElementLibraryIcon i1 = iconsInLibrary.get(i);
+      final MapElementLibraryIcon i2 = updatedIconsInLibrary.get(i);
+      if (0 == i) {
+        assertEquals(i2.getId(), iconsInLibrary.get(1).getId());
+        assertEquals(i2.getIndexOfIconInLibrary(), MELMService.ORDER_INCREMENT * (1 + i));
+      } else if (1 == i) {
+        assertEquals(i2.getId(), iconsInLibrary.get(0).getId());
+        assertEquals(i2.getIndexOfIconInLibrary(), MELMService.ORDER_INCREMENT * (1 + i));
+      } else if (2 == i) {
+        assertEquals(i2.getId(), iconsInLibrary.get(3).getId());
+        assertEquals(i2.getIndexOfIconInLibrary(), (MELMService.ORDER_INCREMENT * (1 + i)) - (MELMService.ORDER_INCREMENT / 2));
+      } else if (3 == i) {
+        assertEquals(i2.getId(), iconsInLibrary.get(2).getId());
+        assertEquals(i2.getIndexOfIconInLibrary(), MELMService.ORDER_INCREMENT * (i));
+      } else if ((testLibrarySize - 2) == i) {
+        assertEquals(i2.getId(), iconsInLibrary.get(testLibrarySize - 1).getId());
+        assertEquals(i2.getIndexOfIconInLibrary(), (MELMService.ORDER_INCREMENT * (1 + i)) - (MELMService.ORDER_INCREMENT / 2));
+      } else if ((testLibrarySize - 1) == i) {
+        assertEquals(i2.getId(), iconsInLibrary.get(testLibrarySize - 2).getId());
+        assertEquals(i2.getIndexOfIconInLibrary(), MELMService.ORDER_INCREMENT * (i));
+      } else {
+        assertEquals(i1.getId(), i2.getId());
+        assertEquals(i2.getIndexOfIconInLibrary(), MELMService.ORDER_INCREMENT * (1 + i));
+      }
+    }
+  }
+
+  @Test
   public void testMoveImportedIcons() throws MELMException, IOException {
     final MapElementLibrary mapElementLibrary = melmService.addLibrary("emergency.lu", 1, 1, "");
     final File tmpZipFile = new ClassPathResource("sample/zip/emergency.lu-1.1.zip").getFile();
@@ -175,5 +284,4 @@ public class MELMServiceImplTest {
       }
     }
   }
-
 }

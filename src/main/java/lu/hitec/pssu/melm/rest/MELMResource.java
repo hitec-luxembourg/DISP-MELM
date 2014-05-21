@@ -273,6 +273,13 @@ public class MELMResource {
   }
 
   @POST
+  @Path("/libraries/icons/move")
+  public Response moveLibraryIcon(@FormParam("id") final long id, @FormParam("which") final String which) {
+    melmService.moveLibraryIcon(id, which);
+    return Response.ok().build();
+  }
+
+  @POST
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.TEXT_HTML)
   @Path("/icons/add")

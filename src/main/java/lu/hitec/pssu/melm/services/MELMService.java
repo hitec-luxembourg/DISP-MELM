@@ -16,6 +16,9 @@ import lu.hitec.pssu.melm.utils.CustomPropertyType;
 import org.w3c.dom.NodeList;
 
 public interface MELMService {
+
+  public static final int ORDER_INCREMENT = 1000000;
+
   MapElementIcon addIconAndFiles(@Nonnull String displayName, @Nonnull File iconLargeFile) throws MELMException;
 
   MapElementLibrary addLibrary(@Nonnull String libraryName, int majorVersion, int minorVersion, @Nonnull String iconMd5)
@@ -85,6 +88,8 @@ public interface MELMService {
 
   String moveImportedLibraryIcon(@Nonnull File libraryFolder, @Nonnull String libraryName, int majorVersion, int minorVersion)
       throws MELMException;
+
+  void moveLibraryIcon(long id, String which);
 
   void updateLibrary(long id, @Nonnull String libraryName, int majorVersion, int minorVersion, String iconMd5MaybeNull)
       throws MELMException;

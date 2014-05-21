@@ -120,10 +120,9 @@ public class MELMServiceImpl implements MELMService {
     }
     final MapElementIcon mapElementIcon = mapElementIconDAO.addMapElementIcon(hashForLargeFile, largeIconFile.length(), displayName);
 
-    BufferedImage originalImage = null;
     try {
       copyFile(mapElementIcon, largeIconFile, IconSize.LARGE);
-      originalImage = ImageIO.read(largeIconFile);
+      final BufferedImage originalImage = ImageIO.read(largeIconFile);
 
       final File mediumIconFile = File.createTempFile("fromUpload", IconSize.MEDIUM.name());
       ImageIO.write(MELMUtils.resizeImageWithHint(originalImage, 60, 60), "png", mediumIconFile);
@@ -765,6 +764,73 @@ public class MELMServiceImpl implements MELMService {
       final String msg = "Failed to copy library icon file";
       throw new MELMException(msg, e);
     }
+  }
+
+  @Override
+  public void moveLibraryIcon(final long id, final String which) {
+    final MapElementLibraryIcon libraryIcon = mapElementLibraryIconDAO.getLibraryIcon(id);
+    LOGGER.debug("*** Moving icon [" + libraryIcon.getId() + "] with actual index order [" + libraryIcon.getIndexOfIconInLibrary() + "] "
+        + which);
+    MapElementLibraryIcon neighbour = null;
+    MapElementLibraryIcon neighbourNext = null;
+    int neighbourIndex = 0;
+    int neighbourNextIndex = 0;
+    int newIndex = 0;
+    switch (which) {
+    case "up":
+      neighbour = mapElementLibraryIconDAO.getPreviousLibraryIcon(libraryIcon);
+      if (null != neighbour) {
+        neighbourIndex = neighbour.getIndexOfIconInLibrary();
+        neighbourNext = mapElementLibraryIconDAO.getPreviousLibraryIcon(neighbour);
+      } else {
+        // Nothing to do, libraryIcon is already the first one
+        return;
+      }
+      if (null != neighbourNext) {
+        neighbourNextIndex = neighbourNext.getIndexOfIconInLibrary();
+      } else {
+        // libraryIcon needs to be put in first place, nothing to do here as neighbourNextIndex is already set to 0;
+      }
+      // Is there space in between ?
+      newIndex = MELMUtils.getNewIndex(neighbourIndex, neighbourNextIndex);
+      if (-1 != newIndex) {
+        LOGGER.debug("*** Updating given icon [" + libraryIcon.getId() + "] with index order [" + newIndex + "]");
+        mapElementLibraryIconDAO.updateLibraryIcon(libraryIcon.getId(), libraryIcon.getIcon(), newIndex,
+            libraryIcon.getIconNameInLibrary(), libraryIcon.getIconDescriptionInLibrary());
+      } else {
+        // Reorder all icons in this library
+        final List<MapElementLibraryIcon> iconsInLibrary = mapElementLibraryIconDAO.getIconsInLibrary(libraryIcon.getLibrary());
+        MapElementLibraryIcon previous = null;
+        int order = ORDER_INCREMENT * iconsInLibrary.size();
+        boolean insertNext = false;
+        for (int i = iconsInLibrary.size() - 1; i >= 0; i--) {
+          final MapElementLibraryIcon iconInLibrary = iconsInLibrary.get(i);
+          previous = iconInLibrary;
+          if (previous.getId() == libraryIcon.getId()) {
+            insertNext = true;
+            order -= ORDER_INCREMENT;
+            continue;
+          }
+          if (insertNext) {
+            insertNext = false;
+            LOGGER.debug("*** Updating given icon [" + libraryIcon.getId() + "] with index order [" + order + "]");
+            mapElementLibraryIconDAO.updateLibraryIcon(libraryIcon.getId(), libraryIcon.getIcon(), order,
+                libraryIcon.getIconNameInLibrary(), libraryIcon.getIconDescriptionInLibrary());
+            order += ORDER_INCREMENT;
+          }
+          LOGGER.debug("*** Updating icon [" + iconInLibrary.getId() + "] with index order [" + order + "]");
+          mapElementLibraryIconDAO.updateLibraryIcon(iconInLibrary.getId(), iconInLibrary.getIcon(), order,
+              iconInLibrary.getIconNameInLibrary(), iconInLibrary.getIconDescriptionInLibrary());
+          order -= ORDER_INCREMENT;
+        }
+      }
+
+      break;
+
+    default:
+      break;
+    }
+
   }
 
   @Override
