@@ -46,7 +46,7 @@
               <li><button class="btn" ng-click="go('/rest/libraries/icons/update/'+icon.id)">
                   <span class="glyphicon glyphicon-refresh"></span>
                 </button></li>
-              <li><button class="btn" ng-click="deleteResource(icon.id)">
+              <li><button class="btn" ng-click="confirmDelete(icon.id)">
                   <span class="glyphicon glyphicon-remove"></span>
                 </button></li>
               <li><button class="btn" ng-click="move('up', icon.id)" ng-style="isFirst(icon.id) && {'display': 'none'}">

@@ -8,10 +8,15 @@ app.controller('LibraryIconsCtrl', [ '$scope', '$http', '$location', '$window', 
     });
   };
 
+      $scope.confirmDelete = function(id) {
+        BootstrapDialog.confirm('Do you really want to delete this resource ?', function(result) {
+          if (result) {
+            $scope.deleteResource(id);
+          }
+        });
+      };
+
   $scope.deleteResource = function(id) {
-    if (!confirm("Do you really want to delete this resource ?")) {
-      return;
-    }
     var params = encodeParams({
       "id" : id
     });
@@ -22,7 +27,15 @@ app.controller('LibraryIconsCtrl', [ '$scope', '$http', '$location', '$window', 
     }).success(function() {
       $scope.loadResources(getRESTParameter('icons/'));
     }).error(function() {
-      alert("Resource deletion threw an error.");
+          BootstrapDialog.alert({
+            title : 'ERROR',
+            message : 'Resource deletion threw an error.',
+            type : BootstrapDialog.TYPE_DANGER, // <-- Default value is BootstrapDialog.TYPE_PRIMARY
+            closable : true, // <-- Default value is true
+            buttonLabel : 'Close', // <-- Default value is 'OK',
+            callback : function(result) {
+            }
+          });
     });
   };
 
@@ -43,7 +56,15 @@ app.controller('LibraryIconsCtrl', [ '$scope', '$http', '$location', '$window', 
       $scope.loadResources(getRESTParameter('icons/'));
     }).error(function() {
       $scope.loadResources(getRESTParameter('icons/'));
-      alert("Resource move threw an error.");
+          BootstrapDialog.alert({
+            title : 'ERROR',
+            message : 'Resource move threw an error.',
+            type : BootstrapDialog.TYPE_DANGER, // <-- Default value is BootstrapDialog.TYPE_PRIMARY
+            closable : true, // <-- Default value is true
+            buttonLabel : 'Close', // <-- Default value is 'OK',
+            callback : function(result) {
+            }
+          });
     });
   };
   

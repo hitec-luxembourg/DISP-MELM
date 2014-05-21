@@ -83,7 +83,15 @@ app.controller('PropertiesCtrl', [ '$scope', '$http', '$window', 'Pagination', f
     }).success(function() {
       $scope.loadResources(getRESTParameter('properties/'));
     }).error(function() {
-      alert("Resource deletion threw an error.");
+      BootstrapDialog.alert({
+        title : 'ERROR',
+        message : 'Resource deletion threw an error.',
+        type : BootstrapDialog.TYPE_DANGER, // <-- Default value is BootstrapDialog.TYPE_PRIMARY
+        closable : true, // <-- Default value is true
+        buttonLabel : 'Close', // <-- Default value is 'OK',
+        callback : function(result) {
+        }
+      });
     });
   }; 
   
