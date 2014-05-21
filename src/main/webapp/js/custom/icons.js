@@ -6,11 +6,20 @@ app.controller('IconsCtrl', ['$scope', '$http', 'Pagination', function($scope, $
     });
   };
 
+  $scope.confirmDelete = function(id) {
+    BootstrapDialog.confirm('Do you really want to delete this resource ?', function(result) {
+      if (result) {
+        $scope.deleteResource(id);
+      }
+    });
+  };
+
+  $scope.hasLibraries = function(anIcon) {
+    return anIcon && anIcon.libraries && 0 < anIcon.libraries.length;
+  };
+  
   $scope.deleteResource = function(id) {
     $scope.error = null;
-    if (!confirm("Do you really want to delete this resource ?")) {
-      return;
-    }
     var params = encodeParams({
       "id" : id
     });

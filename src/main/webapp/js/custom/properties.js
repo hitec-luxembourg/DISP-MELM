@@ -72,10 +72,15 @@ app.controller('PropertiesCtrl', [ '$scope', '$http', '$window', 'Pagination', f
     });
   };
 
+  $scope.confirmDelete = function(id) {
+    BootstrapDialog.confirm('Do you really want to delete this resource ?', function(result) {
+      if (result) {
+        $scope.deleteResource(id);
+      }
+    });
+  };
+
   $scope.deleteResource = function(id) {
-    if (!confirm("Do you really want to delete this resource ?")) {
-      return;
-    }
     var params = encodeParams({
       "id" : id
     });

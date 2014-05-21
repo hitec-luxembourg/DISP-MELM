@@ -47,7 +47,7 @@
                   ng-click="go('/rest/libraries/zip/'+library.name+'-'+library.majorVersion+'.'+library.minorVersion+'.zip')">
                   <span class="glyphicon glyphicon-download"></span><span class="hidden-xs hidden-sm">Zip</span>
                 </button></li>
-              <li><button class="btn" ng-click="deleteResource(library.id)">
+              <li><button class="btn" ng-click="confirmDelete(library.id)">
                   <span class="glyphicon glyphicon-remove"></span><span class="hidden-xs hidden-sm">Delete</span>
                 </button></li>
             </ul>

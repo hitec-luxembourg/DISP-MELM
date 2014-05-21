@@ -66,7 +66,7 @@
               <li><button class="btn" ng-click="rowform.$show()">
                   <span class="glyphicon glyphicon-refresh"></span><span class="hidden-xs hidden-sm">Edit</span>
                 </button></li>
-              <li><button class="btn" ng-click="deleteResource(property.id)">
+              <li><button class="btn" ng-click="confirmDelete(property.id)">
                   <span class="glyphicon glyphicon-remove"></span><span class="hidden-xs hidden-sm">Delete</span>
                 </button></li>
             </ul>
