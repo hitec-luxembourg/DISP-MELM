@@ -38,7 +38,7 @@
         </table>
       </form>
     </div>
-    <progressbar class="progress-striped active" value="100" type="info" ng-show="loadingVisible"><i>Loading</i></progressbar>
+    <progressbar class="progress-striped active" value="100" type="info" ng-show="loadingVisible"> <i>Loading</i></progressbar>
     <h3>List properties</h3>
     <div class="table-responsive">
       <table class="table table-striped">
@@ -84,7 +84,7 @@
     </div>
     <hr />
     <button type="button" ng-click="back()" class="btn btn-default btn-custom-cancel">
-      <span class="glyphicon glyphicon glyphicon-step-backward"></span><span class="hidden-xs hidden-sm">Back</span>
+      <span class="glyphicon glyphicon glyphicon-step-backward"></span>Back
     </button>
   </div>
   <jsp:include page="footer.jsp" />

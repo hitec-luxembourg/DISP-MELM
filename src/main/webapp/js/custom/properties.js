@@ -9,9 +9,6 @@ app.controller('PropertiesCtrl', [ '$scope', '$http', '$window', 'Pagination', f
   };
 
   $scope.customPropertyTypes = [ {
-    id : 'BOOLEAN',
-    title : 'BOOLEAN'
-  }, {
     id : 'DATE',
     title : 'DATE'
   }, {

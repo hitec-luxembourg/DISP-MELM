@@ -24,6 +24,7 @@
         Update library element <small>${it.libraryIcon.library.name}-${it.libraryIcon.library.majorVersion}.${it.libraryIcon.library.minorVersion}</small>
       </h1>
     </div>
+    <progressbar class="progress-striped active" value="100" type="warning" ng-show="loadingVisible"><i>Loading resources</i></progressbar>
     <c:if test="${not empty it.error}">
       <div class="alert alert-danger">${it.error}</div>
     </c:if>
@@ -66,7 +67,7 @@
             <span class="glyphicon glyphicon-refresh"></span>Update
           </button>
           <button type="button" ng-click="back()" class="btn btn-default btn-custom-cancel">
-            <span class="glyphicon glyphicon glyphicon-step-backward"></span><span class="hidden-xs hidden-sm">Back</span>
+            <span class="glyphicon glyphicon glyphicon-step-backward"></span>Back
           </button>
         </div>
       </div>

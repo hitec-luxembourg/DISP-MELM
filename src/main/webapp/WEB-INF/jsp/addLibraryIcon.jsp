@@ -23,12 +23,13 @@
         Add library element <small>${it.library.name}-${it.library.majorVersion}.${it.library.minorVersion}</small>
       </h1>
     </div>
+    <progressbar class="progress-striped active" value="100" type="warning" ng-show="loadingVisible">
+    <i>Loading resources</i></progressbar>
     <c:if test="${not empty it.error}">
       <div class="alert alert-danger">${it.error}</div>
     </c:if>
     <form method="POST" action="${ctx}/rest/libraries/icons/add" class="form-horizontal" role="form">
-      <input name="id" id="id" type="hidden" value="${it.library.id}" /> 
-      <input name="iconIndex" id="iconIndex" type="hidden" value="-1" />
+      <input name="id" id="id" type="hidden" value="${it.library.id}" /> <input name="iconIndex" id="iconIndex" type="hidden" value="-1" />
       <input type="text" id="iconId" name="iconId" ng-value="id" ng-checked="isSelected(-1)" style="display: none" />
       <div class="row">
         <div ng-click="selectImage(icon.icon.id, icon.libraries)" ng-class="getClasses(icon.icon.id, icon.libraries)"
@@ -60,7 +61,7 @@
         <div class="col-sm-offset-2 col-sm-10">
           <button type="submit" class="btn btn-add">Add</button>
           <button type="button" ng-click="back()" class="btn btn-default btn-custom-cancel">
-            <span class="glyphicon glyphicon glyphicon-step-backward"></span><span class="hidden-xs hidden-sm">Back</span>
+            <span class="glyphicon glyphicon glyphicon-step-backward"></span>Back
           </button>
         </div>
       </div>

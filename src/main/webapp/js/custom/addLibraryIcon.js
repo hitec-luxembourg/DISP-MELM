@@ -1,6 +1,8 @@
 app.controller('AddLibraryIconCtrl', [ '$scope', '$http', '$window', 'Pagination', function($scope, $http, $window, Pagination) {
   $scope.loadResources = function() {
+    $scope.loadingVisible = true;
     $http.get(melmContextRoot + '/rest/icons/linked/json').success(function(data) {
+      $scope.loadingVisible = false;
       $scope.icons = data;
       $scope.pagination.numPages = Math.ceil($scope.icons.length / $scope.pagination.perPage);
     });
@@ -40,6 +42,7 @@ app.controller('AddLibraryIconCtrl', [ '$scope', '$http', '$window', 'Pagination
     return mainClasses;
   };
 
+  $scope.loadingVisible = false;
   $scope.libraryId = $window.libraryId;
   $scope.id = -1;
   $scope.pagination = Pagination.getNew(36);
