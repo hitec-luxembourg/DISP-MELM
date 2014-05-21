@@ -26,7 +26,8 @@
       <div class="form-group">
         <label for="libraryName" class="col-sm-2 control-label">Name</label>
         <div class="col-sm-10">
-          <input type="text" class="form-control" id="libraryName" name="libraryName" placeholder="Specify a library name" value="${it.library.name}">
+          <input type="text" class="form-control" id="libraryName" name="libraryName" placeholder="Specify a library name"
+            value="${it.library.name}">
         </div>
       </div>
       <div class="form-group">
@@ -54,7 +55,7 @@
             <span class="glyphicon glyphicon-refresh"></span>Update
           </button>
           <button type="button" ng-click="go('/rest/libraries')" class="btn btn-default btn-custom-cancel">
-            <span class="glyphicon glyphicon glyphicon-step-backward"></span><span class="hidden-xs hidden-sm">Cancel</span>
+            <span class="glyphicon glyphicon glyphicon-step-backward"></span>Cancel
           </button>
         </div>
       </div>
