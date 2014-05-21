@@ -11,6 +11,9 @@
 <jsp:include page="css-includes.jsp" />
 <jsp:include page="js-includes.jsp" />
 <script type="text/javascript" src="${ctx}/js/custom/addLibraryIcon.js"></script>
+<script type="text/javascript">
+  var libraryId = parseInt("${it.library.id}", 10);
+</script>
 </head>
 <body ng-controller="AddLibraryIconCtrl">
   <jsp:include page="header.jsp" />
@@ -26,13 +29,11 @@
     <form method="POST" action="${ctx}/rest/libraries/icons/add" class="form-horizontal" role="form">
       <input name="id" id="id" type="hidden" value="${it.library.id}" /> 
       <input name="iconIndex" id="iconIndex" type="hidden" value="-1" />
-      <input type="radio" name="iconId" value="-1" ng-checked="isSelected(-1)" style="display:none" />
+      <input type="text" id="iconId" name="iconId" ng-value="id" ng-checked="isSelected(-1)" style="display: none" />
       <div class="row">
-        <div ng-click="selectImage(icon.id)"
-          ng-class="isSelected(icon.id) ? 'col-xs-4 col-sm-2 col-md-1 icon-wrapper icon_selected' : 'col-xs-4 col-sm-2 col-md-1 icon-wrapper'"
+        <div ng-click="selectImage(icon.icon.id, icon.libraries)" ng-class="getClasses(icon.icon.id, icon.libraries)"
           ng-repeat="icon in icons | startFrom: pagination.page * pagination.perPage | limitTo: pagination.perPage">
-          <label class="icon" for="iconId-{{icon.id}}"><input type="radio" id="iconId-{{icon.id}}" name="iconId" value="{{icon.id}}"
-            ng-checked="isSelected(icon.id)" /><img src="${ctx}/rest/icons/file/{{icon.id}}/MEDIUM" alt="{{icon.displayName}}" /></label><br />{{icon.displayName}}
+          <img src="${ctx}/rest/icons/file/{{icon.icon.id}}/MEDIUM" alt="{{icon.icon.displayName}}" /><br />{{icon.icon.displayName}}
         </div>
       </div>
       <div class="pagination-centered">
@@ -59,7 +60,7 @@
         <div class="col-sm-offset-2 col-sm-10">
           <button type="submit" class="btn btn-add">Add</button>
           <button type="button" ng-click="back()" class="btn btn-default btn-custom-cancel">
-            <span class="glyphicon glyphicon glyphicon-step-backward"></span><span class="hidden-xs hidden-sm">Cancel</span>
+            <span class="glyphicon glyphicon glyphicon-step-backward"></span><span class="hidden-xs hidden-sm">Back</span>
           </button>
         </div>
       </div>

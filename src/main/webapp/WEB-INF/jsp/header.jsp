@@ -1,4 +1,4 @@
-<nav id="main_nav" class="navbar navbar-default navbar-fixed-top" role="navigation">
+<nav id="main-nav" class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
@@ -27,7 +27,7 @@
             <li><a href="${ctx}/rest/icons/add">Add</a></li>
           </ul></li>
       </ul>
-      <ul id="btn_logout" class="nav navbar-nav navbar-right">
+      <ul id="btn-logout" class="nav navbar-nav navbar-right">
         <li><a href="${ctx}/logout">Log-out</a></li>
       </ul>
     </div>

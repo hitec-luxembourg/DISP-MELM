@@ -154,21 +154,21 @@ public class MELMResource {
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  @Path("/libraries/json")
-  public Response getListLibraries() {
-    return Response.ok(melmService.listAllLibraries()).build();
-  }
-
-  @GET
-  @Produces(MediaType.APPLICATION_JSON)
   @Path("/icons/linked/json")
-  public Response getListLinkedIcons() {
+  public Response getListIconsLinked() {
     final List<DTOMapElementIcon> results = new ArrayList<>();
     final List<MapElementIcon> listAllIcons = melmService.listAllIcons();
     for (final MapElementIcon mapElementIcon : listAllIcons) {
       results.add(new DTOMapElementIcon(mapElementIcon, melmService.getLinkedLibraries(mapElementIcon)));
     }
     return Response.ok(results).build();
+  }
+
+  @GET
+  @Produces(MediaType.APPLICATION_JSON)
+  @Path("/libraries/json")
+  public Response getListLibraries() {
+    return Response.ok(melmService.listAllLibraries()).build();
   }
 
   @GET

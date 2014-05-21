@@ -206,11 +206,16 @@ public class MELMServiceImpl implements MELMService {
 		mapElementLibraryIconDAO.addIconToLibrary(library, mapElementIcon, indexToSupply, iconName, iconDescription);
 	}
 
-	@Override
-	public void addProperty(final long id, @Nonnull final String uniqueName, @Nonnull final CustomPropertyType type) throws MELMException {
-		final MapElementLibraryIcon libraryIcon = mapElementLibraryIconDAO.getLibraryIcon(id);
-		mapElementCustomPropertyDAO.addCustomProperty(libraryIcon, uniqueName, type);
-	}
+  @Override
+  public void addProperty(final long id, @Nonnull final String uniqueName, @Nonnull final CustomPropertyType type) throws MELMException {
+    final MapElementLibraryIcon libraryIcon = mapElementLibraryIconDAO.getLibraryIcon(id);
+    if (!mapElementCustomPropertyDAO.checkPropertyInIcon(libraryIcon, uniqueName).isEmpty()) {
+      final String msg = String.format("Property with name %s is already existing for this element %s", uniqueName,
+          libraryIcon.getIconNameInLibrary());
+      throw new MELMException(msg);
+    }
+    mapElementCustomPropertyDAO.addCustomProperty(libraryIcon, uniqueName, type);
+  }
 
 	/**
 	 * Creates a unique filename from the given name and version format which is used to store files, and to find files back again with the given information.
@@ -877,14 +882,20 @@ public class MELMServiceImpl implements MELMService {
 
 	@Override
 	public void updateProperty(final long id, @Nonnull final String uniqueName, @Nonnull final CustomPropertyType type) throws MELMException {
-		mapElementCustomPropertyDAO.updateCustomProperty(id, uniqueName, type);
+    final MapElementCustomProperty property = mapElementCustomPropertyDAO.getCustomProperty(id);
+    final MapElementLibraryIcon mapElementLibraryIcon = property.getMapElementLibraryIcon();
+    final List<MapElementCustomProperty> list = mapElementCustomPropertyDAO.checkPropertyInIcon(mapElementLibraryIcon, uniqueName);
+    if (list.isEmpty() || (list.get(0).getId() == id)) {
+      mapElementCustomPropertyDAO.updateCustomProperty(id, uniqueName, type);
+    }
+    final String msg = String.format("Property with name %s is already existing", uniqueName);
+    throw new MELMException(msg);
 	}
 
 	@Override
 	public NodeList validateImportedLibraryAndGetNodeList(@Nonnull final String libraryName, final int majorVersion, final int minorVersion) throws MELMException {
 		assert libraryName != null : "library name is null";
 		assert libraryName.length() != 0 : "library name is empty";
-
 		final String xsdPath = this.getClass().getResource(LibraryValidator.XSD_PATH).getPath();
 		final File xmlFile;
 		try {

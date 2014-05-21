@@ -1,6 +1,8 @@
 app.controller('PropertiesCtrl', [ '$scope', '$http', '$window', 'Pagination', function($scope, $http, $window, Pagination) {
   $scope.loadResources = function(id) {
+    $scope.loadingVisible = true;
     $http.get(melmContextRoot + '/rest/libraries/icons/properties/json/' + id).success(function(data) {
+      $scope.loadingVisible = false;
       $scope.properties = data;
       $scope.pagination.numPages = Math.ceil($scope.properties.length / $scope.pagination.perPage);
     });
@@ -92,6 +94,7 @@ app.controller('PropertiesCtrl', [ '$scope', '$http', '$window', 'Pagination', f
     $window.history.back();
   };
 
+  $scope.loadingVisible = false;
   $scope.error = null;
   $scope.pagination = Pagination.getNew(10);
   $scope.predicate = 'uniqueName';
