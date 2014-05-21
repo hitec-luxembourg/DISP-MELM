@@ -45,7 +45,7 @@ app.controller('AddLibraryIconCtrl', [ '$scope', '$http', '$window', 'Pagination
   $scope.loadingVisible = false;
   $scope.libraryId = $window.libraryId;
   $scope.id = -1;
-  $scope.pagination = Pagination.getNew(36);
+  $scope.pagination = Pagination.getNew(48);
   $scope.loadResources();
 
 } ]);

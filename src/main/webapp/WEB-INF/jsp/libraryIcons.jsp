@@ -32,7 +32,7 @@
           <td align="left" style="width: 300px">Actions</td>
         </tr>
         <tr
-          ng-repeat="icon in libraryIconsModel.icons | orderBy:predicate:reverse | startFrom: pagination.page * pagination.perPage | limitTo: pagination.perPage">
+          ng-repeat="icon in libraryIconsModel.icons | orderBy:predicate:reverse | startFrom: (currentPage - 1) * itemsPerPage | limitTo: itemsPerPage">
           <!-- td align="left">{{icon.indexOfIconInLibrary}}</td -->
           <td align="left">{{icon.iconNameInLibrary}}</td>
           <td align="left">{{icon.iconDescriptionInLibrary}}</td>
@@ -61,12 +61,8 @@
       </table>
     </div>
     <div class="pagination-centered">
-      <ul class="pagination">
-        <li><a ng-hide="pagination.page == 0" ng-click="pagination.prevPage()">&laquo;</a></li>
-        <li ng-repeat="n in [] | range: pagination.numPages" ng-class="{current: n == pagination.page}"><a
-          ng-click="pagination.toPageId(n)">{{n + 1}}</a></li>
-        <li><a ng-hide="pagination.page + 1 >= pagination.numPages" ng-click="pagination.nextPage()">&raquo;</a></li>
-      </ul>
+      <pagination total-items="bigTotalItems" ng-model="currentPage" max-size="5" class="pagination-sm" boundary-links="true" rotate="false"
+        items-per-page="itemsPerPage"></pagination>
     </div>
     <hr />
     <button class="btn btn-add" ng-disabled="!libraryIconsModel.iconsAvailable"

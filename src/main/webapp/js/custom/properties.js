@@ -93,7 +93,7 @@ app.controller('PropertiesCtrl', [ '$scope', '$http', '$window', 'Pagination', f
 
   $scope.loadingVisible = false;
   $scope.error = null;
-  $scope.pagination = Pagination.getNew(10);
+  $scope.pagination = Pagination.getNew(7);
   $scope.predicate = 'uniqueName';
   $scope.loadResources(getRESTParameter('properties/'));
 } ]);

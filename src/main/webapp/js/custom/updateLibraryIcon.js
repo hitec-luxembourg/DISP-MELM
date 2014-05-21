@@ -46,7 +46,7 @@ app.controller('UpdateLibraryIconCtrl', [ '$scope', '$http', '$window', 'Paginat
   $scope.libraryId = $window.libraryId;
   $scope.iconId = $window.iconId;
   $scope.initialIconId = $window.iconId;
-  $scope.pagination = Pagination.getNew(36);
+  $scope.pagination = Pagination.getNew(48);
   $scope.loadResources();
 
 } ]);

@@ -33,7 +33,7 @@ app.controller('IconsCtrl', ['$scope', '$http', 'Pagination', function($scope, $
 
   $scope.loadingVisible = false;
   $scope.error = null;
-  $scope.pagination = Pagination.getNew(10);
+  $scope.pagination = Pagination.getNew(8);
   $scope.predicate = 'icon.displayName';
   $scope.loadResources();
 }]);

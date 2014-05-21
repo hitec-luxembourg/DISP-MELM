@@ -31,7 +31,7 @@ app.controller('LibrariesCtrl', [ '$scope', '$http', 'Pagination', function($sco
   };
 
   $scope.loadingVisible = false;
-  $scope.pagination = Pagination.getNew(10);
+  $scope.pagination = Pagination.getNew(8);
   $scope.predicate = 'name';
   $scope.loadResources();
 } ]);
