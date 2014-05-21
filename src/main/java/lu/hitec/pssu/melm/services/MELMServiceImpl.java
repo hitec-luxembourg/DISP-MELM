@@ -975,4 +975,9 @@ public class MELMServiceImpl implements MELMService {
 		}
 	}
 
+	@Override
+	public boolean iconsAvailable() {
+		return mapElementIconDAO.iconsAvailable();
+	}
+
 }

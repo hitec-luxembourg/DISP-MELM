@@ -141,7 +141,8 @@ public class MELMResource {
       BeanUtils.copyProperties(libraryIcon, dtoLibraryIcon);
       results.add(dtoLibraryIcon);
     }
-    return Response.ok(new LibraryIconsModel(library, results)).build();
+    
+    return Response.ok(new LibraryIconsModel(library, results, melmService.iconsAvailable())).build();
   }
 
   @GET

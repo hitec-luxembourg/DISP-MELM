@@ -20,4 +20,6 @@ public interface MapElementIconDAO {
 
   List<MapElementIcon> listAllIcons();
 
+	boolean iconsAvailable();
+
 }
