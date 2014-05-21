@@ -2,20 +2,25 @@ package lu.hitec.pssu.melm.persistence.dao;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import lu.hitec.pssu.melm.persistence.entity.MapElementCustomProperty;
 import lu.hitec.pssu.melm.persistence.entity.MapElementLibraryIcon;
 import lu.hitec.pssu.melm.utils.CustomPropertyType;
 
 public interface MapElementCustomPropertyDAO {
 
-  MapElementCustomProperty addCustomProperty(final MapElementLibraryIcon libraryIcon, final String uniqueName, final CustomPropertyType type);
+  MapElementCustomProperty addCustomProperty(MapElementLibraryIcon libraryIcon, String uniqueName, CustomPropertyType type);
 
-  void deleteCustomProperty(final long id);
+  List<MapElementCustomProperty> checkPropertyInIcon(MapElementLibraryIcon libraryIcon, String uniqueName);
 
-  List<MapElementCustomProperty> getCustomProperties(final MapElementLibraryIcon libraryIcon);
+  void deleteCustomProperty(long id);
 
-  MapElementCustomProperty getCustomProperty(final long id);
+  List<MapElementCustomProperty> getCustomProperties(MapElementLibraryIcon libraryIcon);
 
-  void updateCustomProperty(final long id, final String uniqueName, final CustomPropertyType type);
+  MapElementCustomProperty getCustomProperty(long id);
+
+  @Transactional
+  void updateCustomProperty(long id, String uniqueName, CustomPropertyType type);
 
 }

@@ -199,6 +199,11 @@ public class MELMServiceImpl implements MELMService {
   @Override
   public void addProperty(final long id, @Nonnull final String uniqueName, @Nonnull final CustomPropertyType type) throws MELMException {
     final MapElementLibraryIcon libraryIcon = mapElementLibraryIconDAO.getLibraryIcon(id);
+    if (!mapElementCustomPropertyDAO.checkPropertyInIcon(libraryIcon, uniqueName).isEmpty()) {
+      final String msg = String.format("Property with name %s is already existing for this element %s", uniqueName,
+          libraryIcon.getIconNameInLibrary());
+      throw new MELMException(msg);
+    }
     mapElementCustomPropertyDAO.addCustomProperty(libraryIcon, uniqueName, type);
   }
 
@@ -854,8 +859,16 @@ public class MELMServiceImpl implements MELMService {
   }
 
   @Override
+  @Transactional
   public void updateProperty(final long id, @Nonnull final String uniqueName, @Nonnull final CustomPropertyType type) throws MELMException {
-    mapElementCustomPropertyDAO.updateCustomProperty(id, uniqueName, type);
+    final MapElementCustomProperty property = mapElementCustomPropertyDAO.getCustomProperty(id);
+    final MapElementLibraryIcon mapElementLibraryIcon = property.getMapElementLibraryIcon();
+    final List<MapElementCustomProperty> list = mapElementCustomPropertyDAO.checkPropertyInIcon(mapElementLibraryIcon, uniqueName);
+    if (list.isEmpty() || (list.get(0).getId() == id)) {
+      mapElementCustomPropertyDAO.updateCustomProperty(id, uniqueName, type);
+    }
+    final String msg = String.format("Property with name %s is already existing", uniqueName);
+    throw new MELMException(msg);
   }
 
   @Override

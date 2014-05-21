@@ -20,13 +20,30 @@ public class MapElementCustomPropertyDAOImpl implements MapElementCustomProperty
 
   @Override
   @Transactional
-  public MapElementCustomProperty addCustomProperty(final MapElementLibraryIcon libraryIcon, final String uniqueName, final CustomPropertyType type) {
+  public MapElementCustomProperty addCustomProperty(@Nonnull final MapElementLibraryIcon libraryIcon, @Nonnull final String uniqueName,
+      @Nonnull final CustomPropertyType type) {
+    assert libraryIcon != null : "library icon is null";
+    assert uniqueName != null : "unique name is null";
+    assert type != null : "type is null";
     final MapElementCustomProperty customProperty = new MapElementCustomProperty();
     customProperty.setMapElementLibraryIcon(libraryIcon);
     customProperty.setUniqueName(uniqueName);
     customProperty.setType(type);
     em.persist(customProperty);
     return customProperty;
+  }
+
+  @Override
+  public List<MapElementCustomProperty> checkPropertyInIcon(@Nonnull final MapElementLibraryIcon libraryIcon,
+      @Nonnull final String uniqueName) {
+    assert libraryIcon != null : "library icon is null";
+    assert uniqueName != null : "unique name is null";
+    final TypedQuery<MapElementCustomProperty> query = em.createQuery(
+        "SELECT mecp FROM MapElementCustomProperty mecp WHERE mecp.mapElementLibraryIcon = :libraryIcon AND mecp.uniqueName = :uniqueName",
+        MapElementCustomProperty.class);
+    query.setParameter("libraryIcon", libraryIcon);
+    query.setParameter("uniqueName", uniqueName);
+    return query.getResultList();
   }
 
   @Override
@@ -37,6 +54,7 @@ public class MapElementCustomPropertyDAOImpl implements MapElementCustomProperty
   }
 
   @Override
+  @Transactional
   public List<MapElementCustomProperty> getCustomProperties(@Nonnull final MapElementLibraryIcon libraryIcon) {
     assert libraryIcon != null : "libraryIcon is null";
     final TypedQuery<MapElementCustomProperty> query = em.createQuery(
