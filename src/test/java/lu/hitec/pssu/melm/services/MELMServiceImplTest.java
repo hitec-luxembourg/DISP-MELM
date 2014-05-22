@@ -84,11 +84,21 @@ public class MELMServiceImplTest {
 	}
 
 	@Test
+	public void testGetSelectedFilename() {
+		assertEquals("filetest_selected.png", melmService.getSelectedFileName("filetest.png"));
+		assertEquals("file.test_selected.png", melmService.getSelectedFileName("file.test.png"));
+		assertEquals("01_selected.png", melmService.getSelectedFileName("01.png"));
+		assertEquals("01.test_selected.png", melmService.getSelectedFileName("01.test.png"));
+
+	}
+	
+	@Test
 	public void testAddIconAndFiles() throws MELMException, IOException {
 		final File sampleIcon = new ClassPathResource("sample/libraries/emergency.lu/1.1/emergency.lu-1.1/100px/Accident.png").getFile();
 		final MapElementIcon icon = melmService.addIconAndFiles("AccidentFromUnitTest", MapElementIconAnchor.NE, sampleIcon);
 
-		assertEquals("1/b/1b7ccd4aa667f2dd1a9bb5d39772ccd7-100px.png", icon.getFilePath(IconSize.LARGE));
+		assertEquals("1/b/1b7ccd4aa667f2dd1a9bb5d39772ccd7-100px.png", icon.getFilePath(IconSize.LARGE, false));
+		assertEquals("1/b/1b7ccd4aa667f2dd1a9bb5d39772ccd7-100px_selected.png", icon.getFilePath(IconSize.LARGE, true));
 
 		try {
 			melmService.addIconAndFiles("AccidentFromUnitTest", MapElementIconAnchor.NE, sampleIcon);
