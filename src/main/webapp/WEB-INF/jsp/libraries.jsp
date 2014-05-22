@@ -31,7 +31,7 @@
           ng-repeat="library in libraries | orderBy:predicate:reverse | startFrom: (currentPage - 1) * itemsPerPage | limitTo: itemsPerPage">
           <td align="left">{{library.name}}</td>
           <td align="left">{{library.majorVersion}}.{{library.minorVersion}}</td>
-          <td align="left"><img src="${ctx}/rest/libraries/icon/file/{{library.id}}"></td>
+          <td align="left"><img ng-src="${ctx}/rest/libraries/icon/file/{{library.id}}"></td>
           <td align="left">
             <ul class="nav nav-pills">
               <li><button class="btn btn-list" ng-click="go('/rest/libraries/icons/'+library.id)">

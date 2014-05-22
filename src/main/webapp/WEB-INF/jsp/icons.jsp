@@ -34,7 +34,7 @@
           <td align="left">{{icon.icon.displayName}}</td>
           <td align="left">{{icon.icon.anchor}}</td>
           <td align="left"><div ng-repeat="library in icon.libraries"><a href="" ng-click="go('/rest/libraries/icons/'+library.id)">{{library.name}}</a></div></td>
-          <td align="left"><a href="${ctx}/rest/icons/details/{{icon.icon.id}}"><img ng-src="{{links[icon.icon.id]}}" ng-mouseenter="changeImage(icon.icon.id, 'selected/')" ng-mouseleave="changeImage(icon.icon.id, '')"></a></td>
+          <td align="left"><a ng-href="${ctx}/rest/icons/details/{{icon.icon.id}}"><img ng-src="{{links[icon.icon.id]}}" ng-mouseenter="changeImage(icon.icon.id, 'selected/')" ng-mouseleave="changeImage(icon.icon.id, '')"></a></td>
           <td align="left">
             <button class="btn" ng-disabled="hasLibraries(icon)" ng-click="confirmDelete(icon.icon.id)">
               <span class="glyphicon glyphicon-remove"></span>Delete

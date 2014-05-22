@@ -95,13 +95,13 @@ public class MELMServiceImplTest {
 	@Test
 	public void testAddIconAndFiles() throws MELMException, IOException {
 		final File sampleIcon = new ClassPathResource("sample/libraries/emergency.lu/1.1/emergency.lu-1.1/100px/Accident.png").getFile();
-		final MapElementIcon icon = melmService.addIconAndFiles("AccidentFromUnitTest", MapElementIconAnchor.NE, sampleIcon);
+		final MapElementIcon icon = melmService.addIconAndFiles("AccidentFromUnitTest", MapElementIconAnchor.NE, sampleIcon, null);
 
 		assertEquals("1/b/1b7ccd4aa667f2dd1a9bb5d39772ccd7-100px.png", icon.getFilePath(IconSize.LARGE, false));
 		assertEquals("1/b/1b7ccd4aa667f2dd1a9bb5d39772ccd7-100px_selected.png", icon.getFilePath(IconSize.LARGE, true));
 
 		try {
-			melmService.addIconAndFiles("AccidentFromUnitTest", MapElementIconAnchor.NE, sampleIcon);
+			melmService.addIconAndFiles("AccidentFromUnitTest", MapElementIconAnchor.NE, sampleIcon, null);
 			fail("Should have raised an exception, Icon already Exist");
 		} catch (final MELMException e) {
 		}

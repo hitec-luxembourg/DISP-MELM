@@ -1,12 +1,16 @@
 package lu.hitec.pssu.melm.utils;
 
 import java.awt.AlphaComposite;
+import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.Stroke;
 import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
 import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
+import java.awt.image.RenderedImage;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
@@ -104,5 +108,30 @@ public final class MELMUtils {
     final RenderingHints hints = new RenderingHints(map);
     final BufferedImageOp op = new ConvolveOp(new Kernel(3, 3, blurKernel), ConvolveOp.EDGE_NO_OP, hints);
     return op.filter(image, null);
+  }
+
+  public static RenderedImage createSelectedImage(final BufferedImage originalImage, final int widthPx, final int heightPx) {
+    assert originalImage != null : "original image is null";
+    final BufferedImage blurImage = blurImage(originalImage);
+    final int type = blurImage.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : blurImage.getType();
+    final BufferedImage bufferedImage = new BufferedImage(widthPx, heightPx, type);
+    final Graphics2D graphics2D = bufferedImage.createGraphics();
+    graphics2D.setComposite(AlphaComposite.Src);
+    // below three lines are for RenderingHints for better image quality at cost of higher processing time
+    graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+    graphics2D.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+    graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+    
+    graphics2D.drawImage(blurImage, 0, 0, widthPx, heightPx, null);
+
+    final float thickness = 5;
+    final Stroke oldStroke = graphics2D.getStroke();
+    graphics2D.setStroke(new BasicStroke(thickness));
+    graphics2D.setPaint(Color.RED);
+    graphics2D.drawRect(0, 0, widthPx, heightPx);
+    graphics2D.setStroke(oldStroke);
+    
+    graphics2D.dispose();
+    return bufferedImage;
   }
 }

@@ -9,6 +9,7 @@ app.controller('LibraryIconsCtrl', [
         $http.get(melmContextRoot + '/rest/libraries/icons/json/' + id).success(function(data) {
           $scope.loadingVisible = false;
           $scope.libraryIconsModel = data;
+          $scope.processLinks(data);
           $scope.totalItems = data.icons.length;
         });
       };
@@ -21,6 +22,22 @@ app.controller('LibraryIconsCtrl', [
         });
       };
 
+      $scope.links = {};
+      
+      $scope.processLinks = function(data) {
+        $scope.links = {};
+        if(data && data.icons && 0 < data.icons.length) {
+          for(var i = 0; i < data.icons.length; i++) {
+            var icon = data.icons[i].icon;
+            $scope.links[icon.id] = melmContextRoot + "/rest/icons/file/" + icon.id + "/MEDIUM";
+          }
+        }
+      };
+
+      $scope.changeImage = function(id, which) {
+        $scope.links[id] = melmContextRoot + "/rest/icons/file/" + which + id + "/MEDIUM";
+      };
+      
       $scope.deleteResource = function(id) {
         var params = encodeParams({
           "id" : id

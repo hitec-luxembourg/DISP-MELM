@@ -300,8 +300,9 @@ public class MELMResource {
   @Produces(MediaType.TEXT_HTML)
   @Path("/icons/add")
   public Response performAddIcon(@Context final UriInfo uriInfo, @FormDataParam("displayName") final String displayName,
-      @FormDataParam("anchor") final String anchor, @FormDataParam("largeIconFile") final InputStream file,
-      @FormDataParam("largeIconFile") final FormDataContentDisposition fileDisposition) {
+      @FormDataParam("anchor") final String anchor, @FormDataParam("iconSelectedChoice") final String iconSelectedChoice, @FormDataParam("largeIconFile") final InputStream file,
+      @FormDataParam("largeIconFile") final FormDataContentDisposition fileDisposition, @FormDataParam("largeIconSelectedFile") final InputStream selectedFile,
+      @FormDataParam("largeIconSelectedFile") final FormDataContentDisposition selectedFileDisposition) {
     if ((displayName == null) || displayName.equalsIgnoreCase("") || (anchor == null) || anchor.equalsIgnoreCase("")) {
       return Response.ok(new Viewable("/addIcon", "Display name and anchor are mandatory")).build();
     }
@@ -311,7 +312,15 @@ public class MELMResource {
       if ((largeIconFile != null) && (largeIconFile.length() <= 0)) {
         return Response.ok(new Viewable("/addIcon", "Invalid large icon file")).build();
       }
-      melmService.addIconAndFiles(displayName, MapElementIconAnchor.valueOf(anchor.toUpperCase()), largeIconFile);
+      File largeIconSelectedFile = null;
+      if("new".equals(iconSelectedChoice)) {
+        largeIconSelectedFile = File.createTempFile("fromUpload", selectedFileDisposition.getFileName());
+        FileUtils.writeByteArrayToFile(largeIconSelectedFile, IOUtils.toByteArray(selectedFile));
+        if ((largeIconSelectedFile != null) && (largeIconSelectedFile.length() <= 0)) {
+          return Response.ok(new Viewable("/addIcon", "Invalid large icon selected file")).build();
+        }
+      }
+      melmService.addIconAndFiles(displayName, MapElementIconAnchor.valueOf(anchor.toUpperCase()), largeIconFile, largeIconSelectedFile);
     } catch (final IOException e) {
       LOGGER.warn("Error in performAddIcon", e);
       return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();

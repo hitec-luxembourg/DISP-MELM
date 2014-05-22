@@ -36,8 +36,7 @@
           <!-- td align="left">{{icon.indexOfIconInLibrary}}</td -->
           <td align="left">{{icon.iconNameInLibrary}}</td>
           <td align="left">{{icon.iconDescriptionInLibrary}}</td>
-          <td align="left"><a href="${ctx}/rest/icons/details/{{icon.icon.id}}"><img
-              src="${ctx}/rest/icons/file/{{icon.icon.id}}/MEDIUM"></a></td>
+          <td align="left"><a ng-href="${ctx}/rest/icons/details/{{icon.icon.id}}"><img ng-src="{{links[icon.icon.id]}}" ng-mouseenter="changeImage(icon.icon.id, 'selected/')" ng-mouseleave="changeImage(icon.icon.id, '')"></a></td>
           <td>
             <ul class="nav nav-pills">
               <li><button class="btn" ng-click="go('/rest/libraries/icons/properties/'+icon.id)" tooltip-placement="top"

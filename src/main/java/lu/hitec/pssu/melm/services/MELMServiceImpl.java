@@ -105,7 +105,7 @@ public class MELMServiceImpl implements MELMService {
   @Override
   @Transactional
   public MapElementIcon addIconAndFiles(@Nonnull final String displayName, @Nonnull final MapElementIconAnchor anchor,
-      @Nonnull final File largeIconFile) throws MELMException {
+      @Nonnull final File largeIconFile, final File largeIconSelectedFile_) throws MELMException {
     assert displayName != null : "display name is null";
     assert displayName.length() != 0 : "display name is empty";
     assert largeIconFile != null : "large icon is null";
@@ -125,20 +125,36 @@ public class MELMServiceImpl implements MELMService {
         .addMapElementIcon(hashForLargeFile, largeIconFile.length(), displayName, anchor);
 
     try {
-      copyFile(mapElementIcon, largeIconFile, IconSize.LARGE);
       final BufferedImage originalImage = ImageIO.read(largeIconFile);
+      BufferedImage selectedImage = null;
+      File largeIconSelectedFile = null;
+      if (null == largeIconSelectedFile_) {
+        largeIconSelectedFile = File.createTempFile("selected", IconSize.LARGE.name());
+        ImageIO.write(MELMUtils.createSelectedImage(originalImage, 100, 100), "png", largeIconSelectedFile);
+        selectedImage = ImageIO.read(largeIconSelectedFile);
+      } else {
+        largeIconSelectedFile = largeIconSelectedFile_;
+        selectedImage = ImageIO.read(largeIconSelectedFile);
+      }
+      copyFile(mapElementIcon, largeIconFile, largeIconSelectedFile, IconSize.LARGE);
 
       final File mediumIconFile = File.createTempFile("fromUpload", IconSize.MEDIUM.name());
       ImageIO.write(MELMUtils.resizeImageWithHint(originalImage, 60, 60), "png", mediumIconFile);
-      copyFile(mapElementIcon, mediumIconFile, IconSize.MEDIUM);
+      final File mediumIconSelectedFile = File.createTempFile("selected", IconSize.MEDIUM.name());
+      ImageIO.write(MELMUtils.resizeImageWithHint(selectedImage, 60, 60), "png", mediumIconSelectedFile);
+      copyFile(mapElementIcon, mediumIconFile, mediumIconSelectedFile, IconSize.MEDIUM);
 
       final File smallIconFile = File.createTempFile("fromUpload", IconSize.SMALL.name());
       ImageIO.write(MELMUtils.resizeImageWithHint(originalImage, 40, 40), "png", smallIconFile);
-      copyFile(mapElementIcon, smallIconFile, IconSize.SMALL);
+      final File smallIconSelectedFile = File.createTempFile("selected", IconSize.SMALL.name());
+      ImageIO.write(MELMUtils.resizeImageWithHint(selectedImage, 40, 40), "png", smallIconSelectedFile);
+      copyFile(mapElementIcon, smallIconFile, smallIconSelectedFile, IconSize.SMALL);
 
       final File tinyIconFile = File.createTempFile("fromUpload", IconSize.TINY.name());
       ImageIO.write(MELMUtils.resizeImageWithHint(originalImage, 20, 20), "png", tinyIconFile);
-      copyFile(mapElementIcon, tinyIconFile, IconSize.TINY);
+      final File tinyIconSelectedFile = File.createTempFile("selected", IconSize.TINY.name());
+      ImageIO.write(MELMUtils.resizeImageWithHint(selectedImage, 20, 20), "png", tinyIconSelectedFile);
+      copyFile(mapElementIcon, tinyIconFile, tinyIconSelectedFile, IconSize.TINY);
     } catch (final IOException e) {
       final String msg = "Failed to copy a file";
       throw new MELMException(msg, e);
@@ -967,18 +983,21 @@ public class MELMServiceImpl implements MELMService {
     }
   }
 
-  private void copyFile(@Nonnull final MapElementIcon mapElementIcon, @Nonnull final File file, @Nonnull final IconSize size)
-      throws IOException {
+  private void copyFile(@Nonnull final MapElementIcon mapElementIcon, @Nonnull final File file, @Nonnull final File selectedFile,
+      @Nonnull final IconSize size) throws IOException {
     assert mapElementIcon != null : "map element icon is null";
     assert file != null : "file is null";
+    assert selectedFile != null : "selected file is null";
     assert size != null : "size is null";
     final File targetIconFile = new File(iconsDirectory, mapElementIcon.getFilePath(size, false));
+    final File targetIconSelectedFile = new File(iconsDirectory, mapElementIcon.getFilePath(size, true));
     if (targetIconFile.getParentFile().mkdirs()) {
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug("Parent folders were created");
       }
     }
     FileUtils.copyFile(file, targetIconFile);
+    FileUtils.copyFile(selectedFile, targetIconSelectedFile);
   }
 
   private void moveImportedFile(@Nonnull final File libraryFolder, @Nonnull final String fileNameWithExtension,

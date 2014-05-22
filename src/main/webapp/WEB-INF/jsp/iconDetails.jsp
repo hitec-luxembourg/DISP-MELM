@@ -11,6 +11,9 @@
 <jsp:include page="css-includes.jsp" />
 <jsp:include page="js-includes.jsp" />
 <script type="text/javascript" src="${ctx}/js/custom/iconDetails.js"></script>
+<script type="text/javascript">
+  var imageId = "${it.id}";
+</script>
 </head>
 <body ng-controller="IconDetailsCtrl">
   <jsp:include page="header.jsp" />
@@ -27,10 +30,10 @@
         <td>TINY</td>
       </tr>
       <tr>
-        <td><img src="${ctx}/rest/icons/file/${it.id}/LARGE"></td>
-        <td><img src="${ctx}/rest/icons/file/${it.id}/MEDIUM"></td>
-        <td><img src="${ctx}/rest/icons/file/${it.id}/SMALL"></td>
-        <td><img src="${ctx}/rest/icons/file/${it.id}/TINY"></td>
+        <td><img ng-src="{{link['LARGE']}}" ng-mouseenter="changeImage('LARGE', 'selected/')" ng-mouseleave="changeImage('LARGE', '')"></td>
+        <td><img ng-src="{{link['MEDIUM']}}" ng-mouseenter="changeImage('MEDIUM', 'selected/')" ng-mouseleave="changeImage('MEDIUM', '')"></td>
+        <td><img ng-src="{{link['SMALL']}}" ng-mouseenter="changeImage('SMALL', 'selected/')" ng-mouseleave="changeImage('SMALL', '')"></td>
+        <td><img ng-src="{{link['TINY']}}" ng-mouseenter="changeImage('TINY', 'selected/')" ng-mouseleave="changeImage('TINY', '')"></td>
       </tr>
     </table>
     <hr />
