@@ -3,7 +3,11 @@ app.controller('UpdateIconCtrl', [ '$scope', '$window', function($scope, $window
     window.location = melmContextRoot + path;
   };
 
+<<<<<<< HEAD
   $scope.setAnchor = function(anchor) {
+=======
+  /*$scope.setAnchor = function(anchor) {
+>>>>>>> 8652af4b4a50103a82114231e8ad4f65f5d0615b
     $scope.anchor = anchor;
   };
 
@@ -15,6 +19,10 @@ app.controller('UpdateIconCtrl', [ '$scope', '$window', function($scope, $window
     return mainClass;
   };
 
+<<<<<<< HEAD
   $scope.anchor = $window.anchor;
+=======
+  $scope.anchor = "SE";*/
+>>>>>>> 8652af4b4a50103a82114231e8ad4f65f5d0615b
 
 } ]);

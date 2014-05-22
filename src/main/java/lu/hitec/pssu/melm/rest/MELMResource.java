@@ -516,7 +516,7 @@ public class MELMResource {
     }
     final URI uri = uriInfo.getBaseUriBuilder().path("/rest/icons").build();
     return Response.seeOther(uri).build();
-  }
+  } 
 
   @POST
   @Consumes(MediaType.MULTIPART_FORM_DATA)
