@@ -8,6 +8,7 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import lu.hitec.pssu.melm.persistence.entity.MapElementIcon;
+import lu.hitec.pssu.melm.utils.MapElementIconAnchor;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,11 +19,12 @@ public class MapElementIconDAOImpl implements MapElementIconDAO {
 
 	@Override
 	@Transactional
-	public MapElementIcon addMapElementIcon(final String hash, final long size, final String displayName) {
+	public MapElementIcon addMapElementIcon(final String hash, final long size, final String displayName, final MapElementIconAnchor anchor) {
 		final MapElementIcon mapElementIcon = new MapElementIcon();
 		mapElementIcon.setPic100pxMd5(hash);
 		mapElementIcon.setSizeInBytes(size);
 		mapElementIcon.setDisplayName(displayName);
+		mapElementIcon.setAnchor(anchor);
 		em.persist(mapElementIcon);
 		return mapElementIcon;
 	}

@@ -25,6 +25,7 @@ import lu.hitec.pssu.melm.persistence.entity.MapElementIcon;
 import lu.hitec.pssu.melm.persistence.entity.MapElementLibrary;
 import lu.hitec.pssu.melm.persistence.entity.MapElementLibraryIcon;
 import lu.hitec.pssu.melm.services.MELMServiceImpl.IconSize;
+import lu.hitec.pssu.melm.utils.MapElementIconAnchor;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
@@ -85,12 +86,12 @@ public class MELMServiceImplTest {
 	@Test
 	public void testAddIconAndFiles() throws MELMException, IOException {
 		final File sampleIcon = new ClassPathResource("sample/libraries/emergency.lu/1.1/emergency.lu-1.1/100px/Accident.png").getFile();
-		final MapElementIcon icon = melmService.addIconAndFiles("AccidentFromUnitTest", sampleIcon);
+		final MapElementIcon icon = melmService.addIconAndFiles("AccidentFromUnitTest", MapElementIconAnchor.NE, sampleIcon);
 
 		assertEquals("1/b/1b7ccd4aa667f2dd1a9bb5d39772ccd7-100px.png", icon.getFilePath(IconSize.LARGE));
 
 		try {
-			melmService.addIconAndFiles("AccidentFromUnitTest", sampleIcon);
+			melmService.addIconAndFiles("AccidentFromUnitTest", MapElementIconAnchor.NE, sampleIcon);
 			fail("Should have raised an exception, Icon already Exist");
 		} catch (final MELMException e) {
 		}
@@ -144,7 +145,7 @@ public class MELMServiceImplTest {
 	public void testMoveIconLibraryUp() {
 		final MapElementLibrary library = mapElementLibraryDAO.addMapElementLibrary("IntegrationTest", 1, 0, "");
 		for (int i = 0; i < testLibrarySize; i++) {
-			final MapElementIcon icon = mapElementIconDAO.addMapElementIcon("Hash_0" + i, 100, "Name_0" + i);
+			final MapElementIcon icon = mapElementIconDAO.addMapElementIcon("Hash_0" + i, 100, "Name_0" + i, MapElementIconAnchor.NE);
 			mapElementLibraryIconDAO.addIconToLibrary(library, icon, i + 1, "in_0" + i, "id_0" + i);
 		}
 
@@ -244,7 +245,7 @@ public class MELMServiceImplTest {
 	public void testMoveIconLibraryDown() {
 		final MapElementLibrary library = mapElementLibraryDAO.addMapElementLibrary("IntegrationTest", 1, 0, "");
 		for (int i = 0; i < testLibrarySize; i++) {
-			final MapElementIcon icon = mapElementIconDAO.addMapElementIcon("Hash_0" + i, 100, "Name_0" + i);
+			final MapElementIcon icon = mapElementIconDAO.addMapElementIcon("Hash_0" + i, 100, "Name_0" + i, MapElementIconAnchor.NE);
 			mapElementLibraryIconDAO.addIconToLibrary(library, icon, i + 1, "in_0" + i, "id_0" + i);
 		}
 

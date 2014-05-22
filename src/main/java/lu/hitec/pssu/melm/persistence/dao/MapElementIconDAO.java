@@ -3,10 +3,11 @@ package lu.hitec.pssu.melm.persistence.dao;
 import java.util.List;
 
 import lu.hitec.pssu.melm.persistence.entity.MapElementIcon;
+import lu.hitec.pssu.melm.utils.MapElementIconAnchor;
 
 public interface MapElementIconDAO {
 
-  MapElementIcon addMapElementIcon(final String hash, final long size, final String displayName);
+  MapElementIcon addMapElementIcon(final String hash, final long size, final String displayName, final MapElementIconAnchor anchor);
 
   void delete(long id);
 
@@ -20,6 +21,6 @@ public interface MapElementIconDAO {
 
   List<MapElementIcon> listAllIcons();
 
-	boolean iconsAvailable();
+  boolean iconsAvailable();
 
 }

@@ -2,6 +2,8 @@ package lu.hitec.pssu.melm.persistence.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -10,11 +12,16 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import lu.hitec.pssu.melm.services.MELMServiceImpl.IconSize;
+import lu.hitec.pssu.melm.utils.MapElementIconAnchor;
 
 @Entity
 @Table(name = "map_element_icon", uniqueConstraints = @UniqueConstraint(columnNames = { "pic_100px_md5", "size_in_bytes" }))
 @SequenceGenerator(name = "map_element_icon_seq", sequenceName = "map_element_icon_seq")
 public class MapElementIcon {
+
+  @Column(name = "anchor", nullable = false, updatable = true)
+  @Enumerated(EnumType.STRING)
+  private MapElementIconAnchor anchor;
 
   @Column(name = "display_name", nullable = false, updatable = true)
   private String displayName;
@@ -29,6 +36,10 @@ public class MapElementIcon {
 
   @Column(name = "size_in_bytes", nullable = false, updatable = true)
   private long sizeInBytes;
+
+  public MapElementIconAnchor getAnchor() {
+    return anchor;
+  }
 
   public String getDisplayName() {
     return displayName;
@@ -52,6 +63,10 @@ public class MapElementIcon {
     return sizeInBytes;
   }
 
+  public void setAnchor(final MapElementIconAnchor anchor) {
+    this.anchor = anchor;
+  }
+
   public void setDisplayName(final String displayName) {
     this.displayName = displayName;
   }
@@ -70,8 +85,8 @@ public class MapElementIcon {
 
   @Override
   public String toString() {
-    return "MapElementIcon [id=" + id + ", pic100pxMd5=" + pic100pxMd5 + ", sizeInBytes=" + sizeInBytes + ", displayName=" + displayName
-        + "]";
+    return "MapElementIcon [displayName=" + displayName + ", id=" + id + ", pic100pxMd5=" + pic100pxMd5 + ", sizeInBytes=" + sizeInBytes
+        + ", anchor=" + anchor + "]";
   }
 
 }

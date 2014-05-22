@@ -23,14 +23,16 @@
     <div class="table-responsive">
       <table class="table table-striped">
         <tr>
-          <td align="left" style="width: 300px"><a href="" ng-click="predicate='icon.displayName'; reverse=!reverse">Name</a></td>
-          <td align="left" style="width: 300px">Linked libraries</td>
+          <td align="left" style="width: 200px"><a href="" ng-click="predicate='icon.displayName'; reverse=!reverse">Name</a></td>
+          <td align="left" style="width: 200px"><a href="" ng-click="predicate='icon.anchor'; reverse=!reverse">Anchor</a></td>
+          <td align="left" style="width: 200px">Linked libraries</td>
           <td align="left" style="width: 100px">Preview</td>
           <td align="left">Actions</td>
         </tr>
         <tr
           ng-repeat="icon in icons | orderBy:predicate:reverse | startFrom: (currentPage - 1) * itemsPerPage | limitTo: itemsPerPage">
           <td align="left">{{icon.icon.displayName}}</td>
+          <td align="left">{{icon.icon.anchor}}</td>
           <td align="left"><div ng-repeat="library in icon.libraries"><a href="" ng-click="go('/rest/libraries/icons/'+library.id)">{{library.name}}</a></div></td>
           <td align="left"><a href="${ctx}/rest/icons/details/{{icon.icon.id}}"><img src="${ctx}/rest/icons/file/{{icon.icon.id}}/MEDIUM"></a></td>
           <td align="left">

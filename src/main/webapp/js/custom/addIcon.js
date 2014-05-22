@@ -3,4 +3,18 @@ app.controller('AddIconCtrl', [ '$scope', '$window', function($scope, $window) {
     window.location = melmContextRoot + path;
   };
 
+  $scope.setAnchor = function(anchor) {
+    $scope.anchor = anchor;
+  };
+
+  $scope.getClass = function(anchor) {
+    var mainClass = 'anchor';
+    if ($scope.anchor === anchor) {
+      return mainClass + ' anchor-selected';
+    }
+    return mainClass;
+  };
+
+  $scope.anchor = "SE";
+
 } ]);

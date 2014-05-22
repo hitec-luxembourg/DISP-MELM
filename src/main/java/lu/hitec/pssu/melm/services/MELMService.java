@@ -12,6 +12,7 @@ import lu.hitec.pssu.melm.persistence.entity.MapElementIcon;
 import lu.hitec.pssu.melm.persistence.entity.MapElementLibrary;
 import lu.hitec.pssu.melm.persistence.entity.MapElementLibraryIcon;
 import lu.hitec.pssu.melm.utils.CustomPropertyType;
+import lu.hitec.pssu.melm.utils.MapElementIconAnchor;
 
 import org.w3c.dom.NodeList;
 
@@ -19,7 +20,7 @@ public interface MELMService {
 
 	public static final int ORDER_INCREMENT = 1000000;
 
-	MapElementIcon addIconAndFiles(@Nonnull String displayName, @Nonnull File iconLargeFile) throws MELMException;
+	MapElementIcon addIconAndFiles(@Nonnull String displayName, @Nonnull final MapElementIconAnchor anchor, @Nonnull File iconLargeFile) throws MELMException;
 
 	MapElementLibrary addLibrary(@Nonnull String libraryName, int majorVersion, int minorVersion, @Nonnull String iconMd5) throws MELMException;
 
