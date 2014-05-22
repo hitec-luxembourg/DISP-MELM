@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import lu.hitec.pssu.melm.persistence.entity.MapElementIcon;
 import lu.hitec.pssu.melm.persistence.entity.MapElementLibrary;
 import lu.hitec.pssu.melm.persistence.entity.MapElementLibraryIcon;
+import lu.hitec.pssu.melm.utils.MapElementIconAnchor;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,7 +30,7 @@ public class MapElementIconDAOImplTest {
 	@Test
 	public void testDAO() {
 		assertEquals(0, mapElementIconDAO.listAllIcons().size());
-		mapElementIconDAO.addMapElementIcon("14522dgdg22544dfgdfg225", 1264, "myDisplayName");
+		mapElementIconDAO.addMapElementIcon("14522dgdg22544dfgdfg225", 1264, "myDisplayName", MapElementIconAnchor.NE);
 		assertEquals(1, mapElementIconDAO.listAllIcons().size());
 
 		assertTrue(mapElementIconDAO.exist("14522dgdg22544dfgdfg225", 1264));
@@ -52,7 +53,7 @@ public class MapElementIconDAOImplTest {
 		assertEquals(0, mapElementIconDAO.listAllIcons().size());
 		assertFalse(mapElementIconDAO.iconsAvailable());
 
-		final MapElementIcon icon = mapElementIconDAO.addMapElementIcon("14522dgdg22544dfgdfg225_", 1265, "myDisplayName_");
+		final MapElementIcon icon = mapElementIconDAO.addMapElementIcon("14522dgdg22544dfgdfg225_", 1265, "myDisplayName_", MapElementIconAnchor.NE);
 
 		assertEquals(1, mapElementIconDAO.listAllIcons().size());
 		assertTrue(mapElementIconDAO.iconsAvailable());
