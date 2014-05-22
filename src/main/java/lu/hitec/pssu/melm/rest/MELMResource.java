@@ -260,6 +260,14 @@ public class MELMResource {
 
   @GET
   @Produces(MediaType.TEXT_HTML)
+  @Path("/icons/update/{id}")
+  public Response gotoUpdateIcon(@PathParam("id") final long id) {
+    final MapElementIcon icon = melmService.getIcon(id);
+    return Response.ok(new Viewable("/updateIcon", new UpdateIconModel(icon))).build();
+  }
+
+  @GET
+  @Produces(MediaType.TEXT_HTML)
   @Path("/libraries/update/{id}")
   public Response gotoUpdateLibrary(@PathParam("id") final long id) {
     final MapElementLibrary library = melmService.getLibrary(id);
@@ -473,6 +481,43 @@ public class MELMResource {
       return Response.ok(new Viewable("/importLibrary", e.getMessage())).build();
     }
     final URI uri = uriInfo.getBaseUriBuilder().path("/rest/libraries").build();
+    return Response.seeOther(uri).build();
+  }
+
+  @POST
+  @Consumes(MediaType.MULTIPART_FORM_DATA)
+  @Produces(MediaType.TEXT_HTML)
+  @Path("/icons/update")
+  public Response performUpdateIcon(@Context final UriInfo uriInfo, @FormDataParam("id") final long id,
+      @FormDataParam("displayName") final String displayName, @FormDataParam("anchor") final String anchor,
+      @FormDataParam("largeIconFile") final InputStream file,
+      @FormDataParam("largeIconFile") final FormDataContentDisposition fileDisposition) {
+    if ((displayName == null) || displayName.equalsIgnoreCase("") || (anchor == null) || anchor.equalsIgnoreCase("")) {
+      // final MapElementLibrary library = melmService.getLibrary(id);
+      // final String error = "Library name and version are mandatory";
+      // return Response.ok(new Viewable("/updateLibrary", new UpdateLibraryModel(library, error))).build();
+    }
+    // try {
+    // final File libraryIconMaybeNull = File.createTempFile("fromUpload", fileDisposition.getFileName());
+    // FileUtils.writeByteArrayToFile(libraryIconMaybeNull, IOUtils.toByteArray(file));
+    // final int majorVersion = MELMUtils.getMajorVersion(version);
+    // final int minorVersion = MELMUtils.getMinorVersion(version);
+    // if ((libraryIconMaybeNull != null) && (libraryIconMaybeNull.length() > 0)) {
+    // final String hashForFile = melmService.addLibraryIcon(libraryIconMaybeNull);
+    // melmService.updateLibrary(id, libraryName, majorVersion, minorVersion, hashForFile);
+    // } else {
+    // melmService.updateLibrary(id, libraryName, majorVersion, minorVersion, null);
+    // }
+    // } catch (final IOException e) {
+    // LOGGER.warn("Error in performUpdateLibrary", e);
+    // return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+    // } catch (final MELMException e) {
+    // LOGGER.warn("Error in performUpdateLibrary", e);
+    // final MapElementLibrary library = melmService.getLibrary(id);
+    // final String error = e.getMessage();
+    // return Response.ok(new Viewable("/updateLibrary", new UpdateLibraryModel(library, error))).build();
+    // }
+    final URI uri = uriInfo.getBaseUriBuilder().path("/rest/icons").build();
     return Response.seeOther(uri).build();
   }
 

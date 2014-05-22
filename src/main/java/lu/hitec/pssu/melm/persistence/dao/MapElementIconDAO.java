@@ -9,6 +9,8 @@ public interface MapElementIconDAO {
 
   MapElementIcon addMapElementIcon(final String hash, final long size, final String displayName, final MapElementIconAnchor anchor);
 
+  void updateMapElementIcon(final long id, final String hash, final long size, final String displayName, final MapElementIconAnchor anchor);
+
   void delete(long id);
 
   void deleteMapElementIconForUnitTest(final String hash, final long size);
