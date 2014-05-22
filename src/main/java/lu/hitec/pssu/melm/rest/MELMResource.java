@@ -115,6 +115,20 @@ public class MELMResource {
 	}
 
 	/**
+	 * It is better to use the id of icon and the size than the path of icon for security issues. Because someone could access file system.
+	 */
+	@GET
+	@Produces("image/*")
+	@Path("/icons/file/selected/{id}/{size}")
+	public Response getIconSelectedFile(@PathParam("id") final long id, @PathParam("size") @Nonnull final String size) {
+		final File file = melmService.getIconSelectedFile(id, size);
+		if (!file.exists()) {
+			return Response.status(Status.NOT_FOUND).build();
+		}
+		return Response.ok(file, DEFAULT_MEDIA_TYPE).build();
+	}
+
+	/**
 	 * Same comment as for getIconFile method.
 	 */
 	@GET

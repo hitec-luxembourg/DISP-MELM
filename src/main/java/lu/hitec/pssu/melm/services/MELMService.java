@@ -53,6 +53,8 @@ public interface MELMService {
 
 	File getIconFile(long id, @Nonnull String size);
 
+	File getIconSelectedFile(long id, String size);
+
 	File getIconsDirectory();
 
 	File getLibrariesDirectory();
@@ -82,6 +84,8 @@ public interface MELMService {
 	List<MapElementLibrary> listAllLibraries();
 
 	void moveImportedIcons(@Nonnull MapElementLibrary mapElementLibrary, @Nonnull NodeList nodeList, @Nonnull File libraryFolder) throws MELMException;
+
+	String getSelectedFileName(String fileNameWithExtension);
 
 	String moveImportedLibraryIcon(@Nonnull File libraryFolder, @Nonnull String libraryName, int majorVersion, int minorVersion) throws MELMException;
 

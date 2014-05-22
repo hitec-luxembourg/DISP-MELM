@@ -34,10 +34,11 @@ public class MapElementIcon {
     return displayName;
   }
 
-  public String getFilePath(final IconSize iconSize) {
+  public String getFilePath(final IconSize iconSize, final boolean isSelected) {
     // we store the file in a 2 levels folders hierarchy, taking the first and second char of the hash
     // so the typical path we be something like /b/e/bejdfgjdfgjdfgj-20px.png
-    return String.format("%s/%s/%s%s.png", pic100pxMd5.substring(0, 1), pic100pxMd5.substring(1, 2), pic100pxMd5, iconSize.getSuffix());
+	  final String selected = isSelected ? "_selected" : ""; 
+    return String.format("%s/%s/%s%s%s.png", pic100pxMd5.substring(0, 1), pic100pxMd5.substring(1, 2), pic100pxMd5, iconSize.getSuffix(), selected);
   }
 
   public long getId() {
