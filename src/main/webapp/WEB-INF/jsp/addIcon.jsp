@@ -29,6 +29,22 @@
         </div>
       </div>
       <div class="form-group">
+        <label for="anchor" class="col-sm-2 control-label">Anchor</label>
+        <div class="col-sm-10">
+          <input type="hidden" class="form-control" id="anchor" name="anchor" ng-value="anchor">
+          <div class="anchor-wrapper ">
+              <a href="" ng-click="setAnchor('SW')" ng-class="getClass('SW')" style="border-top-left-radius:7px; position: absolute; top: 0px; left: 0px;"></a> 
+              <a href="" ng-click="setAnchor('S')" ng-class="getClass('S')" style="position: absolute; top: 0px; left: 80px;"></a>
+              <a href="" ng-click="setAnchor('SE')" ng-class="getClass('SE')" style="border-top-right-radius:7px; position: absolute; top: 0px; left: 160px;"></a>
+              <a href="" ng-click="setAnchor('W')" ng-class="getClass('W')" style="position: absolute; top: 80px; left: 0px;"></a> 
+              <a href="" ng-click="setAnchor('E')" ng-class="getClass('E')" style="position: absolute; top: 80px; left: 160px;"></a>
+              <a href="" ng-click="setAnchor('NW')" ng-class="getClass('NW')" style="border-bottom-left-radius:7px; position: absolute; top: 160px; left: 0px;"></a> 
+              <a href="" ng-click="setAnchor('N')" ng-class="getClass('N')" style="position: absolute; top: 160px; left: 80px;"></a>
+              <a href="" ng-click="setAnchor('NE')" ng-class="getClass('NE')" style="border-bottom-right-radius:7px; position: absolute; top: 160px; left: 160px;"></a>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
         <label for="largeIconFile" class="col-sm-2 control-label">Large Icon File</label>
         <div class="col-sm-10">
           <input type="file" id="largeIconFile" name="largeIconFile" maxlength='1000000' accept='image/png'>

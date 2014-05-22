@@ -46,6 +46,7 @@ import lu.hitec.pssu.melm.persistence.entity.MapElementLibraryIcon;
 import lu.hitec.pssu.melm.utils.CustomPropertyType;
 import lu.hitec.pssu.melm.utils.LibraryValidator;
 import lu.hitec.pssu.melm.utils.MELMUtils;
+import lu.hitec.pssu.melm.utils.MapElementIconAnchor;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -103,7 +104,8 @@ public class MELMServiceImpl implements MELMService {
 
   @Override
   @Transactional
-  public MapElementIcon addIconAndFiles(@Nonnull final String displayName, @Nonnull final File largeIconFile) throws MELMException {
+  public MapElementIcon addIconAndFiles(@Nonnull final String displayName, @Nonnull final MapElementIconAnchor anchor,
+      @Nonnull final File largeIconFile) throws MELMException {
     assert displayName != null : "display name is null";
     assert displayName.length() != 0 : "display name is empty";
     assert largeIconFile != null : "large icon is null";
@@ -119,7 +121,8 @@ public class MELMServiceImpl implements MELMService {
       LOGGER.warn(msg);
       throw new MELMException(msg);
     }
-    final MapElementIcon mapElementIcon = mapElementIconDAO.addMapElementIcon(hashForLargeFile, largeIconFile.length(), displayName);
+    final MapElementIcon mapElementIcon = mapElementIconDAO
+        .addMapElementIcon(hashForLargeFile, largeIconFile.length(), displayName, anchor);
 
     try {
       copyFile(mapElementIcon, largeIconFile, IconSize.LARGE);
@@ -452,7 +455,6 @@ public class MELMServiceImpl implements MELMService {
        * </node>
        */
 
-      // FIXME ORDER BY index !
       final List<MapElementLibraryIcon> iconsInLibrary = mapElementLibraryIconDAO.getIconsInLibrary(mapElementLibrary);
       for (final MapElementLibraryIcon mapElementLibraryIcon : iconsInLibrary) {
         final Element nodeElement = document.createElement("node");
@@ -469,8 +471,7 @@ public class MELMServiceImpl implements MELMService {
 
         final MapElementIcon icon = mapElementLibraryIcon.getIcon();
         nodeIconElement.setAttribute("file", mapElementLibraryIcon.getIconNameInLibrary());
-        // FIXME manage anchor.
-        nodeIconElement.setAttribute("anchor", "NE");
+        nodeIconElement.setAttribute("anchor", mapElementLibraryIcon.getIcon().getAnchor().name());
 
         for (final IconSize iconSize : IconSize.values()) {
           final File sourceIconFile = new File(iconsDirectory, icon.getFilePath(iconSize));
@@ -695,12 +696,13 @@ public class MELMServiceImpl implements MELMService {
         final Node subNode = (Node) xPath.compile(XPATH_LIBRARY_ELEMENTS_ICON_EXPRESSION).evaluate(node, XPathConstants.NODE);
         final Element subElement = (Element) subNode;
         final String fileName = subElement.getAttribute("file");
+        final String anchor = subElement.getAttribute("anchor");
         assert fileName != null;
         final File sourceIconLargeFile = new File(largeFileFolder, String.format("%s.png", fileName));
         final String hashForLargeFile = MELMUtils.getHashForFile(sourceIconLargeFile);
         if (!mapElementIconDAO.exist(hashForLargeFile, sourceIconLargeFile.length())) {
           final MapElementIcon mapElementIcon = mapElementIconDAO.addMapElementIcon(hashForLargeFile, sourceIconLargeFile.length(),
-              fileName);
+              fileName, MapElementIconAnchor.valueOf(anchor.toUpperCase()));
           for (final IconSize iconSize : IconSize.values()) {
             moveImportedFile(libraryFolder, sourceIconLargeFile.getName(), iconSize, mapElementIcon);
           }

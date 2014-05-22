@@ -33,6 +33,7 @@ import lu.hitec.pssu.melm.persistence.entity.MapElementLibraryIcon;
 import lu.hitec.pssu.melm.services.MELMService;
 import lu.hitec.pssu.melm.utils.CustomPropertyType;
 import lu.hitec.pssu.melm.utils.MELMUtils;
+import lu.hitec.pssu.melm.utils.MapElementIconAnchor;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -141,7 +142,7 @@ public class MELMResource {
       BeanUtils.copyProperties(libraryIcon, dtoLibraryIcon);
       results.add(dtoLibraryIcon);
     }
-    
+
     return Response.ok(new LibraryIconsModel(library, results, melmService.iconsAvailable())).build();
   }
 
@@ -285,10 +286,10 @@ public class MELMResource {
   @Produces(MediaType.TEXT_HTML)
   @Path("/icons/add")
   public Response performAddIcon(@Context final UriInfo uriInfo, @FormDataParam("displayName") final String displayName,
-      @FormDataParam("largeIconFile") final InputStream file,
+      @FormDataParam("anchor") final String anchor, @FormDataParam("largeIconFile") final InputStream file,
       @FormDataParam("largeIconFile") final FormDataContentDisposition fileDisposition) {
-    if ((displayName == null) || displayName.equalsIgnoreCase("")) {
-      return Response.ok(new Viewable("/addIcon", "Display name is mandatory")).build();
+    if ((displayName == null) || displayName.equalsIgnoreCase("") || (anchor == null) || anchor.equalsIgnoreCase("")) {
+      return Response.ok(new Viewable("/addIcon", "Display name and anchor are mandatory")).build();
     }
     try {
       final File largeIconFile = File.createTempFile("fromUpload", fileDisposition.getFileName());
@@ -296,7 +297,7 @@ public class MELMResource {
       if ((largeIconFile != null) && (largeIconFile.length() <= 0)) {
         return Response.ok(new Viewable("/addIcon", "Invalid large icon file")).build();
       }
-      melmService.addIconAndFiles(displayName, largeIconFile);
+      melmService.addIconAndFiles(displayName, MapElementIconAnchor.valueOf(anchor.toUpperCase()), largeIconFile);
     } catch (final IOException e) {
       LOGGER.warn("Error in performAddIcon", e);
       return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();

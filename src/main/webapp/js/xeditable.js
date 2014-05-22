@@ -265,9 +265,6 @@ angular.module('xeditable').directive('editableTextarea', ['editableDirectiveFac
  *
  * @namespace editable-element
  */
-/*
-TODO: this file should be refactored to work more clear without closures!
-*/
 angular.module('xeditable').factory('editableController', 
   ['$q', 'editableUtils',
   function($q, editableUtils) {
