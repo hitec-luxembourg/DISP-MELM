@@ -48,7 +48,7 @@
           <td align="left">Actions</td>
         </tr>
         <tr
-          ng-repeat="property in properties | orderBy:predicate:reverse | startFrom: pagination.page * pagination.perPage | limitTo: pagination.perPage">
+          ng-repeat="property in properties | orderBy:predicate:reverse | startFrom: (currentPage - 1) * itemsPerPage | limitTo: itemsPerPage">
           <td align="left"><span editable-text="property.uniqueName" e-class="form-control" e-name="uniqueName" e-form="rowform">{{property.uniqueName}}</span></td>
           <td align="left"><span editable-select="property.type" e-class="form-control" e-name="type" e-form="rowform"
             e-ng-options="item.id as item.title for item in customPropertyTypes">{{property.type}}</span></td>
@@ -75,12 +75,8 @@
       </table>
     </div>
     <div class="pagination-centered">
-      <ul class="pagination">
-        <li><a ng-hide="pagination.page == 0" ng-click="pagination.prevPage()">&laquo;</a></li>
-        <li ng-repeat="n in [] | range: pagination.numPages" ng-class="{current: n == pagination.page}"><a
-          ng-click="pagination.toPageId(n)">{{n + 1}}</a></li>
-        <li><a ng-hide="pagination.page + 1 >= pagination.numPages" ng-click="pagination.nextPage()">&raquo;</a></li>
-      </ul>
+      <pagination total-items="totalItems" ng-model="currentPage" max-size="5" class="pagination-sm" boundary-links="true" rotate="false"
+        items-per-page="itemsPerPage"></pagination>
     </div>
     <hr />
     <button type="button" ng-click="back()" class="btn btn-default btn-custom-cancel">

@@ -1,10 +1,10 @@
-app.controller('LibrariesCtrl', [ '$scope', '$http', 'Pagination', function($scope, $http, Pagination) {
+app.controller('LibrariesCtrl', [ '$scope', '$http', function($scope, $http) {
   $scope.loadResources = function() {
     $scope.loadingVisible = true;
     $http.get(melmContextRoot + '/rest/libraries/json').success(function(data) {
       $scope.loadingVisible = false;
       $scope.libraries = data;
-      $scope.pagination.numPages = Math.ceil($scope.libraries.length / $scope.pagination.perPage);
+      $scope.totalItems = $scope.libraries.length;
     });
   };
 
@@ -39,7 +39,8 @@ app.controller('LibrariesCtrl', [ '$scope', '$http', 'Pagination', function($sco
   };
 
   $scope.loadingVisible = false;
-  $scope.pagination = Pagination.getNew(10);
+  $scope.itemsPerPage = 8;
+  $scope.currentPage = 1;
   $scope.predicate = 'name';
   $scope.loadResources();
 } ]);

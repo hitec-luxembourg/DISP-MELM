@@ -23,8 +23,7 @@
         Add library element <small>${it.library.name}-${it.library.majorVersion}.${it.library.minorVersion}</small>
       </h1>
     </div>
-    <progressbar class="progress-striped active" value="100" type="warning" ng-show="loadingVisible">
-    <i>Loading resources</i></progressbar>
+    <progressbar class="progress-striped active" value="100" type="warning" ng-show="loadingVisible"> <i>Loading resources</i></progressbar>
     <c:if test="${not empty it.error}">
       <div class="alert alert-danger">${it.error}</div>
     </c:if>
@@ -33,17 +32,13 @@
       <input type="text" id="iconId" name="iconId" ng-value="id" ng-checked="isSelected(-1)" style="display: none" />
       <div class="row">
         <div ng-click="selectImage(icon.icon.id, icon.libraries)" ng-class="getClasses(icon.icon.id, icon.libraries)"
-          ng-repeat="icon in icons | startFrom: pagination.page * pagination.perPage | limitTo: pagination.perPage">
+          ng-repeat="icon in icons | startFrom: (currentPage - 1) * itemsPerPage | limitTo: itemsPerPage">
           <img src="${ctx}/rest/icons/file/{{icon.icon.id}}/MEDIUM" alt="{{icon.icon.displayName}}" /><br />{{icon.icon.displayName}}
         </div>
       </div>
       <div class="pagination-centered">
-        <ul class="pagination">
-          <li><a ng-hide="pagination.page == 0" ng-click="pagination.prevPage()">&laquo;</a></li>
-          <li ng-repeat="n in [] | range: pagination.numPages" ng-class="{current: n == pagination.page}"><a
-            ng-click="pagination.toPageId(n)">{{n + 1}}</a></li>
-          <li><a ng-hide="pagination.page + 1 >= pagination.numPages" ng-click="pagination.nextPage()">&raquo;</a></li>
-        </ul>
+        <pagination total-items="totalItems" ng-model="currentPage" max-size="5" class="pagination-sm" boundary-links="true" rotate="false"
+          items-per-page="itemsPerPage"></pagination>
       </div>
       <div class="form-group">
         <label for="iconName" class="col-sm-2 control-label">Element name</label>

@@ -32,7 +32,7 @@
           <td align="left" style="width: 300px">Actions</td>
         </tr>
         <tr
-          ng-repeat="icon in libraryIconsModel.icons | orderBy:predicate:reverse | startFrom: pagination.page * pagination.perPage | limitTo: pagination.perPage">
+          ng-repeat="icon in libraryIconsModel.icons | orderBy:predicate:reverse | startFrom: (currentPage - 1) * itemsPerPage | limitTo: itemsPerPage">
           <!-- td align="left">{{icon.indexOfIconInLibrary}}</td -->
           <td align="left">{{icon.iconNameInLibrary}}</td>
           <td align="left">{{icon.iconDescriptionInLibrary}}</td>
@@ -40,19 +40,22 @@
               src="${ctx}/rest/icons/file/{{icon.icon.id}}/MEDIUM"></a></td>
           <td>
             <ul class="nav nav-pills">
-              <li><button class="btn" ng-click="go('/rest/libraries/icons/properties/'+icon.id)">
+              <li><button class="btn" ng-click="go('/rest/libraries/icons/properties/'+icon.id)" tooltip-placement="top"
+                  tooltip="Properties">
                   <span class="glyphicon glyphicon-pencil"></span>
                 </button></li>
-              <li><button class="btn" ng-click="go('/rest/libraries/icons/update/'+icon.id)">
+              <li><button class="btn" ng-click="go('/rest/libraries/icons/update/'+icon.id)" tooltip-placement="top" tooltip="Update">
                   <span class="glyphicon glyphicon-refresh"></span>
                 </button></li>
-              <li><button class="btn" ng-click="confirmDelete(icon.id)">
+              <li><button class="btn" ng-click="confirmDelete(icon.id)" tooltip-placement="top" tooltip="Delete">
                   <span class="glyphicon glyphicon-remove"></span>
                 </button></li>
-              <li><button class="btn" ng-click="move('up', icon.id)" ng-style="isFirst(icon.id) && {'display': 'none'}">
+              <li><button class="btn" ng-click="move('up', icon.id)" ng-style="isFirst(icon.id) && {'display': 'none'}"
+                  tooltip-placement="top" tooltip="Move up">
                   <span class="glyphicon glyphicon-arrow-up"></span>
                 </button></li>
-              <li><button class="btn" ng-click="move('down', icon.id)" ng-style="isLast(icon.id) && {'display': 'none'}">
+              <li><button class="btn" ng-click="move('down', icon.id)" ng-style="isLast(icon.id) && {'display': 'none'}"
+                  tooltip-placement="top" tooltip="Move down">
                   <span class="glyphicon glyphicon-arrow-down"></span>
                 </button></li>
             </ul>
@@ -61,12 +64,8 @@
       </table>
     </div>
     <div class="pagination-centered">
-      <ul class="pagination">
-        <li><a ng-hide="pagination.page == 0" ng-click="pagination.prevPage()">&laquo;</a></li>
-        <li ng-repeat="n in [] | range: pagination.numPages" ng-class="{current: n == pagination.page}"><a
-          ng-click="pagination.toPageId(n)">{{n + 1}}</a></li>
-        <li><a ng-hide="pagination.page + 1 >= pagination.numPages" ng-click="pagination.nextPage()">&raquo;</a></li>
-      </ul>
+      <pagination total-items="totalItems" ng-model="currentPage" max-size="5" class="pagination-sm" boundary-links="true" rotate="false"
+        items-per-page="itemsPerPage"></pagination>
     </div>
     <hr />
     <button class="btn btn-add" ng-disabled="!libraryIconsModel.iconsAvailable"
