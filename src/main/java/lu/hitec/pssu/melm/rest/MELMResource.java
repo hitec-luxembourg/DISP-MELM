@@ -260,6 +260,14 @@ public class MELMResource {
 
   @GET
   @Produces(MediaType.TEXT_HTML)
+  @Path("/icons/update/{id}")
+  public Response gotoUpdateIcon(@PathParam("id") final long id) {
+    final MapElementIcon icon = melmService.getIcon(id);
+    return Response.ok(new Viewable("/updateIcon", new UpdateIconModel(icon))).build();
+  }
+
+  @GET
+  @Produces(MediaType.TEXT_HTML)
   @Path("/libraries/update/{id}")
   public Response gotoUpdateLibrary(@PathParam("id") final long id) {
     final MapElementLibrary library = melmService.getLibrary(id);
@@ -473,6 +481,40 @@ public class MELMResource {
       return Response.ok(new Viewable("/importLibrary", e.getMessage())).build();
     }
     final URI uri = uriInfo.getBaseUriBuilder().path("/rest/libraries").build();
+    return Response.seeOther(uri).build();
+  }
+
+  @POST
+  @Consumes(MediaType.MULTIPART_FORM_DATA)
+  @Produces(MediaType.TEXT_HTML)
+  @Path("/icons/update")
+  public Response performUpdateIcon(@Context final UriInfo uriInfo, @FormDataParam("id") final long id,
+      @FormDataParam("displayName") final String displayName, @FormDataParam("anchor") final String anchor,
+      @FormDataParam("largeIconFile") final InputStream file,
+      @FormDataParam("largeIconFile") final FormDataContentDisposition fileDisposition) {
+    if ((displayName == null) || displayName.equalsIgnoreCase("") || (anchor == null) || anchor.equalsIgnoreCase("")) {
+      final MapElementIcon icon = melmService.getIcon(id);
+      final String error = "Display name and anchor are mandatory";
+      return Response.ok(new Viewable("/updateIcon", new UpdateIconModel(icon, error))).build();
+    }
+    try {
+      final File largeIconFile = File.createTempFile("fromUpload", fileDisposition.getFileName());
+      FileUtils.writeByteArrayToFile(largeIconFile, IOUtils.toByteArray(file));
+      if ((largeIconFile != null) && (largeIconFile.length() > 0)) {
+        melmService.updateIconAndFiles(id, displayName, MapElementIconAnchor.valueOf(anchor.toUpperCase()), largeIconFile);
+      } else {
+        melmService.updateIconAndFiles(id, displayName, MapElementIconAnchor.valueOf(anchor.toUpperCase()), null);
+      }
+    } catch (final IOException e) {
+      LOGGER.warn("Error in performUpdateIcon", e);
+      return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+    } catch (final MELMException e) {
+      LOGGER.warn("Error in performUpdateIcon", e);
+      final MapElementIcon icon = melmService.getIcon(id);
+      final String error = e.getMessage();
+      return Response.ok(new Viewable("/updateIcon", new UpdateIconModel(icon, error))).build();
+    }
+    final URI uri = uriInfo.getBaseUriBuilder().path("/rest/icons").build();
     return Response.seeOther(uri).build();
   }
 

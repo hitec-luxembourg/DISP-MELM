@@ -19,8 +19,13 @@ public interface MapElementIconDAO {
 
   MapElementIcon getMapElementIcon(final String hash, final long size);
 
+  boolean iconsAvailable();
+
   List<MapElementIcon> listAllIcons();
 
-  boolean iconsAvailable();
+  MapElementIcon updateMapElementIcon(final long id, final String hash, final long size, final String displayName,
+      final MapElementIconAnchor anchor);
+
+  MapElementIcon updateMapElementIcon(final long id, final String displayName, final MapElementIconAnchor anchor);
 
 }
