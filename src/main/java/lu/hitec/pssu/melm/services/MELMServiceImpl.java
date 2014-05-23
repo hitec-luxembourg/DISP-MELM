@@ -107,6 +107,7 @@ public class MELMServiceImpl implements MELMService {
   public MapElementIcon addIconAndFiles(@Nonnull final String displayName, @Nonnull final MapElementIconAnchor anchor,
       @Nonnull final File largeIconFile, final File largeIconSelectedFile_) throws MELMException {
     assert displayName != null : "display name is null";
+    assert anchor != null : "anchor is null";
     assert displayName.length() != 0 : "display name is empty";
     assert largeIconFile != null : "large icon is null";
     String hashForLargeFile;
@@ -920,6 +921,55 @@ public class MELMServiceImpl implements MELMService {
       break;
     }
 
+  }
+
+  @Override
+  @Transactional
+  public void updateIconAndFiles(final long id, @Nonnull final String displayName, @Nonnull final MapElementIconAnchor anchor,
+      final File largeIconFileMaybeNull) throws MELMException {
+    assert displayName != null : "display name is null";
+    assert anchor != null : "anchor is null";
+    assert displayName.length() != 0 : "display name is empty";
+
+    if (largeIconFileMaybeNull == null) {
+      mapElementIconDAO.updateMapElementIcon(id, displayName, anchor);
+    } else {
+      String hashForLargeFile;
+      try {
+        hashForLargeFile = MELMUtils.getHashForFile(largeIconFileMaybeNull);
+      } catch (final IOException e) {
+        final String msg = "Failed to compute hash";
+        throw new MELMException(msg, e);
+      }
+      if (mapElementIconDAO.exist(hashForLargeFile, largeIconFileMaybeNull.length())) {
+        final String msg = "Updating icon and files aborted because the icon exists";
+        LOGGER.warn(msg);
+        throw new MELMException(msg);
+      }
+      final MapElementIcon mapElementIcon = mapElementIconDAO.updateMapElementIcon(id, hashForLargeFile, largeIconFileMaybeNull.length(),
+          displayName, anchor);
+
+      try {
+        // FIXME manage selected file. For the moment I have duplicated the non selected variable.
+        copyFile(mapElementIcon, largeIconFileMaybeNull, largeIconFileMaybeNull, IconSize.LARGE);
+        final BufferedImage originalImage = ImageIO.read(largeIconFileMaybeNull);
+
+        final File mediumIconFile = File.createTempFile("fromUpload", IconSize.MEDIUM.name());
+        ImageIO.write(MELMUtils.resizeImageWithHint(originalImage, 60, 60), "png", mediumIconFile);
+        copyFile(mapElementIcon, mediumIconFile, mediumIconFile, IconSize.MEDIUM);
+
+        final File smallIconFile = File.createTempFile("fromUpload", IconSize.SMALL.name());
+        ImageIO.write(MELMUtils.resizeImageWithHint(originalImage, 40, 40), "png", smallIconFile);
+        copyFile(mapElementIcon, smallIconFile, smallIconFile, IconSize.SMALL);
+
+        final File tinyIconFile = File.createTempFile("fromUpload", IconSize.TINY.name());
+        ImageIO.write(MELMUtils.resizeImageWithHint(originalImage, 20, 20), "png", tinyIconFile);
+        copyFile(mapElementIcon, tinyIconFile, tinyIconFile, IconSize.TINY);
+      } catch (final IOException e) {
+        final String msg = "Failed to copy a file";
+        throw new MELMException(msg, e);
+      }
+    }
   }
 
   @Override

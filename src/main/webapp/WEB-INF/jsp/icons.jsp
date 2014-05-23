@@ -18,7 +18,8 @@
     <div class="page-header">
       <h1>List Icons</h1>
     </div>
-    <progressbar class="progress-striped active" value="100" type="warning" ng-show="loadingVisible"><i>Loading resources</i></progressbar>
+    <progressbar class="progress-striped active" value="100" type="warning" ng-show="loadingVisible">
+    <i>Loading resources</i></progressbar>
     <div class="alert alert-danger" ng-show="error!=null">{{error}}</div>
     <div class="table-responsive">
       <table class="table table-striped">
@@ -29,16 +30,20 @@
           <td align="left" style="width: 100px">Preview</td>
           <td align="left">Actions</td>
         </tr>
-        <tr
-          ng-repeat="icon in icons | orderBy:predicate:reverse | startFrom: (currentPage - 1) * itemsPerPage | limitTo: itemsPerPage">
+        <tr ng-repeat="icon in icons | orderBy:predicate:reverse | startFrom: (currentPage - 1) * itemsPerPage | limitTo: itemsPerPage">
           <td align="left">{{icon.icon.displayName}}</td>
           <td align="left">{{icon.icon.anchor}}</td>
           <td align="left"><div ng-repeat="library in icon.libraries"><a href="" ng-click="go('/rest/libraries/icons/'+library.id)">{{library.name}}</a></div></td>
           <td align="left"><a ng-href="${ctx}/rest/icons/details/{{icon.icon.id}}"><img ng-src="{{links[icon.icon.id]}}" ng-mouseenter="changeImage(icon.icon.id, 'selected/')" ng-mouseleave="changeImage(icon.icon.id, '')"></a></td>
           <td align="left">
-            <button class="btn" ng-disabled="hasLibraries(icon)" ng-click="confirmDelete(icon.icon.id)">
-              <span class="glyphicon glyphicon-remove"></span>Delete
-            </button>
+            <ul class="nav nav-pills">
+              <li><button class="btn" ng-click="go('/rest/icons/update/'+icon.icon.id)">
+                  <span class="glyphicon glyphicon-refresh"></span><span class="hidden-xs hidden-sm">Update</span>
+                </button></li>
+              <li><button class="btn" ng-disabled="hasLibraries(icon)" ng-click="confirmDelete(icon.icon.id)">
+                  <span class="glyphicon glyphicon-remove"></span>Delete
+                </button></li>
+            </ul>
           </td>
         </tr>
       </table>

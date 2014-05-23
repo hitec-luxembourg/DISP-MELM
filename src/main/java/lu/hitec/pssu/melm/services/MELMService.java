@@ -81,6 +81,8 @@ public interface MELMService {
 
   File getTargetArchiveFile(@Nonnull String libraryName, int majorVersion, int minorVersion) throws MELMException;
 
+  boolean iconsAvailable();
+
   File importLibrary(@Nonnull String name, int majorVersion, int minorVersion, @Nonnull File libraryFile) throws MELMException;
 
   List<MapElementIcon> listAllIcons();
@@ -97,6 +99,8 @@ public interface MELMService {
 
   void moveLibraryIcon(long id, String which);
 
+  void updateIconAndFiles(long id, @Nonnull String displayName, @Nonnull MapElementIconAnchor anchor, File largeIconFile) throws MELMException;
+
   void updateLibrary(long id, @Nonnull String libraryName, int majorVersion, int minorVersion, String iconMd5MaybeNull)
       throws MELMException;
 
@@ -106,6 +110,4 @@ public interface MELMService {
   void updateProperty(long id, @Nonnull String uniqueName, @Nonnull CustomPropertyType type) throws MELMException;
 
   NodeList validateImportedLibraryAndGetNodeList(@Nonnull String libraryName, int majorVersion, int minorVersion) throws MELMException;
-
-  boolean iconsAvailable();
 }
