@@ -929,7 +929,7 @@ public class MELMServiceImpl implements MELMService {
   @Override
   @Transactional
   public void updateIconAndFiles(final long id, @Nonnull final String displayName, @Nonnull final MapElementIconAnchor anchor,
-      final File largeIconFileMaybeNull) throws MELMException {
+      final File largeIconFileMaybeNull, final File largeIconSelectedFileMaybeNull, final boolean generate) throws MELMException {
     assert displayName != null : "display name is null";
     assert anchor != null : "anchor is null";
     assert displayName.length() != 0 : "display name is empty";
@@ -953,7 +953,6 @@ public class MELMServiceImpl implements MELMService {
           displayName, anchor);
 
       try {
-        // FIXME manage selected file. For the moment I have duplicated the non selected variable.
         copyFile(mapElementIcon, largeIconFileMaybeNull, largeIconFileMaybeNull, IconSize.LARGE);
         final BufferedImage originalImage = ImageIO.read(largeIconFileMaybeNull);
 
@@ -972,6 +971,13 @@ public class MELMServiceImpl implements MELMService {
         final String msg = "Failed to copy a file";
         throw new MELMException(msg, e);
       }
+    }
+    
+
+    if (largeIconSelectedFileMaybeNull == null) {
+    }
+    else {
+      
     }
   }
 

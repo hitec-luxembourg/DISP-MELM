@@ -99,7 +99,8 @@ public interface MELMService {
 
   void moveLibraryIcon(long id, String which);
 
-  void updateIconAndFiles(long id, @Nonnull String displayName, @Nonnull MapElementIconAnchor anchor, File largeIconFile) throws MELMException;
+  void updateIconAndFiles(long id, @Nonnull String displayName, @Nonnull MapElementIconAnchor anchor, File largeIconFile,
+      File largeIconSelectedFileMaybeNull, boolean generate) throws MELMException;
 
   void updateLibrary(long id, @Nonnull String libraryName, int majorVersion, int minorVersion, String iconMd5MaybeNull)
       throws MELMException;

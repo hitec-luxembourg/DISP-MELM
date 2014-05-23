@@ -116,20 +116,20 @@ public class MELMResource {
   }
 
   /**
-	 * It is better to use the id of icon and the size than the path of icon for security issues. Because someone could access file system.
-	 */
-	@GET
-	@Produces("image/*")
-	@Path("/icons/file/selected/{id}/{size}")
-	public Response getIconSelectedFile(@PathParam("id") final long id, @PathParam("size") @Nonnull final String size) {
-		final File file = melmService.getIconSelectedFile(id, size);
-		if (!file.exists()) {
-			return Response.status(Status.NOT_FOUND).build();
-		}
-		return Response.ok(file, DEFAULT_MEDIA_TYPE).build();
-	}
+   * It is better to use the id of icon and the size than the path of icon for security issues. Because someone could access file system.
+   */
+  @GET
+  @Produces("image/*")
+  @Path("/icons/file/selected/{id}/{size}")
+  public Response getIconSelectedFile(@PathParam("id") final long id, @PathParam("size") @Nonnull final String size) {
+    final File file = melmService.getIconSelectedFile(id, size);
+    if (!file.exists()) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    return Response.ok(file, DEFAULT_MEDIA_TYPE).build();
+  }
 
-	/**
+  /**
    * Same comment as for getIconFile method.
    */
   @GET
@@ -308,8 +308,10 @@ public class MELMResource {
   @Produces(MediaType.TEXT_HTML)
   @Path("/icons/add")
   public Response performAddIcon(@Context final UriInfo uriInfo, @FormDataParam("displayName") final String displayName,
-      @FormDataParam("anchor") final String anchor, @FormDataParam("iconSelectedChoice") final String iconSelectedChoice, @FormDataParam("largeIconFile") final InputStream file,
-      @FormDataParam("largeIconFile") final FormDataContentDisposition fileDisposition, @FormDataParam("largeIconSelectedFile") final InputStream selectedFile,
+      @FormDataParam("anchor") final String anchor, @FormDataParam("iconSelectedChoice") final String iconSelectedChoice,
+      @FormDataParam("largeIconFile") final InputStream file,
+      @FormDataParam("largeIconFile") final FormDataContentDisposition fileDisposition,
+      @FormDataParam("largeIconSelectedFile") final InputStream selectedFile,
       @FormDataParam("largeIconSelectedFile") final FormDataContentDisposition selectedFileDisposition) {
     if ((displayName == null) || displayName.equalsIgnoreCase("") || (anchor == null) || anchor.equalsIgnoreCase("")) {
       return Response.ok(new Viewable("/addIcon", "Display name and anchor are mandatory")).build();
@@ -320,18 +322,22 @@ public class MELMResource {
       if ((largeIconFile != null) && (largeIconFile.length() <= 0)) {
         return Response.ok(new Viewable("/addIcon", "Invalid large icon file")).build();
       }
-      
-      // Check the file is at least 100px by 100px and square
-      if(!MELMUtils.checkImageSize(largeIconFile)) {
-        return Response.ok(new Viewable("/addIcon", "Invalid size for large icon file (must be at least 100px by 100px)")).build();
+
+      // Check the file is 100px by 100px
+      if (!MELMUtils.checkImageSize(largeIconFile)) {
+        return Response.ok(new Viewable("/addIcon", "Invalid size for large icon file (must be 100px by 100px)")).build();
       }
-      
+
       File largeIconSelectedFile = null;
-      if("new".equals(iconSelectedChoice)) {
+      if ("new".equals(iconSelectedChoice)) {
         largeIconSelectedFile = File.createTempFile("fromUpload", selectedFileDisposition.getFileName());
         FileUtils.writeByteArrayToFile(largeIconSelectedFile, IOUtils.toByteArray(selectedFile));
         if ((largeIconSelectedFile != null) && (largeIconSelectedFile.length() <= 0)) {
           return Response.ok(new Viewable("/addIcon", "Invalid large icon selected file")).build();
+        }
+        // Check the file is 100px by 100px
+        if (!MELMUtils.checkImageSize(largeIconSelectedFile)) {
+          return Response.ok(new Viewable("/addIcon", "Invalid size for large icon selected file (must be 100px by 100px)")).build();
         }
       }
       melmService.addIconAndFiles(displayName, MapElementIconAnchor.valueOf(anchor.toUpperCase()), largeIconFile, largeIconSelectedFile);
@@ -519,21 +525,54 @@ public class MELMResource {
   @Path("/icons/update")
   public Response performUpdateIcon(@Context final UriInfo uriInfo, @FormDataParam("id") final long id,
       @FormDataParam("displayName") final String displayName, @FormDataParam("anchor") final String anchor,
+      @FormDataParam("iconChoice") final String iconChoice, @FormDataParam("iconSelectedChoice") final String iconSelectedChoice,
       @FormDataParam("largeIconFile") final InputStream file,
-      @FormDataParam("largeIconFile") final FormDataContentDisposition fileDisposition) {
+      @FormDataParam("largeIconFile") final FormDataContentDisposition fileDisposition,
+      @FormDataParam("largeIconSelectedFile") final InputStream selectedFile,
+      @FormDataParam("largeIconSelectedFile") final FormDataContentDisposition selectedFileDisposition) {
     if ((displayName == null) || displayName.equalsIgnoreCase("") || (anchor == null) || anchor.equalsIgnoreCase("")) {
       final MapElementIcon icon = melmService.getIcon(id);
       final String error = "Display name and anchor are mandatory";
       return Response.ok(new Viewable("/updateIcon", new UpdateIconModel(icon, error))).build();
     }
     try {
-      final File largeIconFile = File.createTempFile("fromUpload", fileDisposition.getFileName());
-      FileUtils.writeByteArrayToFile(largeIconFile, IOUtils.toByteArray(file));
-      if ((largeIconFile != null) && (largeIconFile.length() > 0)) {
-        melmService.updateIconAndFiles(id, displayName, MapElementIconAnchor.valueOf(anchor.toUpperCase()), largeIconFile);
-      } else {
-        melmService.updateIconAndFiles(id, displayName, MapElementIconAnchor.valueOf(anchor.toUpperCase()), null);
+      File largeIconFile = null;
+      File largeIconSelectedFile = null;
+
+      if ("new".equals(iconChoice)) {
+        largeIconFile = File.createTempFile("fromUpload", fileDisposition.getFileName());
+        FileUtils.writeByteArrayToFile(largeIconFile, IOUtils.toByteArray(file));
+        if ((largeIconFile != null) && (largeIconFile.length() > 0)) {
+          // Check the file is 100px by 100px
+          if (!MELMUtils.checkImageSize(largeIconFile)) {
+            final MapElementIcon icon = melmService.getIcon(id);
+            return Response.ok(
+                new Viewable("/updateIcon", new UpdateIconModel(icon, "Invalid size for large icon file (must be 100px by 100px)")))
+                .build();
+          }
+        }
       }
+      
+      boolean generate = false;
+      if("generate".equals(iconSelectedChoice)) {
+        generate = true;
+      }
+      else if("new".equals(iconSelectedChoice)) {
+        largeIconSelectedFile = File.createTempFile("fromUpload", selectedFileDisposition.getFileName());
+        FileUtils.writeByteArrayToFile(largeIconSelectedFile, IOUtils.toByteArray(selectedFile));
+        if ((largeIconSelectedFile != null) && (largeIconSelectedFile.length() > 0)) {
+          // Check the file is 100px by 100px
+          if (!MELMUtils.checkImageSize(largeIconSelectedFile)) {
+            final MapElementIcon icon = melmService.getIcon(id);
+            return Response.ok(
+                new Viewable("/updateIcon", new UpdateIconModel(icon, "Invalid size for large icon selected file (must be 100px by 100px)")))
+                .build();
+          }
+        }
+      }
+      melmService.updateIconAndFiles(id, displayName, MapElementIconAnchor.valueOf(anchor.toUpperCase()), largeIconFile,
+          largeIconSelectedFile, generate);
+
     } catch (final IOException e) {
       LOGGER.warn("Error in performUpdateIcon", e);
       return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
@@ -545,7 +584,7 @@ public class MELMResource {
     }
     final URI uri = uriInfo.getBaseUriBuilder().path("/rest/icons").build();
     return Response.seeOther(uri).build();
-  } 
+  }
 
   @POST
   @Consumes(MediaType.MULTIPART_FORM_DATA)
