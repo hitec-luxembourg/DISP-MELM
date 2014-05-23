@@ -492,12 +492,15 @@ public class MELMServiceImpl implements MELMService {
 
         for (final IconSize iconSize : IconSize.values()) {
           final File sourceIconFile = new File(iconsDirectory, icon.getFilePath(iconSize, false));
+          final File sourceIconSelectedFile = new File(iconsDirectory, icon.getFilePath(iconSize, true));
           final File libraryIconSizeFolder = new File(libraryRootFolder, iconSize.getSize());
           if (!libraryIconSizeFolder.mkdirs()) {
             LOGGER.debug("Failed to perform mkdir for libraryIconSizeFolder");
           }
           final File targetIconFile = new File(libraryIconSizeFolder, String.format("%s.png", mapElementLibraryIcon.getIconNameInLibrary()));
+          final File targetIconSelectedFile = new File(libraryIconSizeFolder, String.format("%s_selected.png", mapElementLibraryIcon.getIconNameInLibrary()));
           FileUtils.copyFile(sourceIconFile, targetIconFile);
+          FileUtils.copyFile(sourceIconSelectedFile, targetIconSelectedFile);
         }
 
         final List<MapElementCustomProperty> customProperties = mapElementCustomPropertyDAO.getCustomProperties(mapElementLibraryIcon);
