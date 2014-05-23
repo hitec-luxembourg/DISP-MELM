@@ -11,12 +11,9 @@
 <jsp:include page="css-includes.jsp" />
 <jsp:include page="js-includes.jsp" />
 <script type="text/javascript" src="${ctx}/js/custom/updateIcon.js"></script>
-<<<<<<< HEAD
 <script type="text/javascript">
   var anchor = '${it.icon.anchor}';
 </script>
-=======
->>>>>>> 8652af4b4a50103a82114231e8ad4f65f5d0615b
 </head>
 <body ng-controller="UpdateIconCtrl">
   <jsp:include page="header.jsp" />
@@ -36,7 +33,6 @@
         </div>
       </div>
       <div class="form-group">
-<<<<<<< HEAD
         <label for="anchor" class="col-sm-2 control-label">Anchor</label>
         <div class="col-sm-10">
           <input type="hidden" class="form-control" id="anchor" name="anchor" ng-value="anchor">
@@ -60,9 +56,6 @@
       </div>
       <div class="form-group">
         <label for="largeIconFile" class="col-sm-2 control-label">New Large Icon File</label>
-=======
-        <label for="largeIconFile" class="col-sm-2 control-label">Large Icon File</label>
->>>>>>> 8652af4b4a50103a82114231e8ad4f65f5d0615b
         <div class="col-sm-10">
           <input type="file" id="largeIconFile" name="largeIconFile" maxlength='1000000' accept='image/png'>
         </div>
