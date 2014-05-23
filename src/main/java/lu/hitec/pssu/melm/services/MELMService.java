@@ -81,7 +81,7 @@ public interface MELMService {
 
   File getTargetArchiveFile(@Nonnull String libraryName, int majorVersion, int minorVersion) throws MELMException;
 
-  boolean iconsAvailable();
+  boolean iconsAvailable(@Nonnull long id);
 
   File importLibrary(@Nonnull String name, int majorVersion, int minorVersion, @Nonnull File libraryFile) throws MELMException;
 

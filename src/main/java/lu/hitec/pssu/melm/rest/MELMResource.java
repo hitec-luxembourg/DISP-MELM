@@ -157,7 +157,7 @@ public class MELMResource {
       results.add(dtoLibraryIcon);
     }
 
-    return Response.ok(new LibraryIconsModel(library, results, melmService.iconsAvailable())).build();
+    return Response.ok(new LibraryIconsModel(library, results, melmService.iconsAvailable(id))).build();
   }
 
   @GET
@@ -320,6 +320,12 @@ public class MELMResource {
       if ((largeIconFile != null) && (largeIconFile.length() <= 0)) {
         return Response.ok(new Viewable("/addIcon", "Invalid large icon file")).build();
       }
+      
+      // Check the file is at least 100px by 100px and square
+      if(!MELMUtils.checkImageSize(largeIconFile)) {
+        return Response.ok(new Viewable("/addIcon", "Invalid size for large icon file (must be at least 100px by 100px)")).build();
+      }
+      
       File largeIconSelectedFile = null;
       if("new".equals(iconSelectedChoice)) {
         largeIconSelectedFile = File.createTempFile("fromUpload", selectedFileDisposition.getFileName());

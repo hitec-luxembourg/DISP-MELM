@@ -660,8 +660,8 @@ public class MELMServiceImpl implements MELMService {
   }
 
   @Override
-  public boolean iconsAvailable() {
-    return mapElementIconDAO.iconsAvailable();
+  public boolean iconsAvailable(final long libraryId) {
+    return mapElementIconDAO.iconsAvailable(libraryId);
   }
 
   @Override

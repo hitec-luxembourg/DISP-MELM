@@ -71,10 +71,11 @@ public class MapElementIconDAOImpl implements MapElementIconDAO {
   }
 
   @Override
-  public boolean iconsAvailable() {
+  public boolean iconsAvailable(final long libraryId) {
     final TypedQuery<MapElementIcon> query = em.createQuery(
-        "SELECT mei FROM MapElementIcon mei WHERE mei NOT IN (SELECT DISTINCT meli.icon from MapElementLibraryIcon meli)",
+        "SELECT mei FROM MapElementIcon mei WHERE mei NOT IN (SELECT DISTINCT meli.icon from MapElementLibraryIcon meli where meli.library.id = :libraryId)",
         MapElementIcon.class);
+    query.setParameter("libraryId", libraryId);
     final List<MapElementIcon> resultList = query.getResultList();
     return (null != resultList) && (0 < resultList.size());
   }

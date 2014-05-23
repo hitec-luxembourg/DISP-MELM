@@ -37,7 +37,8 @@
       <div class="row">
         <div ng-click="selectImage(icon.icon.id, icon.libraries)" ng-class="getClasses(icon.icon.id, icon.libraries)"
           ng-repeat="icon in icons | startFrom: (currentPage - 1) * itemsPerPage | limitTo: itemsPerPage">
-          <img ng-src="${ctx}/rest/icons/file/{{icon.icon.id}}/MEDIUM" alt="{{icon.icon.displayName}}" /><br />{{icon.icon.displayName}}
+          <img ng-src="{{links[icon.icon.id]}}" ng-mouseenter="changeImage(icon.icon.id, 'selected/')" ng-mouseleave="changeImage(icon.icon.id, '')">
+          <br />{{icon.icon.displayName}}
         </div>
       </div>
       <div class="pagination-centered">

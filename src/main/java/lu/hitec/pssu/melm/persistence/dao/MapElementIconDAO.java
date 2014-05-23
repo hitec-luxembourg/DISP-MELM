@@ -19,7 +19,7 @@ public interface MapElementIconDAO {
 
   MapElementIcon getMapElementIcon(final String hash, final long size);
 
-  boolean iconsAvailable();
+  boolean iconsAvailable(final long libraryId);
 
   List<MapElementIcon> listAllIcons();
 
