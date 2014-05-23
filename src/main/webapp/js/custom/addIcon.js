@@ -16,5 +16,6 @@ app.controller('AddIconCtrl', [ '$scope', '$window', function($scope, $window) {
   };
 
   $scope.anchor = "SE";
+  $scope.iconSelectedChoice = "generate";
 
 } ]);

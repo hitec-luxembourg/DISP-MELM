@@ -62,7 +62,7 @@ public class MELMUtilsTest {
         put("100x100.png", true);
         put("100x150.png", false);
         put("100x50.png", false);
-        put("150x150.png", true);
+        put("150x150.png", false);
         put("150x200.png", false);
         put("50x100.png", false);
         put("50x50.png", false);

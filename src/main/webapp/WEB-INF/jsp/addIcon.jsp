@@ -11,6 +11,7 @@
 <jsp:include page="css-includes.jsp" />
 <jsp:include page="js-includes.jsp" />
 <script type="text/javascript" src="${ctx}/js/custom/addIcon.js"></script>
+<script type="text/javascript" src="${ctx}/js/custom/inputFile.js"></script>
 </head>
 <body ng-controller="AddIconCtrl">
 	<jsp:include page="header.jsp" />
@@ -46,17 +47,32 @@
 			<div class="form-group">
 				<label for="largeIconFile" class="col-sm-2 control-label">Large Icon File</label>
 				<div class="col-sm-10">
-					<input type="file" id="largeIconFile" name="largeIconFile" maxlength='1000000' accept='image/png'>
+					<div class="input-group">
+						<span class="input-group-btn">
+							<span class="btn btn-primary btn-file">
+								Browse&hellip; <input type="file" id="largeIconFile" name="largeIconFile" maxlength='1000000' accept='image/png'>
+							</span>
+						</span>
+						<input type="text" class="form-control" readonly>
+					</div>
 				</div>
 			</div>
 			<div class="form-group">
 				<label for="largeIconSelectedFile" class="col-sm-2 control-label">Large Icon Selected File</label>
 				<div class="col-sm-10">
 					<div>
-						<input type="radio" name="iconSelectedChoice" value="generate" checked="true">Let the system generate a "selected" icon
+						<input type="radio" name="iconSelectedChoice" ng-model="iconSelectedChoice" value="generate">Let the system generate a "selected" icon
 					</div>
 					<div style="margin-top: 6px;">
-						<input type="radio" name="iconSelectedChoice" value="new">Upload a "selected" icon <input type="file" id="largeIconSelectedFile" name="largeIconSelectedFile" maxlength='1000000' accept='image/png'>
+						<input type="radio" name="iconSelectedChoice" ng-model="iconSelectedChoice" value="new">Upload a "selected" icon
+						<div class="input-group">
+							<span class="input-group-btn">
+								<span class="btn btn-primary btn-file" ng-disabled="iconSelectedChoice != 'new'" >
+									Browse&hellip; <input type="file" id="largeIconSelectedFile" name="largeIconSelectedFile" maxlength='1000000' accept='image/png'>
+								</span>
+							</span>
+							<input type="text" class="form-control" readonly>
+						</div>
 					</div>
 				</div>
 			</div>

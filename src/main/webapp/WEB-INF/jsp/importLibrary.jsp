@@ -11,6 +11,7 @@
 <jsp:include page="css-includes.jsp" />
 <jsp:include page="js-includes.jsp" />
 <script type="text/javascript" src="${ctx}/js/custom/importLibrary.js"></script>
+<script type="text/javascript" src="${ctx}/js/custom/inputFile.js"></script>
 <script type="text/javascript">
   $(document).ready(function() {
     $("#libraryFile").on("change", function() {
@@ -50,7 +51,14 @@
       <div class="form-group">
         <label for="libraryFile" class="col-sm-2 control-label">File</label>
         <div class="col-sm-10">
-          <input type="file" id="libraryFile" name="libraryFile" maxlength='1000000' accept='application/zip'>
+					<div class="input-group">
+						<span class="input-group-btn">
+							<span class="btn btn-primary btn-file" >
+								Browse&hellip; <input type="file" id="libraryFile" name="libraryFile" maxlength='1000000' accept='application/zip'>
+							</span>
+						</span>
+						<input type="text" class="form-control" readonly>
+					</div>
         </div>
       </div>
       <div class="form-group">

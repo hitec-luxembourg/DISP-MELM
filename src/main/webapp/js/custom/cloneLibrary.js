@@ -3,4 +3,5 @@ app.controller('CloneLibraryCtrl', [ '$scope', function($scope) {
     window.location = melmContextRoot + path;
   };
 
+  $scope.iconChoice = "existing";
 } ]);

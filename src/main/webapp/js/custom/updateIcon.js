@@ -17,4 +17,7 @@ app.controller('UpdateIconCtrl', [ '$scope', '$window', function($scope, $window
 
   $scope.anchor = $window.anchor;
 
+  $scope.iconChoice = "leave";
+  $scope.iconSelectedChoice = "leave";
+
 } ]);
