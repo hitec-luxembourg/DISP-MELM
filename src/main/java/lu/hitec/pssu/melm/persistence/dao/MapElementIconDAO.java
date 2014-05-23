@@ -19,6 +19,7 @@ public interface MapElementIconDAO {
 
   MapElementIcon getMapElementIcon(final String hash, final long size);
 
+  // FIXME this method should be move to MapElementLibraryIconDAO and takes the libraryId
   boolean iconsAvailable();
 
   List<MapElementIcon> listAllIcons();

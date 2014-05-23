@@ -12,6 +12,7 @@ import lu.hitec.pssu.melm.persistence.entity.MapElementLibraryIcon;
 
 public interface MapElementLibraryIconDAO {
 
+  // We still keep indexOfIconInLibrary for further usages as add icon after another icon if we know its index.
   MapElementLibraryIcon addIconToLibrary(MapElementLibrary library, MapElementIcon icon, int indexOfIconInLibrary,
       String iconNameInLibrary, String iconDescriptionInLibrary);
 
