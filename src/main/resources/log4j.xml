@@ -14,20 +14,14 @@
     </layout>
   </appender>
 
-  <appender name="melm-console" class="org.apache.log4j.ConsoleAppender">
-    <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="%-5p %d{yy-MM-dd HH:mm:ss}: %m (%F:%L) [%t]%n" />
-    </layout>
-  </appender>
-
   <!-- ===================================== PACKAGE-LEVEL logging settings =================================== -->
 
   <!-- Hibernate -->
-  <logger name="org.hibernate">
+  <logger name="org.hibernate" additivity="false">
     <level value="info" />
     <appender-ref ref="melm-file" />
   </logger>
-  <logger name="org.postgresql">
+  <logger name="org.postgresql" additivity="false">
     <level value="info" />
     <appender-ref ref="melm-file" />
   </logger>
@@ -35,27 +29,27 @@
   <!-- Hibernate generated SQL -->
   <logger name="org.hibernate.SQL" additivity="false">
     <level value="debug" />
-    <appender-ref ref="melm-console" />
+    <appender-ref ref="melm-file" />
   </logger>
 
   <!-- Hibernate abstract syntax trees for parsing predefined JPQL queries -->
-  <logger name="org.hibernate.hql.ast">
+  <logger name="org.hibernate.hql.ast" additivity="false">
     <level value="info" />
     <appender-ref ref="melm-file" />
   </logger>
-  <logger name="org.apache.http">
+  <logger name="org.apache.http" additivity="false">
     <level value="info" />
     <appender-ref ref="melm-file" />
   </logger>
 
   <!-- c3p0 -->
-  <logger name="com.mchange">
+  <logger name="com.mchange" additivity="false">
     <level value="info" />
     <appender-ref ref="melm-file" />
   </logger>
 
   <!-- Spring -->
-  <logger name="org.springframework">
+  <logger name="org.springframework" additivity="false">
     <level value="info" />
     <appender-ref ref="melm-file" />
   </logger>
@@ -64,7 +58,6 @@
   <logger name="lu.hitec.pssu.melm" additivity="false">
     <level value="debug" />
     <appender-ref ref="melm-file" />
-    <appender-ref ref="melm-console" />
   </logger>
 
   <!-- ROOT Logger settings -->
