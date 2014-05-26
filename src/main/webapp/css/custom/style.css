@@ -198,7 +198,7 @@ nav#main-nav {
   background-color: #eeeeee !important;
   width: 215px;
   height: 197px;
-  background: url("../../img/ic_target.png") no-repeat 85px 85px;
+  background: url("../../img/ic_target.png") no-repeat 90px 85px;
 }
 
 .anchor {
@@ -213,11 +213,11 @@ nav#main-nav {
 }
 
 .anchor-E {
-  background: url("../../img/anchor_E.png") no-repeat 0px;
+  background: url("../../img/anchor_E.png") no-repeat 3px;
 }
 
 .anchor-N {
-  background: url("../../img/anchor_N.png") no-repeat 0px;
+  background: url("../../img/anchor_N.png") no-repeat 5px;
 }
 
 .anchor-NE {
@@ -229,7 +229,7 @@ nav#main-nav {
 }
 
 .anchor-S {
-  background: url("../../img/anchor_S.png") no-repeat 0px;
+  background: url("../../img/anchor_S.png") no-repeat 5px;
 }
 
 .anchor-SE {
@@ -249,7 +249,7 @@ nav#main-nav {
   overflow: hidden;
 }
 
-.btn-file.disabled, .btn-file[disabled], fieldset[disabled] .btn-file {
+.btn-file.disabled,.btn-file[disabled],fieldset[disabled] .btn-file {
   color: #999999;
 }
 

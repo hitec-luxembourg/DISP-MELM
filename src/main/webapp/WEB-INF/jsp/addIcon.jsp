@@ -38,7 +38,7 @@
                         <a href="" ng-click="setAnchor('S')" ng-class="getClass('S')" style="position: absolute; top: 0px; left: 80px;"></a>
                         <a href="" ng-click="setAnchor('SE')" ng-class="getClass('SE')" style="position: absolute; top: 0px; left: 160px;"></a> 
                         <a href="" ng-click="setAnchor('W')" ng-class="getClass('W')" style="position: absolute; top: 80px; left: 0px;"></a>
-                        <a href="" ng-click="setAnchor('E')" ng-class="getClass('E')" style="position: absolute; top: 79px; left: 163px;"></a>
+                        <a href="" ng-click="setAnchor('E')" ng-class="getClass('E')" style="position: absolute; top: 80px; left: 160px;"></a>
                         <a href="" ng-click="setAnchor('NW')" ng-class="getClass('NW')" style="position: absolute; top: 160px; left: 0px;"></a>
                         <a href="" ng-click="setAnchor('N')" ng-class="getClass('N')" style="position: absolute; top: 160px; left: 80px;"></a>
                         <a href="" ng-click="setAnchor('NE')" ng-class="getClass('NE')" style="position: absolute; top: 160px; left: 160px;"></a>
