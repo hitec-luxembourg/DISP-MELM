@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="app">
 <head>
-<title>MALM - List Library element properties</title>
+<title>Pulse Collection - List Library element properties</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <jsp:include page="css-includes.jsp" />
@@ -58,16 +58,16 @@
               <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary btn-custom-default">
                 <span class="glyphicon glyphicon-refresh"></span><span class="hidden-xs hidden-sm">Update</span>
               </button>
-              <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-default btn-custom-cancel">
-                <span class="glyphicon glyphicon glyphicon-step-backward"></span><span class="hidden-xs hidden-sm">Cancel</span>
+              <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-default">
+                <span class="glyphicon glyphicon-remove"></span><span class="hidden-xs hidden-sm">Cancel</span>
               </button>
             </form>
             <ul class="nav nav-pills" ng-show="!rowform.$visible">
               <li><button class="btn" ng-click="rowform.$show()">
-                  <span class="glyphicon glyphicon-refresh"></span><span class="hidden-xs hidden-sm">Edit</span>
+                  <span class="glyphicon glyphicon-pencil"></span><span class="hidden-xs hidden-sm">Edit</span>
                 </button></li>
               <li><button class="btn" ng-click="confirmDelete(property.id)">
-                  <span class="glyphicon glyphicon-remove"></span><span class="hidden-xs hidden-sm">Delete</span>
+                  <span class="glyphicon glyphicon-trash"></span><span class="hidden-xs hidden-sm">Delete</span>
                 </button></li>
             </ul>
           </td>
@@ -79,8 +79,8 @@
         items-per-page="itemsPerPage"></pagination>
     </div>
     <hr />
-    <button type="button" ng-click="back()" class="btn btn-default btn-custom-cancel">
-      <span class="glyphicon glyphicon glyphicon-step-backward"></span>Back
+    <button type="button" ng-click="back()" class="btn btn-default">
+      <span class="glyphicon glyphicon-remove"></span>Back
     </button>
   </div>
   <jsp:include page="footer.jsp" />

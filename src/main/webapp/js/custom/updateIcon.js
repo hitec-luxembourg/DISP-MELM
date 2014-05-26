@@ -8,7 +8,7 @@ app.controller('UpdateIconCtrl', [ '$scope', '$window', function($scope, $window
   };
 
   $scope.getClass = function(anchor) {
-    var mainClass = 'anchor';
+    var mainClass = 'anchor' + ' anchor-' + anchor;
     if ($scope.anchor === anchor) {
       return mainClass + ' anchor-selected';
     }
@@ -16,5 +16,8 @@ app.controller('UpdateIconCtrl', [ '$scope', '$window', function($scope, $window
   };
 
   $scope.anchor = $window.anchor;
+
+  $scope.iconChoice = "leave";
+  $scope.iconSelectedChoice = "leave";
 
 } ]);

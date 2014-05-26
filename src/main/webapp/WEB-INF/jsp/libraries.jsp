@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="app">
 <head>
-<title>MALM - List Libraries</title>
+<title>Pulse Collection - List Libraries</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <jsp:include page="css-includes.jsp" />
@@ -48,7 +48,7 @@
                   <span class="glyphicon glyphicon-download"></span><span class="hidden-xs hidden-sm">Zip</span>
                 </button></li>
               <li><button class="btn" ng-click="confirmDelete(library.id)">
-                  <span class="glyphicon glyphicon-remove"></span><span class="hidden-xs hidden-sm">Delete</span>
+                  <span class="glyphicon glyphicon-trash"></span><span class="hidden-xs hidden-sm">Delete</span>
                 </button></li>
             </ul>
           </td>

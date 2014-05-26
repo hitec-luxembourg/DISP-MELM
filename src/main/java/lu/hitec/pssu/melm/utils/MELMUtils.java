@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
+import javax.imageio.ImageIO;
 
 import lu.hitec.pssu.melm.exceptions.MELMException;
 
@@ -121,7 +122,7 @@ public final class MELMUtils {
     graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
     graphics2D.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
     graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-    
+
     graphics2D.drawImage(blurImage, 0, 0, widthPx, heightPx, null);
 
     final float thickness = 5;
@@ -130,8 +131,24 @@ public final class MELMUtils {
     graphics2D.setPaint(Color.RED);
     graphics2D.drawRect(0, 0, widthPx, heightPx);
     graphics2D.setStroke(oldStroke);
-    
+
     graphics2D.dispose();
     return bufferedImage;
+  }
+
+  /**
+   * Check that the given file is an image 100px by 100px.
+   * 
+   * @param file
+   * @throws MELMException
+   */
+  public static boolean checkImageSize(final File file) throws MELMException {
+    try {
+      final BufferedImage originalImage = ImageIO.read(file);
+      return (originalImage.getHeight() == 100) && (originalImage.getWidth() == originalImage.getHeight()); 
+    } catch (final IOException e) {
+      final String msg = "Failed to assess image size.";
+      throw new MELMException(msg, e);
+    }
   }
 }

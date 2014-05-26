@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="app">
 <head>
-<title>MALM - List Library elements</title>
+<title>Pulse Collection - List Library elements</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <jsp:include page="css-includes.jsp" />
@@ -47,7 +47,7 @@
                   <span class="glyphicon glyphicon-refresh"></span>
                 </button></li>
               <li><button class="btn" ng-click="confirmDelete(icon.id)" tooltip-placement="top" tooltip="Delete">
-                  <span class="glyphicon glyphicon-remove"></span>
+                  <span class="glyphicon glyphicon-trash"></span>
                 </button></li>
               <li><button class="btn" ng-click="move('up', icon.id)" ng-style="isFirst(icon.id) && {'display': 'none'}"
                   tooltip-placement="top" tooltip="Move up">
@@ -69,8 +69,8 @@
     <hr />
     <button class="btn btn-add" ng-disabled="!libraryIconsModel.iconsAvailable"
       ng-click="go('/rest/libraries/icons/add/'+libraryIconsModel.library.id)">Add</button>
-    <button type="button" ng-click="go('/rest/libraries')" class="btn btn-default btn-custom-cancel">
-      <span class="glyphicon glyphicon glyphicon-step-backward"></span>Back
+    <button type="button" ng-click="go('/rest/libraries')" class="btn btn-default">
+      <span class="glyphicon glyphicon-remove"></span>Back
     </button>
   </div>
   <jsp:include page="footer.jsp" />

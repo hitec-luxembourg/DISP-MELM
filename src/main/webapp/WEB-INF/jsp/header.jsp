@@ -6,7 +6,7 @@
         <span class="sr-only">Toggle navigation</span>
         <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="${ctx}/rest/"><img alt="Map Assessment Library Management logo" src="${ctx}/img/library_ffdc00.png" />MALM</a>
+      <a class="navbar-brand" href="${ctx}/rest/"><img alt="Pulse Collection" src="${ctx}/img/library_ffdc00.png" />Pulse Collection</a>
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->

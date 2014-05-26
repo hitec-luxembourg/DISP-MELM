@@ -194,20 +194,77 @@ nav#main-nav {
 
 .anchor-wrapper {
   margin-top: 10px;
-  border-radius: 7px;
   position: relative;
-  background: #eeeeee;
-  width: 200px;
-  height: 200px;
+  background-color: #eeeeee !important;
+  width: 215px;
+  height: 197px;
+  background: url("../../img/ic_target.png") no-repeat 85px 85px;
 }
 
 .anchor {
   background: #cccccc;
-  width: 40px;
-  height: 40px;
+  width: 55px;
+  height: 37px;
   border: 0;
 }
 
 .anchor-selected {
-  background: #333333;
+  background-color: #333333 !important;
+}
+
+.anchor-E {
+  background: url("../../img/anchor_E.png") no-repeat 0px;
+}
+
+.anchor-N {
+  background: url("../../img/anchor_N.png") no-repeat 0px;
+}
+
+.anchor-NE {
+  background: url("../../img/anchor_NE.png") no-repeat 0px;
+}
+
+.anchor-NW {
+  background: url("../../img/anchor_NW.png") no-repeat 0px;
+}
+
+.anchor-S {
+  background: url("../../img/anchor_S.png") no-repeat 0px;
+}
+
+.anchor-SE {
+  background: url("../../img/anchor_SE.png") no-repeat 0px;
+}
+
+.anchor-SW {
+  background: url("../../img/anchor_SW.png") no-repeat 0px;
+}
+
+.anchor-W {
+  background: url("../../img/anchor_W.png") no-repeat 0px;
+}
+
+.btn-file {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-file.disabled, .btn-file[disabled], fieldset[disabled] .btn-file {
+  color: #999999;
+}
+
+.btn-file input[type=file] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 100%;
+  min-height: 100%;
+  font-size: 999px;
+  text-align: right;
+  filter: alpha(opacity = 0);
+  opacity: 0;
+  outline: none;
+  background: white;
+  cursor: inherit;
+  display: block;
 }

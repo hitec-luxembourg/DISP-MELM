@@ -18,6 +18,8 @@ public interface MapElementLibraryIconDAO {
 
   boolean checkIconInLibrary(@Nonnull MapElementLibrary library, @Nonnull MapElementIcon icon);
 
+  boolean checkNameInLibrary(@Nonnull MapElementLibrary library, @Nonnull String iconName);
+
   void deleteLibraryIcon(long id);
 
   List<MapElementLibraryIcon> getIconsInLibrary(MapElementLibrary library);

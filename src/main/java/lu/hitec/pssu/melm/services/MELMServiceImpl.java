@@ -214,6 +214,10 @@ public class MELMServiceImpl implements MELMService {
       final String msg = String.format("Icon %s is already linked to this library", mapElementIcon.getDisplayName());
       throw new MELMException(msg);
     }
+    if (mapElementLibraryIconDAO.checkNameInLibrary(library, iconName)) {
+      final String msg = String.format("Name %s is already used in this library", iconName);
+      throw new MELMException(msg);
+    }
     int indexToSupply = iconIndex;
     if (-1 == iconIndex) {
       final List<MapElementLibraryIcon> iconsInLibrary = mapElementLibraryIconDAO.getIconsInLibrary(library);
@@ -492,12 +496,16 @@ public class MELMServiceImpl implements MELMService {
 
         for (final IconSize iconSize : IconSize.values()) {
           final File sourceIconFile = new File(iconsDirectory, icon.getFilePath(iconSize, false));
+          final File sourceIconSelectedFile = new File(iconsDirectory, icon.getFilePath(iconSize, true));
           final File libraryIconSizeFolder = new File(libraryRootFolder, iconSize.getSize());
           if (!libraryIconSizeFolder.mkdirs()) {
             LOGGER.debug("Failed to perform mkdir for libraryIconSizeFolder");
           }
           final File targetIconFile = new File(libraryIconSizeFolder, String.format("%s.png", mapElementLibraryIcon.getIconNameInLibrary()));
+          final File targetIconSelectedFile = new File(libraryIconSizeFolder, String.format("%s_selected.png",
+              mapElementLibraryIcon.getIconNameInLibrary()));
           FileUtils.copyFile(sourceIconFile, targetIconFile);
+          FileUtils.copyFile(sourceIconSelectedFile, targetIconSelectedFile);
         }
 
         final List<MapElementCustomProperty> customProperties = mapElementCustomPropertyDAO.getCustomProperties(mapElementLibraryIcon);
@@ -657,8 +665,8 @@ public class MELMServiceImpl implements MELMService {
   }
 
   @Override
-  public boolean iconsAvailable() {
-    return mapElementIconDAO.iconsAvailable();
+  public boolean iconsAvailable(final long libraryId) {
+    return mapElementIconDAO.iconsAvailable(libraryId);
   }
 
   @Override
@@ -926,7 +934,7 @@ public class MELMServiceImpl implements MELMService {
   @Override
   @Transactional
   public void updateIconAndFiles(final long id, @Nonnull final String displayName, @Nonnull final MapElementIconAnchor anchor,
-      final File largeIconFileMaybeNull) throws MELMException {
+      final File largeIconFileMaybeNull, final File largeIconSelectedFileMaybeNull, final boolean generate) throws MELMException {
     assert displayName != null : "display name is null";
     assert anchor != null : "anchor is null";
     assert displayName.length() != 0 : "display name is empty";
@@ -950,7 +958,6 @@ public class MELMServiceImpl implements MELMService {
           displayName, anchor);
 
       try {
-        // FIXME manage selected file. For the moment I have duplicated the non selected variable.
         copyFile(mapElementIcon, largeIconFileMaybeNull, largeIconFileMaybeNull, IconSize.LARGE);
         final BufferedImage originalImage = ImageIO.read(largeIconFileMaybeNull);
 
@@ -970,6 +977,11 @@ public class MELMServiceImpl implements MELMService {
         throw new MELMException(msg, e);
       }
     }
+
+    if (largeIconSelectedFileMaybeNull == null) {
+    } else {
+
+    }
   }
 
   @Override
@@ -984,12 +996,16 @@ public class MELMServiceImpl implements MELMService {
     final MapElementIcon newIcon = mapElementIconDAO.getMapElementIcon(iconId);
     final MapElementLibraryIcon libraryIcon = mapElementLibraryIconDAO.getLibraryIcon(id);
     final MapElementIcon oldIcon = libraryIcon.getIcon();
-    if ((newIcon.getId() == oldIcon.getId()) || !mapElementLibraryIconDAO.checkIconInLibrary(libraryIcon.getLibrary(), newIcon)) {
-      mapElementLibraryIconDAO.updateLibraryIcon(id, newIcon, iconIndex, iconName, iconDescription);
-    } else {
+    final String oldName = libraryIcon.getIconNameInLibrary();
+    if ((newIcon.getId() != oldIcon.getId()) && mapElementLibraryIconDAO.checkIconInLibrary(libraryIcon.getLibrary(), newIcon)) {
       final String msg = String.format("Icon %s is already linked to this library", newIcon.getDisplayName());
       throw new MELMException(msg);
     }
+    if (!iconName.equalsIgnoreCase(oldName) && mapElementLibraryIconDAO.checkNameInLibrary(libraryIcon.getLibrary(), iconName)) {
+      final String msg = String.format("Name %s is already used in this library", iconName);
+      throw new MELMException(msg);
+    }
+    mapElementLibraryIconDAO.updateLibraryIcon(id, newIcon, iconIndex, iconName, iconDescription);
   }
 
   @Override

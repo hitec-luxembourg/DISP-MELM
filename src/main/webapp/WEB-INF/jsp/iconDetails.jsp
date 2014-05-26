@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="app">
 <head>
-<title>MALM - Icon details</title>
+<title>Pulse Collection - Icon details</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <jsp:include page="css-includes.jsp" />
@@ -37,8 +37,8 @@
       </tr>
     </table>
     <hr />
-    <button type="button" ng-click="go('/rest/icons')" class="btn btn-default btn-custom-cancel">
-      <span class="glyphicon glyphicon glyphicon-step-backward"></span><span class="hidden-xs hidden-sm">Back</span>
+    <button type="button" ng-click="go('/rest/icons')" class="btn btn-default">
+      <span class="glyphicon glyphicon-remove"></span><span class="hidden-xs hidden-sm">Cancel</span>
     </button>
   </div>
   <jsp:include page="footer.jsp" />

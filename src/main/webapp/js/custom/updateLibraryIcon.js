@@ -4,10 +4,27 @@ app.controller('UpdateLibraryIconCtrl', [ '$scope', '$http', '$window', function
     $http.get(melmContextRoot + '/rest/icons/linked/json').success(function(data) {
       $scope.loadingVisible = false;
       $scope.icons = data;
+      $scope.processLinks(data);
       $scope.totalItems = $scope.icons.length;
     });
   };
 
+  $scope.links = {};
+  
+  $scope.processLinks = function(data) {
+    $scope.links = {};
+    if(data && 0 < data.length) {
+      for(var i = 0; i < data.length; i++) {
+        var icon = data[i].icon;
+        $scope.links[icon.id] = melmContextRoot + "/rest/icons/file/" + icon.id + "/MEDIUM";
+      }
+    }
+  };
+
+  $scope.changeImage = function(id, which) {
+    $scope.links[id] = melmContextRoot + "/rest/icons/file/" + which + id + "/MEDIUM";
+  };
+  
   $scope.back = function() {
     $window.history.back();
   };

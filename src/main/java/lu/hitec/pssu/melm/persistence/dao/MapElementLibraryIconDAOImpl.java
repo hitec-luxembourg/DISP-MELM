@@ -37,25 +37,20 @@ public class MapElementLibraryIconDAOImpl implements MapElementLibraryIconDAO {
   }
 
   @Override
-  @Nonnull
-  public Set<MapElementLibrary> getLinkedLibraries(final MapElementIcon icon) {
-    final TypedQuery<MapElementLibraryIcon> query = em.createQuery("SELECT meli FROM MapElementLibraryIcon meli WHERE meli.icon = :icon",
-        MapElementLibraryIcon.class);
-    query.setParameter("icon", icon);
-    final List<MapElementLibraryIcon> list = query.getResultList();
-    final Set<MapElementLibrary> results = new HashSet<>();
-    for (final MapElementLibraryIcon mapElementLibraryIcon : list) {
-      results.add(mapElementLibraryIcon.getLibrary());
-    }
-    return results;
-  }
-
-  @Override
   public boolean checkIconInLibrary(final MapElementLibrary library, final MapElementIcon icon) {
     final TypedQuery<MapElementLibraryIcon> query = em.createQuery(
         "SELECT meli FROM MapElementLibraryIcon meli WHERE meli.library = :library AND meli.icon = :icon", MapElementLibraryIcon.class);
     query.setParameter("library", library);
     query.setParameter("icon", icon);
+    return !query.getResultList().isEmpty();
+  }
+
+  @Override
+  public boolean checkNameInLibrary(final MapElementLibrary library, final String iconName) {
+    final TypedQuery<MapElementLibraryIcon> query = em.createQuery(
+        "SELECT meli FROM MapElementLibraryIcon meli WHERE meli.library = :library AND meli.iconNameInLibrary = :iconName", MapElementLibraryIcon.class);
+    query.setParameter("library", library);
+    query.setParameter("iconName", iconName);
     return !query.getResultList().isEmpty();
   }
 
@@ -82,13 +77,27 @@ public class MapElementLibraryIconDAOImpl implements MapElementLibraryIconDAO {
   }
 
   @Override
+  @Nonnull
+  public Set<MapElementLibrary> getLinkedLibraries(final MapElementIcon icon) {
+    final TypedQuery<MapElementLibraryIcon> query = em.createQuery("SELECT meli FROM MapElementLibraryIcon meli WHERE meli.icon = :icon",
+        MapElementLibraryIcon.class);
+    query.setParameter("icon", icon);
+    final List<MapElementLibraryIcon> list = query.getResultList();
+    final Set<MapElementLibrary> results = new HashSet<>();
+    for (final MapElementLibraryIcon mapElementLibraryIcon : list) {
+      results.add(mapElementLibraryIcon.getLibrary());
+    }
+    return results;
+  }
+
+  @Override
   @CheckReturnValue
-  public MapElementLibraryIcon getPreviousLibraryIcon(final MapElementLibraryIcon libraryIcon) {
+  public MapElementLibraryIcon getNextLibraryIcon(final MapElementLibraryIcon libraryIcon) {
     MapElementLibraryIcon result = null;
     assert libraryIcon != null : "Library icon is null";
     final TypedQuery<MapElementLibraryIcon> query = em
         .createQuery(
-            "SELECT meli FROM MapElementLibraryIcon meli WHERE meli.indexOfIconInLibrary < :indexOfIconInLibrary ORDER BY meli.indexOfIconInLibrary DESC",
+            "SELECT meli FROM MapElementLibraryIcon meli WHERE meli.indexOfIconInLibrary > :indexOfIconInLibrary ORDER BY meli.indexOfIconInLibrary ASC",
             MapElementLibraryIcon.class).setMaxResults(1);
     query.setParameter("indexOfIconInLibrary", libraryIcon.getIndexOfIconInLibrary());
     try {
@@ -101,12 +110,12 @@ public class MapElementLibraryIconDAOImpl implements MapElementLibraryIconDAO {
 
   @Override
   @CheckReturnValue
-  public MapElementLibraryIcon getNextLibraryIcon(final MapElementLibraryIcon libraryIcon) {
+  public MapElementLibraryIcon getPreviousLibraryIcon(final MapElementLibraryIcon libraryIcon) {
     MapElementLibraryIcon result = null;
     assert libraryIcon != null : "Library icon is null";
     final TypedQuery<MapElementLibraryIcon> query = em
         .createQuery(
-            "SELECT meli FROM MapElementLibraryIcon meli WHERE meli.indexOfIconInLibrary > :indexOfIconInLibrary ORDER BY meli.indexOfIconInLibrary ASC",
+            "SELECT meli FROM MapElementLibraryIcon meli WHERE meli.indexOfIconInLibrary < :indexOfIconInLibrary ORDER BY meli.indexOfIconInLibrary DESC",
             MapElementLibraryIcon.class).setMaxResults(1);
     query.setParameter("indexOfIconInLibrary", libraryIcon.getIndexOfIconInLibrary());
     try {

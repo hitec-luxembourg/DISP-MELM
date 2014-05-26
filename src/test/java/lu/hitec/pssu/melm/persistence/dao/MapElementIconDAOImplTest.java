@@ -50,27 +50,28 @@ public class MapElementIconDAOImplTest {
 
 	@Test
 	public void testIconsAvailable() {
-		assertEquals(0, mapElementIconDAO.listAllIcons().size());
-		assertFalse(mapElementIconDAO.iconsAvailable());
+    final MapElementLibrary library = mapElementLibraryDAO.addMapElementLibrary("name", 2, 1, "iconMd5");
+    final long libraryId = library.getId();
+
+    assertEquals(0, mapElementIconDAO.listAllIcons().size());
+		assertFalse(mapElementIconDAO.iconsAvailable(libraryId));
 
 		final MapElementIcon icon = mapElementIconDAO.addMapElementIcon("14522dgdg22544dfgdfg225_", 1265, "myDisplayName_", MapElementIconAnchor.NE);
 
 		assertEquals(1, mapElementIconDAO.listAllIcons().size());
-		assertTrue(mapElementIconDAO.iconsAvailable());
+		assertTrue(mapElementIconDAO.iconsAvailable(libraryId));
 
-		final MapElementLibrary library = mapElementLibraryDAO.addMapElementLibrary("name", 2, 1, "iconMd5");
-		
 		final MapElementLibraryIcon iconToLibrary = mapElementLibraryIconDAO.addIconToLibrary(library, icon, 1, "iconNameInLibrary", "iconDescriptionInLibrary");
 		
 		
-		assertFalse(mapElementIconDAO.iconsAvailable());
+		assertFalse(mapElementIconDAO.iconsAvailable(libraryId));
 		
 		mapElementLibraryIconDAO.deleteLibraryIcon(iconToLibrary.getId());
-		assertTrue(mapElementIconDAO.iconsAvailable());
+		assertTrue(mapElementIconDAO.iconsAvailable(libraryId));
 		
 		mapElementLibraryDAO.deleteMapElementLibrary(library.getId());
 		mapElementIconDAO.delete(icon.getId());
 		
-		assertFalse(mapElementIconDAO.iconsAvailable());
+		assertFalse(mapElementIconDAO.iconsAvailable(libraryId));
 	}
 }

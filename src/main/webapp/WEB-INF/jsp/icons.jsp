@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="app">
 <head>
-<title>MALM - List Icons</title>
+<title>Pulse Collection - List Icons</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <jsp:include page="css-includes.jsp" />
@@ -41,7 +41,7 @@
                   <span class="glyphicon glyphicon-refresh"></span><span class="hidden-xs hidden-sm">Update</span>
                 </button></li>
               <li><button class="btn" ng-disabled="hasLibraries(icon)" ng-click="confirmDelete(icon.icon.id)">
-                  <span class="glyphicon glyphicon-remove"></span>Delete
+                  <span class="glyphicon glyphicon-trash"></span>Delete
                 </button></li>
             </ul>
           </td>

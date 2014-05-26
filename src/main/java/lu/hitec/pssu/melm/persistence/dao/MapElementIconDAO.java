@@ -7,26 +7,25 @@ import lu.hitec.pssu.melm.utils.MapElementIconAnchor;
 
 public interface MapElementIconDAO {
 
-  MapElementIcon addMapElementIcon(final String hash, final long size, final String displayName, final MapElementIconAnchor anchor);
+  MapElementIcon addMapElementIcon(String hash, long size, String displayName, MapElementIconAnchor anchor);
 
   void delete(long id);
 
-  void deleteMapElementIconForUnitTest(final String hash, final long size);
+  void deleteMapElementIconForUnitTest(String hash, long size);
 
   boolean exist(String hash, long size);
 
   MapElementIcon getMapElementIcon(long id);
 
-  MapElementIcon getMapElementIcon(final String hash, final long size);
+  MapElementIcon getMapElementIcon(String hash, long size);
 
-  // FIXME this method should be move to MapElementLibraryIconDAO and takes the libraryId
-  boolean iconsAvailable();
+  boolean iconsAvailable(long libraryId);
 
   List<MapElementIcon> listAllIcons();
 
-  MapElementIcon updateMapElementIcon(final long id, final String hash, final long size, final String displayName,
-      final MapElementIconAnchor anchor);
+  MapElementIcon updateMapElementIcon(long id, String hash, long size, String displayName,
+      MapElementIconAnchor anchor);
 
-  MapElementIcon updateMapElementIcon(final long id, final String displayName, final MapElementIconAnchor anchor);
+  MapElementIcon updateMapElementIcon(long id, String displayName, MapElementIconAnchor anchor);
 
 }

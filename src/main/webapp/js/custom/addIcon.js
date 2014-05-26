@@ -8,7 +8,7 @@ app.controller('AddIconCtrl', [ '$scope', '$window', function($scope, $window) {
   };
 
   $scope.getClass = function(anchor) {
-    var mainClass = 'anchor';
+    var mainClass = 'anchor' + ' anchor-' + anchor;
     if ($scope.anchor === anchor) {
       return mainClass + ' anchor-selected';
     }
@@ -16,5 +16,6 @@ app.controller('AddIconCtrl', [ '$scope', '$window', function($scope, $window) {
   };
 
   $scope.anchor = "SE";
+  $scope.iconSelectedChoice = "generate";
 
 } ]);

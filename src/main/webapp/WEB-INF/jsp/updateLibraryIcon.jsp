@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="app">
 <head>
-<title>MALM - Update library element</title>
+<title>Pulse Collection - Update library element</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <jsp:include page="css-includes.jsp" />
@@ -37,7 +37,8 @@
       <div class="row">
         <div ng-click="selectImage(icon.icon.id, icon.libraries)" ng-class="getClasses(icon.icon.id, icon.libraries)"
           ng-repeat="icon in icons | startFrom: (currentPage - 1) * itemsPerPage | limitTo: itemsPerPage">
-          <img ng-src="${ctx}/rest/icons/file/{{icon.icon.id}}/MEDIUM" alt="{{icon.icon.displayName}}" /><br />{{icon.icon.displayName}}
+          <img ng-src="{{links[icon.icon.id]}}" ng-mouseenter="changeImage(icon.icon.id, 'selected/')" ng-mouseleave="changeImage(icon.icon.id, '')">
+          <br />{{icon.icon.displayName}}
         </div>
       </div>
       <div class="pagination-centered">
@@ -63,8 +64,8 @@
           <button type="submit" class="btn">
             <span class="glyphicon glyphicon-refresh"></span>Update
           </button>
-          <button type="button" ng-click="back()" class="btn btn-default btn-custom-cancel">
-            <span class="glyphicon glyphicon glyphicon-step-backward"></span>Back
+          <button type="button" ng-click="back()" class="btn btn-default">
+            <span class="glyphicon glyphicon-remove"></span>Back
           </button>
         </div>
       </div>

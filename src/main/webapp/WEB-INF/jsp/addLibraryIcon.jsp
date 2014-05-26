@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="app">
 <head>
-<title>MALM - Add library element</title>
+<title>Pulse Collection - Add library element</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <jsp:include page="css-includes.jsp" />
@@ -55,8 +55,8 @@
       <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
           <button type="submit" class="btn btn-add">Add</button>
-          <button type="button" ng-click="back()" class="btn btn-default btn-custom-cancel">
-            <span class="glyphicon glyphicon glyphicon-step-backward"></span>Back
+          <button type="button" ng-click="back()" class="btn btn-default">
+            <span class="glyphicon glyphicon-remove"></span>Back
           </button>
         </div>
       </div>
