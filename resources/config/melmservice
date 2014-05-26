@@ -1,7 +1,8 @@
-melmservice.root.folder = D:/opt/pssu/melmservice
+melmservice.root.folder = dummy-path
 melmservice.libraries.folder = ${melmservice.root.folder}/libraries
 melmservice.icons.folder = ${melmservice.root.folder}/icons
 
 #Don't forget to provide the jdbc driver
-db.username=disp-melm-user
-db.password=changeThis
+db.username=dummy-user
+db.password=dummy-password
+db.url=jdbc:postgresql://localhost/dummy-name
