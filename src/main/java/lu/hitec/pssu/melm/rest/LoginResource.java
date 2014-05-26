@@ -58,13 +58,12 @@ public class LoginResource {
 			LOGGER.debug(String.format("Entering login for user : %s", userId));
 		}
 		if (melmService != null) {
-			final HttpSession session = request.getSession(true);
-			session.setAttribute(SESSION_PARAM_UID, userId);
-			// 1800 seconds = 30 minutes
-			session.setMaxInactiveInterval(1800);
-
 			// Dummy implementation of authentication.
 			if ("disp".equalsIgnoreCase(userId) && "melm".equalsIgnoreCase(password)) {
+	      final HttpSession session = request.getSession(true);
+	      session.setAttribute(SESSION_PARAM_UID, userId);
+	      // 1800 seconds = 30 minutes
+	      session.setMaxInactiveInterval(1800);
 				return buildRedirectResponse(uriInfo, "/rest/");
 			} else {
 				return Response.ok(new Viewable("/login", "Wrong User id or Password!")).build();
