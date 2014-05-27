@@ -939,48 +939,121 @@ public class MELMServiceImpl implements MELMService {
     assert anchor != null : "anchor is null";
     assert displayName.length() != 0 : "display name is empty";
 
-    if (largeIconFileMaybeNull == null) {
-      mapElementIconDAO.updateMapElementIcon(id, displayName, anchor);
-    } else {
-      String hashForLargeFile;
-      try {
-        hashForLargeFile = MELMUtils.getHashForFile(largeIconFileMaybeNull);
-      } catch (final IOException e) {
-        final String msg = "Failed to compute hash";
-        throw new MELMException(msg, e);
+    File iconFile_LARGE = null;
+    File iconFile_MEDIUM = null;
+    File iconFile_SMALL = null;
+    File iconFile_TINY = null;
+
+    File iconSelectedFile_LARGE = null;
+    File iconSelectedFile_MEDIUM = null;
+    File iconSelectedFile_SMALL = null;
+    File iconSelectedFile_TINY = null;
+
+    try {
+      // If the selected icon is null
+      if (null == largeIconSelectedFileMaybeNull) {
+        // we generate new ones
+        if (generate) {
+          BufferedImage originalImage = null;
+          // From the original one
+          if (null == largeIconFileMaybeNull) {
+            originalImage = ImageIO.read(getIconFile(id, IconSize.LARGE.name()));
+            // or from the new one
+          } else {
+            originalImage = ImageIO.read(largeIconFileMaybeNull);
+          }
+          iconSelectedFile_LARGE = File.createTempFile("selected", IconSize.LARGE.name());
+          ImageIO.write(MELMUtils.createSelectedImage(originalImage, 100, 100), "png", iconSelectedFile_LARGE);
+          iconSelectedFile_MEDIUM = File.createTempFile("selected", IconSize.MEDIUM.name());
+          ImageIO.write(MELMUtils.createSelectedImage(originalImage, 60, 60), "png", iconSelectedFile_MEDIUM);
+          iconSelectedFile_SMALL = File.createTempFile("selected", IconSize.SMALL.name());
+          ImageIO.write(MELMUtils.createSelectedImage(originalImage, 40, 40), "png", iconSelectedFile_SMALL);
+          iconSelectedFile_TINY = File.createTempFile("selected", IconSize.TINY.name());
+          ImageIO.write(MELMUtils.createSelectedImage(originalImage, 20, 20), "png", iconSelectedFile_TINY);
+        }
+        // or we keep the original ones
+        else {
+          iconSelectedFile_LARGE = getIconSelectedFile(id, IconSize.LARGE.name());
+          iconSelectedFile_MEDIUM = getIconSelectedFile(id, IconSize.MEDIUM.name());
+          iconSelectedFile_SMALL = getIconSelectedFile(id, IconSize.SMALL.name());
+          iconSelectedFile_TINY = getIconSelectedFile(id, IconSize.TINY.name());
+        }
+
+        // or it's a new selected icon
+      } else {
+        final BufferedImage selectedImage = ImageIO.read(largeIconSelectedFileMaybeNull);
+        iconSelectedFile_LARGE = largeIconSelectedFileMaybeNull;
+
+        // We create all sizes
+        iconSelectedFile_MEDIUM = File.createTempFile("selected", IconSize.MEDIUM.name());
+        ImageIO.write(MELMUtils.resizeImageWithHint(selectedImage, 60, 60), "png", iconSelectedFile_MEDIUM);
+        iconSelectedFile_SMALL = File.createTempFile("selected", IconSize.SMALL.name());
+        ImageIO.write(MELMUtils.resizeImageWithHint(selectedImage, 40, 40), "png", iconSelectedFile_SMALL);
+        iconSelectedFile_TINY = File.createTempFile("selected", IconSize.TINY.name());
+        ImageIO.write(MELMUtils.resizeImageWithHint(selectedImage, 20, 20), "png", iconSelectedFile_TINY);
       }
-      if (mapElementIconDAO.exist(hashForLargeFile, largeIconFileMaybeNull.length())) {
-        final String msg = "Updating icon and files aborted because the icon exists";
-        LOGGER.warn(msg);
-        throw new MELMException(msg);
+
+      MapElementIcon mapElementIcon = null;
+      // If the icon is null, we load the existing ones
+      if (largeIconFileMaybeNull == null) {
+        iconFile_LARGE = getIconFile(id, IconSize.LARGE.name());
+        iconFile_MEDIUM = getIconFile(id, IconSize.MEDIUM.name());
+        iconFile_SMALL = getIconFile(id, IconSize.SMALL.name());
+        iconFile_TINY = getIconFile(id, IconSize.TINY.name());
       }
-      final MapElementIcon mapElementIcon = mapElementIconDAO.updateMapElementIcon(id, hashForLargeFile, largeIconFileMaybeNull.length(),
-          displayName, anchor);
+
+      // Else we have a new one that is 100px by 100px (checked in MELMResource.performUpdateIcon)
+      else {
+        String hashForLargeFile;
+        try {
+          hashForLargeFile = MELMUtils.getHashForFile(largeIconFileMaybeNull);
+        } catch (final IOException e) {
+          final String msg = "Failed to compute hash";
+          throw new MELMException(msg, e);
+        }
+        if (mapElementIconDAO.exist(hashForLargeFile, largeIconFileMaybeNull.length())) {
+          final String msg = "Updating icon and files aborted because the icon exists";
+          LOGGER.warn(msg);
+          throw new MELMException(msg);
+        }
+        mapElementIcon = mapElementIconDAO.updateMapElementIcon(id, hashForLargeFile, largeIconFileMaybeNull.length(), displayName, anchor);
+
+        final BufferedImage image = ImageIO.read(largeIconFileMaybeNull);
+        iconFile_LARGE = largeIconFileMaybeNull;
+
+        // We create all sizes
+        iconFile_MEDIUM = File.createTempFile("icon", IconSize.MEDIUM.name());
+        ImageIO.write(MELMUtils.resizeImageWithHint(image, 60, 60), "png", iconFile_MEDIUM);
+        iconFile_SMALL = File.createTempFile("icon", IconSize.SMALL.name());
+        ImageIO.write(MELMUtils.resizeImageWithHint(image, 40, 40), "png", iconFile_SMALL);
+        iconFile_TINY = File.createTempFile("icon", IconSize.TINY.name());
+        ImageIO.write(MELMUtils.resizeImageWithHint(image, 20, 20), "png", iconFile_TINY);
+      }
+
+      // Update the data
+      if (null == mapElementIcon) {
+        mapElementIcon = mapElementIconDAO.updateMapElementIcon(id, displayName, anchor);
+      }
 
       try {
-        copyFile(mapElementIcon, largeIconFileMaybeNull, largeIconFileMaybeNull, IconSize.LARGE);
-        final BufferedImage originalImage = ImageIO.read(largeIconFileMaybeNull);
-
-        final File mediumIconFile = File.createTempFile("fromUpload", IconSize.MEDIUM.name());
-        ImageIO.write(MELMUtils.resizeImageWithHint(originalImage, 60, 60), "png", mediumIconFile);
-        copyFile(mapElementIcon, mediumIconFile, mediumIconFile, IconSize.MEDIUM);
-
-        final File smallIconFile = File.createTempFile("fromUpload", IconSize.SMALL.name());
-        ImageIO.write(MELMUtils.resizeImageWithHint(originalImage, 40, 40), "png", smallIconFile);
-        copyFile(mapElementIcon, smallIconFile, smallIconFile, IconSize.SMALL);
-
-        final File tinyIconFile = File.createTempFile("fromUpload", IconSize.TINY.name());
-        ImageIO.write(MELMUtils.resizeImageWithHint(originalImage, 20, 20), "png", tinyIconFile);
-        copyFile(mapElementIcon, tinyIconFile, tinyIconFile, IconSize.TINY);
+        // Delete the old images
+        deleteFile(mapElementIcon, IconSize.LARGE);
+        deleteFile(mapElementIcon, IconSize.MEDIUM);
+        deleteFile(mapElementIcon, IconSize.SMALL);
+        deleteFile(mapElementIcon, IconSize.TINY);
+        
+        // Update the images
+        copyFile(mapElementIcon, iconFile_LARGE, iconSelectedFile_LARGE, IconSize.LARGE);
+        copyFile(mapElementIcon, iconFile_MEDIUM, iconSelectedFile_MEDIUM, IconSize.MEDIUM);
+        copyFile(mapElementIcon, iconFile_SMALL, iconSelectedFile_SMALL, IconSize.SMALL);
+        copyFile(mapElementIcon, iconFile_TINY, iconSelectedFile_TINY, IconSize.TINY);
       } catch (final IOException e) {
         final String msg = "Failed to copy a file";
         throw new MELMException(msg, e);
       }
-    }
 
-    if (largeIconSelectedFileMaybeNull == null) {
-    } else {
-
+    } catch (final IOException e) {
+      throw new MELMException("Failed to update icon", e);
     }
   }
 
@@ -1062,8 +1135,12 @@ public class MELMServiceImpl implements MELMService {
         LOGGER.debug("Parent folders were created");
       }
     }
-    FileUtils.copyFile(file, targetIconFile);
-    FileUtils.copyFile(selectedFile, targetIconSelectedFile);
+    if (!file.equals(targetIconFile)) {
+      FileUtils.copyFile(file, targetIconFile);
+    }
+    if (!selectedFile.equals(targetIconSelectedFile)) {
+      FileUtils.copyFile(selectedFile, targetIconSelectedFile);
+    }
   }
 
   private void moveImportedFile(@Nonnull final File libraryFolder, @Nonnull final String fileNameWithExtension,
@@ -1104,6 +1181,10 @@ public class MELMServiceImpl implements MELMService {
     final String filePath = mapElementIcon.getFilePath(size, false);
     final File file = new File(filePath);
     FileUtils.deleteQuietly(file);
+
+    final String selectedFilePath = mapElementIcon.getFilePath(size, true);
+    final File selectedFile = new File(selectedFilePath);
+    FileUtils.deleteQuietly(selectedFile);
   }
 
   public enum IconSize {
