@@ -25,7 +25,7 @@
         <tr>
           <td align="left" style="width: 200px"><a href="" ng-click="predicate='icon.displayName'; reverse=!reverse">Name</a></td>
           <td align="left" style="width: 200px"><a href="" ng-click="predicate='icon.anchor'; reverse=!reverse">Anchor</a></td>
-          <td align="left" style="width: 200px">Linked libraries</td>
+          <td align="left" style="width: 200px"><a href="" ng-click="predicate='icon.librariesAsString'; reverse=!reverse">Linked libraries</a></td>
           <td align="left" style="width: 100px">Preview</td>
           <td align="left">Actions</td>
         </tr>
