@@ -11,54 +11,73 @@
 <jsp:include page="css-includes.jsp" />
 <jsp:include page="js-includes.jsp" />
 <script type="text/javascript" src="${ctx}/js/custom/addLibrary.js"></script>
-<script type="text/javascript" src="${ctx}/js/custom/inputFile.js"></script>
 </head>
-<body ng-controller="AddLibraryCtrl">
-	<jsp:include page="header.jsp" />
-	<div class="container">
-		<div class="page-header">
-			<h1>Add library</h1>
-		</div>
-		<c:if test="${not empty it}">
-			<div class="alert alert-danger">${it}</div>
-		</c:if>
-		<form method="POST" action="${ctx}/rest/libraries/add" enctype='multipart/form-data' class="form-horizontal" role="form">
-			<div class="form-group">
-				<label for="libraryName" class="col-sm-2 control-label">Name</label>
-				<div class="col-sm-10">
-					<input type="text" class="form-control" id="libraryName" name="libraryName" placeholder="Specify a library name">
-				</div>
-			</div>
-			<div class="form-group">
-				<label for="version" class="col-sm-2 control-label">Version</label>
-				<div class="col-sm-10">
-					<input type="text" class="form-control" id="version" name="version" placeholder="Specify a library version">
-				</div>
-			</div>
-			<div class="form-group">
-				<label for="libraryIconFile" class="col-sm-2 control-label">Icon</label>
-				<div class="col-sm-10">
-					<div class="input-group">
-						<span class="input-group-btn">
-							<span class="btn btn-primary btn-file">
-								Browse&hellip; <input type="file" id="libraryIconFile" name="libraryIconFile" maxlength='1000000' accept='image/png'>
-							</span>
-						</span>
-						<input type="text" class="form-control" readonly>
-					</div>
-				</div>
-			</div>
-			<div class="form-group">
-				<div class="col-sm-offset-2 col-sm-10">
-					<button type="submit" class="btn btn-add">Add</button>
-					<button type="button" ng-click="go('/rest/libraries')" class="btn btn-default">
-						<span class="glyphicon glyphicon-remove"></span>
-						Cancel
-					</button>
-				</div>
-			</div>
-		</form>
-	</div>
-	<jsp:include page="footer.jsp" />
+<body ng-controller="AddLibraryCtrl" ng-file-drop>
+  <jsp:include page="header.jsp" />
+  <div class="container">
+    <div class="page-header">
+      <h1>Add library</h1>
+    </div>
+    <form method="POST" class="form-horizontal" role="form">
+      <div class="jumbotron">
+        <p>
+          Click on the following button or drag and drop your file in order to select a library icon.<br />Then you can click on the 'add'
+          button if you want to create the library or on the 'delete' button if you want to use another file.
+        </p>
+        <p>
+          <span class="btn btn-primary btn-file"> <span class="glyphicon glyphicon-file"></span> Browse&hellip; <input type="file"
+            id="libraryIconFile" name="libraryIconFile" maxlength='1000000' accept='image/png' ng-file-select multiple />
+          </span>
+          <button type="button" ng-click="go('/rest/libraries')" class="btn btn-default">
+            <span class="glyphicon glyphicon-remove"></span>Cancel
+          </button>
+        <div ng-show="uploader.isHTML5" class="well my-drop-zone" ng-file-over>Drag and drop your library icon file here</div>
+      </div>
+      <div ng-show="uploader.queue.length===1">
+        <div class="form-group">
+          <label for="libraryName" class="col-sm-2 control-label">Name</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="libraryName" name="libraryName" placeholder="Specify a library name" ng-model="libraryName" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="version" class="col-sm-2 control-label">Version</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="version" name="version" placeholder="Specify a library version" ng-model="version" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="libraryIconFile" class="col-sm-2 control-label">Icon</label>
+          <div class="col-sm-10">
+            <table class="table" style="width: 100%">
+              <thead>
+                <tr>
+                  <th width="20%">File Name</th>
+                  <th ng-show="uploader.isHTML5">Size</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="item in uploader.queue">
+                  <td>{{item.file.name}}
+                    <div ng-show="uploader.isHTML5" ng-thumb="{ file: item.file, height: 100 }"></div>
+                  </td>
+                  <td ng-show="uploader.isHTML5" nowrap>{{ item.file.size/1024|number:2 }} KB</td>
+                  <td nowrap>
+                    <button type="button" class="btn btn-add" ng-click="item.upload()"
+                      ng-disabled="item.isReady || item.isUploading || item.isSuccess">Add</button>
+                    <button type="button" class="btn btn-danger" ng-click="item.remove()">
+                      <span class="glyphicon glyphicon-trash"></span> Remove
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <jsp:include page="footer.jsp" />
 </body>
 </html>

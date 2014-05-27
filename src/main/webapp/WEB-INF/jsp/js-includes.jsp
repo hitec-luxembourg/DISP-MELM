@@ -15,3 +15,4 @@
 <script type="text/javascript" src="${ctx}/js/angular-file-upload.min.js"></script>
 <script type="text/javascript" src="${ctx}/js/custom/functions.js"></script>
 <script type="text/javascript" src="${ctx}/js/custom/filters.js"></script>
+<script type="text/javascript" src="${ctx}/js/custom/directives.js"></script>

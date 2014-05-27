@@ -10,6 +10,7 @@ app.controller('ImportLibraryCtrl', [ '$scope', 'melmService', '$fileUploader', 
   // REGISTER HANDLERS
 
   uploader.bind('afteraddingfile', function(event, item) {
+    item.formData=[];
     item.formData.push({
       libraryName : $scope.detectLibraryName(item.file.name),
       version : $scope.detectLibraryVersion(item.file.name),

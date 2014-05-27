@@ -11,15 +11,6 @@
 <jsp:include page="css-includes.jsp" />
 <jsp:include page="js-includes.jsp" />
 <script type="text/javascript" src="${ctx}/js/custom/importLibrary.js"></script>
-<style>
-.my-drop-zone {
-  border: dotted 3px lightgray;
-}
-
-.ng-file-over {
-  border: dotted 3px red;
-} /* Default class applied to drop zones on over */
-</style>
 </head>
 <body ng-controller="ImportLibraryCtrl" ng-file-drop>
   <jsp:include page="header.jsp" />
@@ -27,9 +18,6 @@
     <div class="page-header">
       <h1>Import library</h1>
     </div>
-    <c:if test="${not empty it}">
-      <div class="alert alert-danger">${it}</div>
-    </c:if>
     <form method="POST" class="form-horizontal" role="form">
       <div class="jumbotron">
         <p>
@@ -53,7 +41,6 @@
               <th width="20%">Detected Name</th>
               <th width="20%">Detected Version</th>
               <th ng-show="uploader.isHTML5">Size</th>
-              <th ng-show="uploader.isHTML5">Progress</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -63,11 +50,6 @@
               <td>{{detectLibraryName(item.file.name)}}</td>
               <td>{{detectLibraryVersion(item.file.name)}}</td>
               <td ng-show="uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
-              <td ng-show="uploader.isHTML5">
-                <div class="progress" style="margin-bottom: 0;">
-                  <div class="progress-bar" role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
-                </div>
-              </td>
               <td nowrap>
                 <button type="button" class="btn btn-import" ng-click="item.upload()"
                   ng-disabled="item.isReady || item.isUploading || item.isSuccess">Import</button>
