@@ -355,13 +355,12 @@ public class MELMResource {
 
   @POST
   @Consumes(MediaType.MULTIPART_FORM_DATA)
-  @Produces(MediaType.TEXT_HTML)
   @Path("/libraries/add")
-  public Response performAddLibrary(@Context final UriInfo uriInfo, @FormDataParam("libraryName") final String libraryName,
-      @FormDataParam("version") final String version, @FormDataParam("libraryIconFile") final InputStream file,
+  public Response performAddLibrary(@FormDataParam("libraryName") final String libraryName, @FormDataParam("version") final String version,
+      @FormDataParam("libraryIconFile") final InputStream file,
       @FormDataParam("libraryIconFile") final FormDataContentDisposition fileDisposition) {
     if ((libraryName == null) || libraryName.equalsIgnoreCase("") || (version == null) || version.equalsIgnoreCase("")) {
-      return Response.ok(new Viewable("/addLibrary", "Library name and version are mandatory")).build();
+      return Response.status(Status.BAD_REQUEST).entity("Library name and version are mandatory").build();
     }
     try {
       final File libraryIconMaybeNull = File.createTempFile("fromUpload", fileDisposition.getFileName());
@@ -374,15 +373,11 @@ public class MELMResource {
       final int minorVersion = MELMUtils.getMinorVersion(version);
 
       melmService.addLibrary(libraryName, majorVersion, minorVersion, hashForFile);
-    } catch (final IOException e) {
+    } catch (final IOException | MELMException e) {
       LOGGER.warn("Error in performAddLibrary", e);
       return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
-    } catch (final MELMException e) {
-      LOGGER.warn("Error in performAddLibrary", e);
-      return Response.ok(new Viewable("/addLibrary", e.getMessage())).build();
     }
-    final URI uri = uriInfo.getBaseUriBuilder().path("/rest/libraries").build();
-    return Response.seeOther(uri).build();
+    return Response.ok().build();
   }
 
   @POST
@@ -486,7 +481,6 @@ public class MELMResource {
 
   @POST
   @Consumes(MediaType.MULTIPART_FORM_DATA)
-  @Produces(MediaType.TEXT_HTML)
   @Path("/libraries/import")
   public Response performImportLibrary(@FormDataParam("libraryName") final String libraryName,
       @FormDataParam("version") final String version, @FormDataParam("libraryFile") final InputStream file,
@@ -495,7 +489,7 @@ public class MELMResource {
       final File zipFileMaybeNull = File.createTempFile("fromUpload", fileDisposition.getFileName());
       FileUtils.writeByteArrayToFile(zipFileMaybeNull, IOUtils.toByteArray(file));
       if ((zipFileMaybeNull != null) && (zipFileMaybeNull.length() <= 0)) {
-        return Response.ok(new Viewable("/importLibrary", "Invalid zip file")).build();
+        return Response.status(Status.BAD_REQUEST).entity("Invalid zip file").build();
       }
       final int majorVersion = MELMUtils.getMajorVersion(version);
       final int minorVersion = MELMUtils.getMinorVersion(version);
