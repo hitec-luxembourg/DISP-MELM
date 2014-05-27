@@ -1,16 +1,13 @@
 app.controller('LibraryIconsCtrl', [
     '$scope',
     '$http',
-    '$location',
-    '$window',
-    function($scope, $http, $location, $window) {
+    'melmService',
+    function($scope, $http, melmService) {
       $scope.loadResources = function(id) {
-        $scope.loadingVisible = true;
-        $http.get(melmContextRoot + '/rest/libraries/icons/json/' + id).success(function(data) {
-          $scope.loadingVisible = false;
-          $scope.libraryIconsModel = data;
-          $scope.processLinks(data);
-          $scope.totalItems = data.icons.length;
+        melmService.loadResources($scope, '/rest/libraries/icons/json/' + id, function() {
+          $scope.processLinks($scope.resources);
+          // Override default instruction $scope.totalItems = $scope.resources.length;
+          $scope.totalItems = $scope.resources.icons.length;
         });
       };
 
@@ -23,11 +20,11 @@ app.controller('LibraryIconsCtrl', [
       };
 
       $scope.links = {};
-      
+
       $scope.processLinks = function(data) {
         $scope.links = {};
-        if(data && data.icons && 0 < data.icons.length) {
-          for(var i = 0; i < data.icons.length; i++) {
+        if (data && data.icons && 0 < data.icons.length) {
+          for (var i = 0; i < data.icons.length; i++) {
             var icon = data.icons[i].icon;
             $scope.links[icon.id] = melmContextRoot + "/rest/icons/file/" + icon.id + "/MEDIUM";
           }
@@ -37,9 +34,9 @@ app.controller('LibraryIconsCtrl', [
       $scope.changeImage = function(id, which) {
         $scope.links[id] = melmContextRoot + "/rest/icons/file/" + which + id + "/MEDIUM";
       };
-      
+
       $scope.deleteResource = function(id) {
-        var params = encodeParams({
+        var params = melmService.encodeParams({
           "id" : id
         });
         $http.post(melmContextRoot + '/rest/libraries/icons/delete', params, {
@@ -47,7 +44,7 @@ app.controller('LibraryIconsCtrl', [
             'Content-Type' : 'application/x-www-form-urlencoded'
           }
         }).success(function() {
-          $scope.loadResources(getRESTParameter('icons/'));
+          $scope.loadResources(melmService.getRESTParameter('icons/'));
         }).error(function() {
           BootstrapDialog.alert({
             title : 'ERROR',
@@ -62,11 +59,11 @@ app.controller('LibraryIconsCtrl', [
       };
 
       $scope.go = function(path) {
-        window.location = melmContextRoot + path;
+        melmService.go(path);
       };
 
       $scope.move = function(which, id) {
-        var params = encodeParams({
+        var params = melmService.encodeParams({
           "id" : id,
           "which" : which
         });
@@ -75,9 +72,9 @@ app.controller('LibraryIconsCtrl', [
             'Content-Type' : 'application/x-www-form-urlencoded'
           }
         }).success(function() {
-          $scope.loadResources(getRESTParameter('icons/'));
+          $scope.loadResources(melmService.getRESTParameter('icons/'));
         }).error(function() {
-          $scope.loadResources(getRESTParameter('icons/'));
+          $scope.loadResources(melmService.getRESTParameter('icons/'));
           BootstrapDialog.alert({
             title : 'ERROR',
             message : 'Resource move threw an error.',
@@ -106,5 +103,5 @@ app.controller('LibraryIconsCtrl', [
       $scope.itemsPerPage = 8;
       $scope.currentPage = 1;
       $scope.predicate = 'indexOfIconInLibrary';
-      $scope.loadResources(getRESTParameter('icons/'));
+      $scope.loadResources(melmService.getRESTParameter('icons/'));
     } ]);

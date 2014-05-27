@@ -62,7 +62,7 @@
 						<span class="glyphicon glyphicon-random"></span>
 						Clone
 					</button>
-					<button type="button" ng-click="go('/rest/libraries')" class="btn btn-default">
+					<button type="button" ng-click="back()" class="btn btn-default">
 						<span class="glyphicon glyphicon-remove"></span>
 						Cancel
 					</button>

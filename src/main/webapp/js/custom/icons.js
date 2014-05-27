@@ -1,11 +1,7 @@
-app.controller('IconsCtrl', [ '$scope', '$http', function($scope, $http) {
+app.controller('IconsCtrl', [ '$scope', '$http', 'melmService', function($scope, $http, melmService) {
   $scope.loadResources = function() {
-    $scope.loadingVisible = true;
-    $http.get(melmContextRoot + '/rest/icons/linked/json').success(function(data) {
-      $scope.loadingVisible = false;
-      $scope.icons = data;
-      $scope.processLinks(data);
-      $scope.totalItems = $scope.icons.length;
+    melmService.loadResources($scope, '/rest/icons/linked/json', function() {
+      $scope.processLinks($scope.resources);
     });
   };
 
@@ -24,37 +20,33 @@ app.controller('IconsCtrl', [ '$scope', '$http', function($scope, $http) {
   $scope.changeImage = function(id, which) {
     $scope.links[id] = melmContextRoot + "/rest/icons/file/" + which + id + "/MEDIUM";
   };
-  
-  $scope.confirmDelete = function(id) {
-    BootstrapDialog.confirm('Do you really want to delete this resource ?', function(result) {
-      if (result) {
-        $scope.deleteResource(id);
-      }
-    });
-  };
 
   $scope.hasLibraries = function(anIcon) {
     return anIcon && anIcon.libraries && 0 < anIcon.libraries.length;
   };
   
+  $scope.confirmDelete = function(id) {
+    melmService.confirmDelete($scope, id);
+  };
+  
   $scope.deleteResource = function(id) {
     $scope.error = null;
-    var params = encodeParams({
-      "id" : id
-    });
-    $http.post(melmContextRoot + '/rest/icons/delete', params, {
-      headers : {
-        'Content-Type' : 'application/x-www-form-urlencoded'
+    melmService.post({
+      params : {
+        "id" : id
+      },
+      url : '/rest/icons/delete',
+      successCallback : function() {
+        $scope.loadResources();
+      },
+      errorCallback : function() {
+        $scope.error = responseData;
       }
-    }).success(function() {
-      $scope.loadResources();
-    }).error(function(responseData) {
-      $scope.error = responseData;
     });
   };
 
   $scope.go = function(path) {
-    window.location = melmContextRoot + path;
+    melmService.go(path);
   };
 
   $scope.loadingVisible = false;

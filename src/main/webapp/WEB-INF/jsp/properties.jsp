@@ -48,7 +48,7 @@
           <td align="left">Actions</td>
         </tr>
         <tr
-          ng-repeat="property in properties | orderBy:predicate:reverse | startFrom: (currentPage - 1) * itemsPerPage | limitTo: itemsPerPage">
+          ng-repeat="property in resources | orderBy:predicate:reverse | startFrom: (currentPage - 1) * itemsPerPage | limitTo: itemsPerPage">
           <td align="left"><span editable-text="property.uniqueName" e-class="form-control" e-name="uniqueName" e-form="rowform">{{property.uniqueName}}</span></td>
           <td align="left"><span editable-select="property.type" e-class="form-control" e-name="type" e-form="rowform"
             e-ng-options="item.id as item.title for item in customPropertyTypes">{{property.type}}</span></td>

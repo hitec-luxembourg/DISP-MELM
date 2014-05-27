@@ -5,7 +5,7 @@
 <script type="text/javascript" src="${ctx}/js/jquery.min.js"></script>
 <script type="text/javascript" src="${ctx}/js/angular.min.js"></script>
 <script type="text/javascript">
-  var app = angular.module('app', [ 'xeditable', 'ui.bootstrap', 'melmFilters' ]);
+  var app = angular.module('app', [ 'xeditable', 'ui.bootstrap' ]);
 </script>
 <script type="text/javascript" src="${ctx}/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="${ctx}/js/ui-bootstrap-tpls-0.11.0.min.js"></script>

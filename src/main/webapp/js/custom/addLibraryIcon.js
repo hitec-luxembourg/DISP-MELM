@@ -1,15 +1,10 @@
-app.controller('AddLibraryIconCtrl', [ '$scope', '$http', '$window', function($scope, $http, $window) {
+app.controller('AddLibraryIconCtrl', [ '$scope', '$http', '$window', 'melmService', function($scope, $http, $window, melmService) {
   $scope.loadResources = function() {
-    $scope.loadingVisible = true;
-    $http.get(melmContextRoot + '/rest/icons/linked/json').success(function(data) {
-      $scope.loadingVisible = false;
-      $scope.icons = data;
-      $scope.totalItems = $scope.icons.length;
-    });
+    melmService.loadResources($scope, '/rest/icons/linked/json');
   };
 
   $scope.back = function() {
-    $window.history.back();
+    melmService.back();
   };
 
   $scope.selectImage = function(id, libraries) {

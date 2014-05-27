@@ -1,6 +1,6 @@
-app.controller('CloneLibraryCtrl', [ '$scope', function($scope) {
-  $scope.go = function(path) {
-    window.location = melmContextRoot + path;
+app.controller('CloneLibraryCtrl', [ '$scope', 'melmService', function($scope, melmService) {
+  $scope.back = function() {
+    melmService.back();
   };
 
   $scope.iconChoice = "existing";

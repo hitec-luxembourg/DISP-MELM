@@ -31,9 +31,9 @@
       <input name="id" id="id" type="hidden" value="${it.library.id}" /> <input name="iconIndex" id="iconIndex" type="hidden" value="-1" />
       <input type="text" id="iconId" name="iconId" ng-value="id" ng-checked="isSelected(-1)" style="display: none" />
       <div class="row">
-        <div ng-click="selectImage(icon.icon.id, icon.libraries)" ng-class="getClasses(icon.icon.id, icon.libraries)"
-          ng-repeat="icon in icons | startFrom: (currentPage - 1) * itemsPerPage | limitTo: itemsPerPage">
-          <img ng-src="${ctx}/rest/icons/file/{{icon.icon.id}}/MEDIUM" alt="{{icon.icon.displayName}}" /><br />{{icon.icon.displayName}}
+        <div ng-click="selectImage(resource.icon.id, resource.libraries)" ng-class="getClasses(resource.icon.id, resource.libraries)"
+          ng-repeat="resource in resources | startFrom: (currentPage - 1) * itemsPerPage | limitTo: itemsPerPage">
+          <img ng-src="${ctx}/rest/icons/file/{{resource.icon.id}}/MEDIUM" alt="{{resource.icon.displayName}}" /><br />{{resource.icon.displayName}}
         </div>
       </div>
       <div class="pagination-centered">

@@ -30,17 +30,17 @@
           <td align="left" style="width: 100px">Preview</td>
           <td align="left">Actions</td>
         </tr>
-        <tr ng-repeat="icon in icons | orderBy:predicate:reverse | startFrom: (currentPage - 1) * itemsPerPage | limitTo: itemsPerPage">
-          <td align="left">{{icon.icon.displayName}}</td>
-          <td align="left">{{icon.icon.anchor}}</td>
-          <td align="left"><div ng-repeat="library in icon.libraries"><a href="" ng-click="go('/rest/libraries/icons/'+library.id)">{{library.name}}</a></div></td>
-          <td align="left"><a ng-href="${ctx}/rest/icons/details/{{icon.icon.id}}"><img ng-src="{{links[icon.icon.id]}}" ng-mouseenter="changeImage(icon.icon.id, 'selected/')" ng-mouseleave="changeImage(icon.icon.id, '')"></a></td>
+        <tr ng-repeat="resource in resources | orderBy:predicate:reverse | startFrom: (currentPage - 1) * itemsPerPage | limitTo: itemsPerPage">
+          <td align="left">{{resource.icon.displayName}}</td>
+          <td align="left">{{resource.icon.anchor}}</td>
+          <td align="left"><div ng-repeat="library in resource.libraries"><a href="" ng-click="go('/rest/libraries/icons/'+library.id)">{{library.name}}</a></div></td>
+          <td align="left"><a ng-href="${ctx}/rest/icons/details/{{resource.icon.id}}"><img ng-src="{{links[resource.icon.id]}}" ng-mouseenter="changeImage(resource.icon.id, 'selected/')" ng-mouseleave="changeImage(resource.icon.id, '')"></a></td>
           <td align="left">
             <ul class="nav nav-pills">
-              <li><button class="btn" ng-click="go('/rest/icons/update/'+icon.icon.id)">
+              <li><button class="btn" ng-click="go('/rest/icons/update/'+resource.icon.id)">
                   <span class="glyphicon glyphicon-refresh"></span><span class="hidden-xs hidden-sm">Update</span>
                 </button></li>
-              <li><button class="btn" ng-disabled="hasLibraries(icon)" ng-click="confirmDelete(icon.icon.id)">
+              <li><button class="btn" ng-disabled="hasLibraries(resource)" ng-click="confirmDelete(resource.icon.id)">
                   <span class="glyphicon glyphicon-trash"></span>Delete
                 </button></li>
             </ul>

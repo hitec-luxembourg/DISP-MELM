@@ -1,6 +1,6 @@
-app.controller('StartCtrl', function($scope, $http) {
+app.controller('StartCtrl', [ '$scope', 'melmService', function($scope, melmService) {
   $scope.go = function(path) {
-    window.location = melmContextRoot + path;
+    melmService.go(path);
   };
 
-});
+} ]);

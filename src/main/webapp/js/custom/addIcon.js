@@ -1,6 +1,6 @@
-app.controller('AddIconCtrl', [ '$scope', '$window', function($scope, $window) {
+app.controller('AddIconCtrl', [ '$scope', 'melmService', function($scope, melmService) {
   $scope.go = function(path) {
-    window.location = melmContextRoot + path;
+    melmService.go(path);
   };
 
   $scope.setAnchor = function(anchor) {

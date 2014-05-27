@@ -17,7 +17,7 @@
   <div class="container">
     <div class="page-header">
       <h1>
-        List library elements <small>{{libraryIconsModel.library.name}}-{{libraryIconsModel.library.majorVersion}}.{{libraryIconsModel.library.minorVersion}}</small>
+        List library elements <small>{{resources.library.name}}-{{resources.library.majorVersion}}.{{resources.library.minorVersion}}</small>
       </h1>
     </div>
     <progressbar class="progress-striped active" value="100" type="warning" ng-show="loadingVisible"> <i>Loading resources</i></progressbar>
@@ -32,7 +32,7 @@
           <td align="left" style="width: 300px">Actions</td>
         </tr>
         <tr
-          ng-repeat="icon in libraryIconsModel.icons | orderBy:predicate:reverse | startFrom: (currentPage - 1) * itemsPerPage | limitTo: itemsPerPage">
+          ng-repeat="icon in resources.icons | orderBy:predicate:reverse | startFrom: (currentPage - 1) * itemsPerPage | limitTo: itemsPerPage">
           <!-- td align="left">{{icon.indexOfIconInLibrary}}</td -->
           <td align="left">{{icon.iconNameInLibrary}}</td>
           <td align="left">{{icon.iconDescriptionInLibrary}}</td>
@@ -67,8 +67,8 @@
         items-per-page="itemsPerPage"></pagination>
     </div>
     <hr />
-    <button class="btn btn-add" ng-disabled="!libraryIconsModel.iconsAvailable"
-      ng-click="go('/rest/libraries/icons/add/'+libraryIconsModel.library.id)">Add</button>
+    <button class="btn btn-add" ng-disabled="!resources.iconsAvailable"
+      ng-click="go('/rest/libraries/icons/add/'+resources.library.id)">Add</button>
     <button type="button" ng-click="go('/rest/libraries')" class="btn btn-default">
       <span class="glyphicon glyphicon-remove"></span>Back
     </button>

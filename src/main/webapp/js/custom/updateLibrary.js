@@ -1,6 +1,6 @@
-app.controller('UpdateLibraryCtrl', [ '$scope', function($scope) {
+app.controller('UpdateLibraryCtrl', [ '$scope', 'melmService', function($scope, melmService) {
   $scope.go = function(path) {
-    window.location = melmContextRoot + path;
+    melmService(path);
   };
 
 } ]);

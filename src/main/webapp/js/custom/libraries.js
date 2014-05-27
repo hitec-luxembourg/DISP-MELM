@@ -1,11 +1,10 @@
-app.controller('LibrariesCtrl', [ '$scope', '$http', function($scope, $http) {
+app.controller('LibrariesCtrl', [ '$scope', '$http', 'melmService', function($scope, $http, melmService) {
   $scope.loadResources = function() {
-    $scope.loadingVisible = true;
-    $http.get(melmContextRoot + '/rest/libraries/json').success(function(data) {
-      $scope.loadingVisible = false;
-      $scope.libraries = data;
-      $scope.totalItems = $scope.libraries.length;
-    });
+    melmService.loadResources($scope, '/rest/libraries/json');
+  };
+
+  $scope.go = function(path) {
+    melmService.go(path);
   };
 
   $scope.confirmDelete = function(id) {
@@ -17,7 +16,7 @@ app.controller('LibrariesCtrl', [ '$scope', '$http', function($scope, $http) {
   };
 
   $scope.deleteResource = function(id) {
-    var params = encodeParams({
+    var params = melmService.encodeParams({
       "id" : id
     });
     $http.post(melmContextRoot + '/rest/libraries/delete', params, {
@@ -37,10 +36,6 @@ app.controller('LibrariesCtrl', [ '$scope', '$http', function($scope, $http) {
         }
       });
     });
-  };
-
-  $scope.go = function(path) {
-    window.location = melmContextRoot + path;
   };
 
   $scope.loadingVisible = false;

@@ -1,11 +1,6 @@
-app.controller('PropertiesCtrl', [ '$scope', '$http', '$window', function($scope, $http, $window) {
+app.controller('PropertiesCtrl', [ '$scope', '$http', 'melmService', function($scope, $http, melmService) {
   $scope.loadResources = function(id) {
-    $scope.loadingVisible = true;
-    $http.get(melmContextRoot + '/rest/libraries/icons/properties/json/' + id).success(function(data) {
-      $scope.loadingVisible = false;
-      $scope.properties = data;
-      $scope.totalItems = $scope.properties.length;
-    });
+    melmService.loadResources($scope, '/rest/libraries/icons/properties/json/' + id);
   };
 
   $scope.customPropertyTypes = [ {
@@ -21,7 +16,6 @@ app.controller('PropertiesCtrl', [ '$scope', '$http', '$window', function($scope
 
   $scope.resetResource = function() {
     $scope.error = null;
-
     if (!$scope.newResource) {
       $scope.newResource = {};
     }
@@ -32,8 +26,8 @@ app.controller('PropertiesCtrl', [ '$scope', '$http', '$window', function($scope
   $scope.createResource = function(data) {
     var uniqueName = data ? data.uniqueName : "";
     var type = data ? data.type : "";
-    var params = encodeParams({
-      "id" : getRESTParameter('properties/'),
+    var params = melmService.encodeParams({
+      "id" : melmService.getRESTParameter('properties/'),
       "uniqueName" : typeof uniqueName !== "undefined" ? uniqueName : "",
       "type" : typeof type !== "undefined" ? type : ""
     });
@@ -43,7 +37,7 @@ app.controller('PropertiesCtrl', [ '$scope', '$http', '$window', function($scope
       }
     }).success(function() {
       $scope.resetResource();
-      $scope.loadResources(getRESTParameter('properties/'));
+      $scope.loadResources(melmService.getRESTParameter('properties/'));
     }).error(function(responseData) {
       $scope.error = responseData;
     });
@@ -52,7 +46,7 @@ app.controller('PropertiesCtrl', [ '$scope', '$http', '$window', function($scope
   $scope.updateResource = function(data, id) {
     var uniqueName = data ? data.uniqueName : "";
     var type = data ? data.type : "";
-    var params = encodeParams({
+    var params = melmService.encodeParams({
       "id" : id,
       "uniqueName" : typeof uniqueName !== "undefined" ? uniqueName : "",
       "type" : typeof type !== "undefined" ? type : ""
@@ -62,10 +56,10 @@ app.controller('PropertiesCtrl', [ '$scope', '$http', '$window', function($scope
         'Content-Type' : 'application/x-www-form-urlencoded'
       }
     }).success(function() {
-      $scope.loadResources(getRESTParameter('properties/'));
+      $scope.loadResources(melmService.getRESTParameter('properties/'));
     }).error(function(responseData) {
       $scope.error = responseData;
-      $scope.loadResources(getRESTParameter('properties/'));
+      $scope.loadResources(melmService.getRESTParameter('properties/'));
     });
   };
 
@@ -78,7 +72,7 @@ app.controller('PropertiesCtrl', [ '$scope', '$http', '$window', function($scope
   };
 
   $scope.deleteResource = function(id) {
-    var params = encodeParams({
+    var params = melmService.encodeParams({
       "id" : id
     });
     $http.post(melmContextRoot + '/rest/libraries/icons/properties/delete', params, {
@@ -86,7 +80,7 @@ app.controller('PropertiesCtrl', [ '$scope', '$http', '$window', function($scope
         'Content-Type' : 'application/x-www-form-urlencoded'
       }
     }).success(function() {
-      $scope.loadResources(getRESTParameter('properties/'));
+      $scope.loadResources(melmService.getRESTParameter('properties/'));
     }).error(function() {
       BootstrapDialog.alert({
         title : 'ERROR',
@@ -98,10 +92,10 @@ app.controller('PropertiesCtrl', [ '$scope', '$http', '$window', function($scope
         }
       });
     });
-  }; 
-  
+  };
+
   $scope.back = function() {
-    $window.history.back();
+    melmService.back();
   };
 
   $scope.loadingVisible = false;
@@ -109,5 +103,5 @@ app.controller('PropertiesCtrl', [ '$scope', '$http', '$window', function($scope
   $scope.itemsPerPage = 7;
   $scope.currentPage = 1;
   $scope.predicate = 'uniqueName';
-  $scope.loadResources(getRESTParameter('properties/'));
+  $scope.loadResources(melmService.getRESTParameter('properties/'));
 } ]);

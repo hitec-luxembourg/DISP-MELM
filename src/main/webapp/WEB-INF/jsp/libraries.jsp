@@ -28,7 +28,7 @@
           <td align="left">Actions</td>
         </tr>
         <tr
-          ng-repeat="library in libraries | orderBy:predicate:reverse | startFrom: (currentPage - 1) * itemsPerPage | limitTo: itemsPerPage">
+          ng-repeat="library in resources | orderBy:predicate:reverse | startFrom: (currentPage - 1) * itemsPerPage | limitTo: itemsPerPage">
           <td align="left">{{library.name}}</td>
           <td align="left">{{library.majorVersion}}.{{library.minorVersion}}</td>
           <td align="left"><img ng-src="${ctx}/rest/libraries/icon/file/{{library.id}}"></td>
