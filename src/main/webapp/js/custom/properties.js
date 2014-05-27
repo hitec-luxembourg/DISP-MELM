@@ -15,7 +15,6 @@ app.controller('PropertiesCtrl', [ '$scope', '$http', 'melmService', function($s
   } ];
 
   $scope.resetResource = function() {
-    $scope.error = null;
     if (!$scope.newResource) {
       $scope.newResource = {};
     }
@@ -26,71 +25,76 @@ app.controller('PropertiesCtrl', [ '$scope', '$http', 'melmService', function($s
   $scope.createResource = function(data) {
     var uniqueName = data ? data.uniqueName : "";
     var type = data ? data.type : "";
-    var params = melmService.encodeParams({
-      "id" : melmService.getRESTParameter('properties/'),
-      "uniqueName" : typeof uniqueName !== "undefined" ? uniqueName : "",
-      "type" : typeof type !== "undefined" ? type : ""
-    });
-    $http.post(melmContextRoot + '/rest/libraries/icons/properties/add', params, {
-      headers : {
-        'Content-Type' : 'application/x-www-form-urlencoded'
+    melmService.post({
+      params : {
+        "id" : melmService.getRESTParameter('properties/'),
+        "uniqueName" : typeof uniqueName !== "undefined" ? uniqueName : "",
+        "type" : typeof type !== "undefined" ? type : ""
+      },
+      url : '/rest/libraries/icons/properties/add',
+      successCallback : function() {
+        $scope.resetResource();
+        $scope.loadResources(melmService.getRESTParameter('properties/'));
+      },
+      errorCallback : function(data) {
+        BootstrapDialog.alert({
+          title : 'ERROR',
+          message : data,
+          type : BootstrapDialog.TYPE_DANGER,
+          closable : true,
+          buttonLabel : 'Close'
+        });
       }
-    }).success(function() {
-      $scope.resetResource();
-      $scope.loadResources(melmService.getRESTParameter('properties/'));
-    }).error(function(responseData) {
-      $scope.error = responseData;
     });
   };
 
   $scope.updateResource = function(data, id) {
     var uniqueName = data ? data.uniqueName : "";
     var type = data ? data.type : "";
-    var params = melmService.encodeParams({
-      "id" : id,
-      "uniqueName" : typeof uniqueName !== "undefined" ? uniqueName : "",
-      "type" : typeof type !== "undefined" ? type : ""
-    });
-    $http.post(melmContextRoot + '/rest/libraries/icons/properties/update', params, {
-      headers : {
-        'Content-Type' : 'application/x-www-form-urlencoded'
+    melmService.post({
+      params : {
+        "id" : id,
+        "uniqueName" : typeof uniqueName !== "undefined" ? uniqueName : "",
+        "type" : typeof type !== "undefined" ? type : ""
+      },
+      url : '/rest/libraries/icons/properties/update',
+      successCallback : function() {
+        $scope.loadResources(melmService.getRESTParameter('properties/'));
+      },
+      errorCallback : function(data) {
+        BootstrapDialog.alert({
+          title : 'ERROR',
+          message : data,
+          type : BootstrapDialog.TYPE_DANGER,
+          closable : true,
+          buttonLabel : 'Close'
+        });
       }
-    }).success(function() {
-      $scope.loadResources(melmService.getRESTParameter('properties/'));
-    }).error(function(responseData) {
-      $scope.error = responseData;
-      $scope.loadResources(melmService.getRESTParameter('properties/'));
     });
   };
 
   $scope.confirmDelete = function(id) {
-    BootstrapDialog.confirm('Do you really want to delete this resource ?', function(result) {
-      if (result) {
-        $scope.deleteResource(id);
-      }
-    });
+    melmService.confirmDelete($scope, id);
   };
 
   $scope.deleteResource = function(id) {
-    var params = melmService.encodeParams({
-      "id" : id
-    });
-    $http.post(melmContextRoot + '/rest/libraries/icons/properties/delete', params, {
-      headers : {
-        'Content-Type' : 'application/x-www-form-urlencoded'
+    melmService.post({
+      params : {
+        "id" : id
+      },
+      url : '/rest/libraries/icons/properties/delete',
+      successCallback : function() {
+        $scope.loadResources(melmService.getRESTParameter('properties/'));
+      },
+      errorCallback : function() {
+        BootstrapDialog.alert({
+          title : 'ERROR',
+          message : 'Resource deletion threw an error.',
+          type : BootstrapDialog.TYPE_DANGER,
+          closable : true,
+          buttonLabel : 'Close'
+        });
       }
-    }).success(function() {
-      $scope.loadResources(melmService.getRESTParameter('properties/'));
-    }).error(function() {
-      BootstrapDialog.alert({
-        title : 'ERROR',
-        message : 'Resource deletion threw an error.',
-        type : BootstrapDialog.TYPE_DANGER, // <-- Default value is BootstrapDialog.TYPE_PRIMARY
-        closable : true, // <-- Default value is true
-        buttonLabel : 'Close', // <-- Default value is 'OK',
-        callback : function(result) {
-        }
-      });
     });
   };
 
@@ -99,7 +103,6 @@ app.controller('PropertiesCtrl', [ '$scope', '$http', 'melmService', function($s
   };
 
   $scope.loadingVisible = false;
-  $scope.error = null;
   $scope.itemsPerPage = 7;
   $scope.currentPage = 1;
   $scope.predicate = 'uniqueName';

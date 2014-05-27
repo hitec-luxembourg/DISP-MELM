@@ -12,9 +12,26 @@ app.controller('LibraryIconsCtrl', [
       };
 
       $scope.confirmDelete = function(id) {
-        BootstrapDialog.confirm('Do you really want to delete this resource ?', function(result) {
-          if (result) {
-            $scope.deleteResource(id);
+        melmService.confirmDelete($scope, id);
+      };
+
+      $scope.deleteResource = function(id) {
+        melmService.post({
+          params : {
+            "id" : id
+          },
+          url : '/rest/libraries/icons/delete',
+          successCallback : function() {
+            $scope.loadResources(melmService.getRESTParameter('icons/'));
+          },
+          errorCallback : function() {
+            BootstrapDialog.alert({
+              title : 'ERROR',
+              message : 'Resource deletion threw an error.',
+              type : BootstrapDialog.TYPE_DANGER,
+              closable : true,
+              buttonLabel : 'Close'
+            });
           }
         });
       };
@@ -35,55 +52,29 @@ app.controller('LibraryIconsCtrl', [
         $scope.links[id] = melmContextRoot + "/rest/icons/file/" + which + id + "/MEDIUM";
       };
 
-      $scope.deleteResource = function(id) {
-        var params = melmService.encodeParams({
-          "id" : id
-        });
-        $http.post(melmContextRoot + '/rest/libraries/icons/delete', params, {
-          headers : {
-            'Content-Type' : 'application/x-www-form-urlencoded'
-          }
-        }).success(function() {
-          $scope.loadResources(melmService.getRESTParameter('icons/'));
-        }).error(function() {
-          BootstrapDialog.alert({
-            title : 'ERROR',
-            message : 'Resource deletion threw an error.',
-            type : BootstrapDialog.TYPE_DANGER, // <-- Default value is BootstrapDialog.TYPE_PRIMARY
-            closable : true, // <-- Default value is true
-            buttonLabel : 'Close', // <-- Default value is 'OK',
-            callback : function(result) {
-            }
-          });
-        });
-      };
-
       $scope.go = function(path) {
         melmService.go(path);
       };
 
       $scope.move = function(which, id) {
-        var params = melmService.encodeParams({
-          "id" : id,
-          "which" : which
-        });
-        $http.post(melmContextRoot + '/rest/libraries/icons/move', params, {
-          headers : {
-            'Content-Type' : 'application/x-www-form-urlencoded'
+        melmService.post({
+          params : {
+            "id" : id,
+            "which" : which
+          },
+          url : '/rest/libraries/icons/move',
+          successCallback : function() {
+            $scope.loadResources(melmService.getRESTParameter('icons/'));
+          },
+          errorCallback : function() {
+            BootstrapDialog.alert({
+              title : 'ERROR',
+              message : 'Resource move threw an error.',
+              type : BootstrapDialog.TYPE_DANGER,
+              closable : true,
+              buttonLabel : 'Close'
+            });
           }
-        }).success(function() {
-          $scope.loadResources(melmService.getRESTParameter('icons/'));
-        }).error(function() {
-          $scope.loadResources(melmService.getRESTParameter('icons/'));
-          BootstrapDialog.alert({
-            title : 'ERROR',
-            message : 'Resource move threw an error.',
-            type : BootstrapDialog.TYPE_DANGER, // <-- Default value is BootstrapDialog.TYPE_PRIMARY
-            closable : true, // <-- Default value is true
-            buttonLabel : 'Close', // <-- Default value is 'OK',
-            callback : function(result) {
-            }
-          });
         });
       };
 

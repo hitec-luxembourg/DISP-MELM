@@ -20,7 +20,6 @@
     </div>
     <progressbar class="progress-striped active" value="100" type="warning" ng-show="loadingVisible">
     <i>Loading resources</i></progressbar>
-    <div class="alert alert-danger" ng-show="error!=null">{{error}}</div>
     <div class="table-responsive">
       <table class="table table-striped">
         <tr>
