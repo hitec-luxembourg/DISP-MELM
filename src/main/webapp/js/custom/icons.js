@@ -30,7 +30,6 @@ app.controller('IconsCtrl', [ '$scope', '$http', 'melmService', function($scope,
   };
   
   $scope.deleteResource = function(id) {
-    $scope.error = null;
     melmService.post({
       params : {
         "id" : id
@@ -40,7 +39,13 @@ app.controller('IconsCtrl', [ '$scope', '$http', 'melmService', function($scope,
         $scope.loadResources();
       },
       errorCallback : function() {
-        $scope.error = responseData;
+        BootstrapDialog.alert({
+          title : 'ERROR',
+          message : 'Resource deletion threw an error.',
+          type : BootstrapDialog.TYPE_DANGER,
+          closable : true,
+          buttonLabel : 'Close'
+        });
       }
     });
   };
@@ -50,7 +55,6 @@ app.controller('IconsCtrl', [ '$scope', '$http', 'melmService', function($scope,
   };
 
   $scope.loadingVisible = false;
-  $scope.error = null;
   $scope.itemsPerPage = 8;
   $scope.currentPage = 1;
   $scope.predicate = 'icon.displayName';

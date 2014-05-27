@@ -488,7 +488,7 @@ public class MELMResource {
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.TEXT_HTML)
   @Path("/libraries/import")
-  public Response performImportLibrary(@Context final UriInfo uriInfo, @FormDataParam("libraryName") final String libraryName,
+  public Response performImportLibrary(@FormDataParam("libraryName") final String libraryName,
       @FormDataParam("version") final String version, @FormDataParam("libraryFile") final InputStream file,
       @FormDataParam("libraryFile") final FormDataContentDisposition fileDisposition) {
     try {
@@ -508,15 +508,11 @@ public class MELMResource {
         final NodeList nodeList = melmService.validateImportedLibraryAndGetNodeList(libraryName, majorVersion, minorVersion);
         melmService.moveImportedIcons(mapElementLibrary, nodeList, libraryFolder);
       }
-    } catch (final IOException e) {
+    } catch (final IOException | MELMException e) {
       LOGGER.warn("Error in performImportLibrary", e);
       return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
-    } catch (final MELMException e) {
-      LOGGER.warn("Error in performImportLibrary", e);
-      return Response.ok(new Viewable("/importLibrary", e.getMessage())).build();
     }
-    final URI uri = uriInfo.getBaseUriBuilder().path("/rest/libraries").build();
-    return Response.seeOther(uri).build();
+    return Response.ok().build();
   }
 
   @POST
@@ -552,21 +548,20 @@ public class MELMResource {
           }
         }
       }
-      
+
       boolean generate = false;
-      if("generate".equals(iconSelectedChoice)) {
+      if ("generate".equals(iconSelectedChoice)) {
         generate = true;
-      }
-      else if("new".equals(iconSelectedChoice)) {
+      } else if ("new".equals(iconSelectedChoice)) {
         largeIconSelectedFile = File.createTempFile("fromUpload", selectedFileDisposition.getFileName());
         FileUtils.writeByteArrayToFile(largeIconSelectedFile, IOUtils.toByteArray(selectedFile));
         if ((largeIconSelectedFile != null) && (largeIconSelectedFile.length() > 0)) {
           // Check the file is 100px by 100px
           if (!MELMUtils.checkImageSize(largeIconSelectedFile)) {
             final MapElementIcon icon = melmService.getIcon(id);
-            return Response.ok(
-                new Viewable("/updateIcon", new UpdateIconModel(icon, "Invalid size for large icon selected file (must be 100px by 100px)")))
-                .build();
+            return Response
+                .ok(new Viewable("/updateIcon", new UpdateIconModel(icon,
+                    "Invalid size for large icon selected file (must be 100px by 100px)"))).build();
           }
         }
       }

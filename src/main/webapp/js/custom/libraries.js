@@ -6,35 +6,29 @@ app.controller('LibrariesCtrl', [ '$scope', '$http', 'melmService', function($sc
   $scope.go = function(path) {
     melmService.go(path);
   };
-
+  
   $scope.confirmDelete = function(id) {
-    BootstrapDialog.confirm('Do you really want to delete this resource ?', function(result) {
-      if (result) {
-        $scope.deleteResource(id);
-      }
-    });
+    melmService.confirmDelete($scope, id);
   };
-
+  
   $scope.deleteResource = function(id) {
-    var params = melmService.encodeParams({
-      "id" : id
-    });
-    $http.post(melmContextRoot + '/rest/libraries/delete', params, {
-      headers : {
-        'Content-Type' : 'application/x-www-form-urlencoded'
+    melmService.post({
+      params : {
+        "id" : id
+      },
+      url : '/rest/libraries/delete',
+      successCallback : function() {
+        $scope.loadResources();
+      },
+      errorCallback : function() {
+        BootstrapDialog.alert({
+          title : 'ERROR',
+          message : 'Resource deletion threw an error.',
+          type : BootstrapDialog.TYPE_DANGER,
+          closable : true,
+          buttonLabel : 'Close'
+        });
       }
-    }).success(function() {
-      $scope.loadResources();
-    }).error(function() {
-      BootstrapDialog.alert({
-        title : 'ERROR',
-        message : 'Resource deletion threw an error.',
-        type : BootstrapDialog.TYPE_DANGER, // <-- Default value is BootstrapDialog.TYPE_PRIMARY
-        closable : true, // <-- Default value is true
-        buttonLabel : 'Close', // <-- Default value is 'OK',
-        callback : function(result) {
-        }
-      });
     });
   };
 

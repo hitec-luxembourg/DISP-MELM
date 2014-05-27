@@ -18,7 +18,6 @@
     <div class="page-header">
       <h1>Properties</h1>
     </div>
-    <div class="alert alert-danger" ng-show="error!=null">{{error}}</div>
     <div>
       <h3>Add property</h3>
       <form novalidate name="createResourceForm">

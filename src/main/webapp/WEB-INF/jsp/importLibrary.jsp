@@ -11,22 +11,17 @@
 <jsp:include page="css-includes.jsp" />
 <jsp:include page="js-includes.jsp" />
 <script type="text/javascript" src="${ctx}/js/custom/importLibrary.js"></script>
-<script type="text/javascript" src="${ctx}/js/custom/inputFile.js"></script>
-<script type="text/javascript">
-  $(document).ready(function() {
-    $("#libraryFile").on("change", function() {
-      var fileName = $("#libraryFile").val().split('\\').pop();
-      var split = fileName.split("-");
-      var libraryName = split[0];
-      var secondPart = split[1];
-      var version = secondPart.substr(0, secondPart.length - 4);
-      $('#libraryName').val(libraryName);
-      $('#version').val(version);
-    });
-  });
-</script>
+<style>
+.my-drop-zone {
+  border: dotted 3px lightgray;
+}
+
+.ng-file-over {
+  border: dotted 3px red;
+} /* Default class applied to drop zones on over */
+</style>
 </head>
-<body ng-controller="ImportLibraryCtrl">
+<body ng-controller="ImportLibraryCtrl" ng-file-drop>
   <jsp:include page="header.jsp" />
   <div class="container">
     <div class="page-header">
@@ -35,39 +30,54 @@
     <c:if test="${not empty it}">
       <div class="alert alert-danger">${it}</div>
     </c:if>
-    <form method="POST" action="${ctx}/rest/libraries/import" enctype='multipart/form-data' class="form-horizontal" role="form">
-      <div class="form-group">
-        <label for="libraryName" class="col-sm-2 control-label">Detected Name</label>
-        <div class="col-sm-10">
-          <input type="text" class="form-control" id="libraryName" name="libraryName" placeholder="Detected library name" readonly="readonly">
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="version" class="col-sm-2 control-label">Detected Version</label>
-        <div class="col-sm-10">
-          <input type="text" class="form-control" id="version" name="version" placeholder="Detected library version" readonly="readonly">
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="libraryFile" class="col-sm-2 control-label">File</label>
-        <div class="col-sm-10">
-					<div class="input-group">
-						<span class="input-group-btn">
-							<span class="btn btn-primary btn-file" >
-								Browse&hellip; <input type="file" id="libraryFile" name="libraryFile" maxlength='1000000' accept='application/zip'>
-							</span>
-						</span>
-						<input type="text" class="form-control" readonly>
-					</div>
-        </div>
-      </div>
-      <div class="form-group">
-        <div class="col-sm-offset-2 col-sm-10">
-          <button type="submit" class="btn btn-import">Import</button>
+    <form method="POST" class="form-horizontal" role="form">
+      <div class="jumbotron">
+        <p>
+          Click on the following button or drag and drop your file in order to select a library file.<br />Then you can click on the 'import' button if you want
+          to use this file or on the 'delete' button if you want to use another file.
+        </p>
+        <p>
+          <span class="btn btn-primary btn-file"> <span class="glyphicon glyphicon-file"></span> Browse&hellip; <input type="file"
+            id="libraryFile" name="libraryFile" maxlength='1000000' accept='application/zip' ng-file-select multiple />
+          </span>
           <button type="button" ng-click="go('/rest/libraries')" class="btn btn-default">
             <span class="glyphicon glyphicon-remove"></span>Cancel
           </button>
-        </div>
+        <div ng-show="uploader.isHTML5" class="well my-drop-zone" ng-file-over>Drag and drop your library file here</div>
+      </div>
+      <div class="form-group">
+        <table class="table" ng-show="uploader.queue.length===1" style="width: 100%">
+          <thead>
+            <tr>
+              <th width="20%">File Name</th>
+              <th width="20%">Detected Name</th>
+              <th width="20%">Detected Version</th>
+              <th ng-show="uploader.isHTML5">Size</th>
+              <th ng-show="uploader.isHTML5">Progress</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="item in uploader.queue">
+              <td>{{item.file.name}}</td>
+              <td>{{detectLibraryName(item.file.name)}}</td>
+              <td>{{detectLibraryVersion(item.file.name)}}</td>
+              <td ng-show="uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
+              <td ng-show="uploader.isHTML5">
+                <div class="progress" style="margin-bottom: 0;">
+                  <div class="progress-bar" role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
+                </div>
+              </td>
+              <td nowrap>
+                <button type="button" class="btn btn-import" ng-click="item.upload()"
+                  ng-disabled="item.isReady || item.isUploading || item.isSuccess">Import</button>
+                <button type="button" class="btn btn-danger" ng-click="item.remove()">
+                  <span class="glyphicon glyphicon-trash"></span> Remove
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </form>
   </div>
