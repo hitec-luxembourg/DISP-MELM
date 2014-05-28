@@ -72,7 +72,7 @@ public class MELMUtilsTest {
 
     for (final String fileName : files.keySet()) {
       final File file = new ClassPathResource(String.format("sample/icons/%s", fileName)).getFile();
-      assertEquals(files.get(fileName), MELMUtils.checkImageSize(file));
+      assertEquals(files.get(fileName), MELMUtils.checkImageSize(file, 100, 100));
     }
   }
 }

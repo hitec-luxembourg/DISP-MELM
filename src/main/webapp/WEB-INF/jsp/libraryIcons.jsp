@@ -25,6 +25,7 @@
       <table class="table table-striped">
         <tr>
           <!-- td align="left" style="width: 150px"><a href="" ng-click="predicate='indexOfIconInLibrary'; reverse=!reverse">Element Index</a></td -->
+          <td align="center" style="width: 20px"><input type="checkbox" ng-click="allClicked()" ng-checked="allChecked()"></td>
           <td align="left" style="width: 300px"><a href="" ng-click="predicate='iconNameInLibrary'; reverse=!reverse">Element Name</a></td>
           <td align="left" style="width: 300px"><a href="" ng-click="predicate='iconDescriptionInLibrary'; reverse=!reverse">Element
               Description</a></td>
@@ -34,6 +35,7 @@
         <tr
           ng-repeat="icon in resources.icons | orderBy:predicate:reverse | startFrom: (currentPage - 1) * itemsPerPage | limitTo: itemsPerPage">
           <!-- td align="left">{{icon.indexOfIconInLibrary}}</td -->
+          <td align="center"><input type="checkbox" ng-model="icon.icon.checked"></td>
           <td align="left">{{icon.iconNameInLibrary}}</td>
           <td align="left">{{icon.iconDescriptionInLibrary}}</td>
           <td align="left"><a ng-href="${ctx}/rest/icons/details/{{icon.icon.id}}"><img ng-src="{{links[icon.icon.id]}}" ng-mouseenter="changeImage(icon.icon.id, 'selected/')" ng-mouseleave="changeImage(icon.icon.id, '')"></a></td>
@@ -69,6 +71,8 @@
     <hr />
     <button class="btn btn-add" ng-disabled="!resources.iconsAvailable"
       ng-click="go('/rest/libraries/icons/add/'+resources.library.id)">Add</button>
+    <button class="btn btn-delete" ng-disabled="!someSelected()"
+      ng-click="confirmDeleteMultiple()">Delete selected</button>
     <button type="button" ng-click="go('/rest/libraries')" class="btn btn-default">
       <span class="glyphicon glyphicon-remove"></span>Back
     </button>
