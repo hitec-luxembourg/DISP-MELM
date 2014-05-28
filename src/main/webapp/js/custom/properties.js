@@ -1,6 +1,16 @@
 app.controller('PropertiesCtrl', [ '$scope', '$http', 'melmService', function($scope, $http, melmService) {
   $scope.loadResources = function(id) {
-    melmService.loadResources($scope, '/rest/libraries/icons/properties/json/' + id);
+    melmService.loadResources($scope, '/rest/libraries/icons/properties/json/' + id, function() {
+      var data = $scope.resources;
+      if (data && data.properties && 0 < data.properties.length) {
+        for (var i = 0; i < data.properties.length; i++) {
+          var property = data.properties[i];
+          angular.extend(property, {
+            checked : false
+          });
+        }
+      }
+    });
   };
 
   $scope.customPropertyTypes = [ {
@@ -77,6 +87,10 @@ app.controller('PropertiesCtrl', [ '$scope', '$http', 'melmService', function($s
     melmService.confirmDelete($scope, id);
   };
 
+  $scope.confirmDeleteMultiple = function() {
+    melmService.confirmDeleteMultiple($scope);
+  };
+
   $scope.deleteResource = function(id) {
     melmService.post({
       params : {
@@ -98,8 +112,76 @@ app.controller('PropertiesCtrl', [ '$scope', '$http', 'melmService', function($s
     });
   };
 
+  $scope.deleteResources = function() {
+    var ids = [];
+    if ($scope.resources && 0 < $scope.resources.length) {
+      for (var i = 0; i < $scope.resources.length; i++) {
+        var property = $scope.resources[i];
+        if (property.checked) {
+          ids.push(property.id);
+        }
+      }
+    }
+    melmService.post({
+      params : {
+        "ids" : ids
+      },
+      url : '/rest/libraries/icons/properties/deleteMultiple',
+      successCallback : function() {
+        $scope.loadResources(melmService.getRESTParameter('properties/'));
+      },
+      errorCallback : function() {
+        BootstrapDialog.alert({
+          title : 'ERROR',
+          message : 'Resources deletion threw an error.',
+          type : BootstrapDialog.TYPE_DANGER,
+          closable : true,
+          buttonLabel : 'Close'
+        });
+      }
+    });
+  };
+
   $scope.back = function() {
     melmService.back();
+  };
+
+  $scope.allClicked = function() {
+    var newValue = !$scope.allChecked();
+    for (var i = 0; i < $scope.resources.length; i++) {
+      var property = $scope.resources[i];
+      property.checked = newValue;
+    }
+  };
+
+  $scope.allChecked = function() {
+    var result = true;
+    if (!$scope.resources || 0 === $scope.resources.length) {
+      result = false;
+    } else {
+      for (var i = 0; i < $scope.resources.length; i++) {
+        var property = $scope.resources[i];
+        if (!property.checked) {
+          result = false;
+          break;
+        }
+      }
+    }
+    return result;
+  };
+
+  $scope.someSelected = function() {
+    var result = false;
+    if ($scope.resources && 0 < $scope.resources.length) {
+      for (var i = 0; i < $scope.resources.length; i++) {
+        var property = $scope.resources[i];
+        if (property.checked) {
+          result = true;
+          break;
+        }
+      }
+    }
+    return result;
   };
 
   $scope.loadingVisible = false;

@@ -27,8 +27,10 @@ app.controller('IconsCtrl', [ '$scope', '$http', 'melmService', function($scope,
             return elem.name;
           }).join(",");
         }
+        
         angular.extend(data[i].icon, {
-          librariesAsString : libraries
+          librariesAsString : libraries,
+          checked : false
         });
       }
     }
@@ -44,6 +46,10 @@ app.controller('IconsCtrl', [ '$scope', '$http', 'melmService', function($scope,
 
   $scope.confirmDelete = function(id) {
     melmService.confirmDelete($scope, id);
+  };
+
+  $scope.confirmDeleteMultiple = function() {
+    melmService.confirmDeleteMultiple($scope);
   };
 
   $scope.deleteResource = function(id) {
@@ -67,8 +73,78 @@ app.controller('IconsCtrl', [ '$scope', '$http', 'melmService', function($scope,
     });
   };
 
+  $scope.deleteResources = function() {
+    var ids = [];
+    if ($scope.resources && 0 < $scope.resources.length) {
+      for (var i = 0; i < $scope.resources.length; i++) {
+        var resource = $scope.resources[i];
+        var icon = resource.icon;
+        if (icon.checked) {
+          ids.push(icon.id);
+        }
+      }
+    }
+    melmService.post({
+      params : {
+        "ids" : ids
+      },
+      url : '/rest/icons/deleteMultiple',
+      successCallback : function() {
+        $scope.loadResources();
+      },
+      errorCallback : function() {
+        BootstrapDialog.alert({
+          title : 'ERROR',
+          message : 'Resources deletion threw an error.',
+          type : BootstrapDialog.TYPE_DANGER,
+          closable : true,
+          buttonLabel : 'Close'
+        });
+      }
+    });
+  };
+
   $scope.go = function(path) {
     melmService.go(path);
+  };
+
+  $scope.allClicked = function() {
+    var newValue = !$scope.allChecked();
+    console.log("All clicked to " + newValue);
+    for (var i = 0; i < $scope.resources.length; i++) {
+      var icon = $scope.resources[i].icon;
+      icon.checked = newValue && !$scope.hasLibraries($scope.resources[i]);
+    }
+  };
+
+  $scope.allChecked = function() {
+    var result = true;
+    if (!$scope.resources || 0 === $scope.resources.length) {
+      result = false;
+    } else {
+      for (var i = 0; i < $scope.resources.length; i++) {
+        var icon = $scope.resources[i].icon;
+        if (!icon.checked && !$scope.hasLibraries($scope.resources[i])) {
+          result = false;
+          break;
+        }
+      }
+    }
+    return result;
+  };
+
+  $scope.someSelected = function() {
+    var result = false;
+    if ($scope.resources && 0 < $scope.resources.length) {
+      for (var i = 0; i < $scope.resources.length; i++) {
+        var icon = $scope.resources[i].icon;
+        if (icon.checked) {
+          result = true;
+          break;
+        }
+      }
+    }
+    return result;
   };
 
   $scope.loadingVisible = false;

@@ -71,4 +71,12 @@ app.service('melmService', [ '$http', '$window', function($http, $window) {
     });
   };
 
+  this.confirmDeleteMultiple = function(theScope) {
+    BootstrapDialog.confirm('Do you really want to delete these resources ?', function(result) {
+      if (result) {
+        theScope.deleteResources();
+      }
+    });
+  };
+
 } ]);

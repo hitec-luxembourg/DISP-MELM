@@ -137,15 +137,15 @@ public final class MELMUtils {
   }
 
   /**
-   * Check that the given file is an image 100px by 100px.
+   * Check that the given file is of the given size.
    * 
    * @param file
    * @throws MELMException
    */
-  public static boolean checkImageSize(final File file) throws MELMException {
+  public static boolean checkImageSize(final File file, final int width, final int height) throws MELMException {
     try {
       final BufferedImage originalImage = ImageIO.read(file);
-      return (originalImage.getHeight() == 100) && (originalImage.getWidth() == originalImage.getHeight()); 
+      return (originalImage.getHeight() == height) && (originalImage.getWidth() == width); 
     } catch (final IOException e) {
       final String msg = "Failed to assess image size.";
       throw new MELMException(msg, e);

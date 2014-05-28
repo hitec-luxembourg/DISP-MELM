@@ -74,9 +74,36 @@ public class MELMResource {
   }
 
   @POST
+  @Path("/icons/deleteMultiple")
+  public Response deleteIcons(@FormParam("ids") final String ids) {
+    try {
+      final String[] ids_ = getIds(ids);
+      for (int i = 0; i < ids_.length; i++) {
+        final long id = Long.valueOf(ids_[i]);
+        melmService.deleteIconAndFiles(id);
+      }
+      return Response.ok().build();
+    } catch (final MELMException e) {
+      LOGGER.warn("Error in deleteIcon", e);
+      return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+    }
+  }
+
+  @POST
   @Path("/libraries/delete")
   public Response deleteLibrary(@FormParam("id") final long id) {
     melmService.deleteLibrary(id);
+    return Response.ok().build();
+  }
+
+  @POST
+  @Path("/libraries/deleteMultiple")
+  public Response deleteLibraries(@FormParam("ids") final String ids) {
+    final String[] ids_ = getIds(ids);
+    for (int i = 0; i < ids_.length; i++) {
+      final long id = Long.valueOf(ids_[i]);
+      melmService.deleteLibrary(id);
+    }
     return Response.ok().build();
   }
 
@@ -88,9 +115,40 @@ public class MELMResource {
   }
 
   @POST
+  @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+  @Path("/libraries/icons/deleteMultiple")
+  public Response deleteLibraryIcons(@FormParam("ids") final String ids) {
+    final String[] ids_ = getIds(ids);
+    for (int i = 0; i < ids_.length; i++) {
+      final long id = Long.valueOf(ids_[i]);
+      melmService.deleteLibraryIcon(id);
+    }
+    return Response.ok().build();
+  }
+
+  private String[] getIds(final String ids) {
+    String[] result = {};
+    if ((null != ids) && !"".equals(ids)) {
+      result = ids.split(",");
+    }
+    return result;
+  }
+
+  @POST
   @Path("/libraries/icons/properties/delete")
   public Response deleteProperty(@FormParam("id") final long id) {
     melmService.deleteProperty(id);
+    return Response.ok().build();
+  }
+
+  @POST
+  @Path("/libraries/icons/properties/deleteMultiple")
+  public Response deleteProperties(@FormParam("ids") final String ids) {
+    final String[] ids_ = getIds(ids);
+    for (int i = 0; i < ids_.length; i++) {
+      final long id = Long.valueOf(ids_[i]);
+      melmService.deleteProperty(id);
+    }
     return Response.ok().build();
   }
 
@@ -324,7 +382,7 @@ public class MELMResource {
       }
 
       // Check the file is 100px by 100px
-      if (!MELMUtils.checkImageSize(largeIconFile)) {
+      if (!MELMUtils.checkImageSize(largeIconFile, 100, 100)) {
         return Response.ok(new Viewable("/addIcon", "Invalid size for large icon file (must be 100px by 100px)")).build();
       }
 
@@ -336,7 +394,7 @@ public class MELMResource {
           return Response.ok(new Viewable("/addIcon", "Invalid large icon selected file")).build();
         }
         // Check the file is 100px by 100px
-        if (!MELMUtils.checkImageSize(largeIconSelectedFile)) {
+        if (!MELMUtils.checkImageSize(largeIconSelectedFile, 100, 100)) {
           return Response.ok(new Viewable("/addIcon", "Invalid size for large icon selected file (must be 100px by 100px)")).build();
         }
       }
@@ -368,6 +426,12 @@ public class MELMResource {
       if ((libraryIconMaybeNull != null) && (libraryIconMaybeNull.length() <= 0)) {
         return Response.ok(new Viewable("/addLibrary", "Invalid icon file")).build();
       }
+
+      // Check the file is 40px by 40px
+      if (!MELMUtils.checkImageSize(libraryIconMaybeNull, 40, 40)) {
+        return Response.status(Status.BAD_REQUEST).entity("Invalid size for icon file (must be 40px by 40px)").build();
+      }
+
       final String hashForFile = melmService.addLibraryIcon(libraryIconMaybeNull);
       final int majorVersion = MELMUtils.getMajorVersion(version);
       final int minorVersion = MELMUtils.getMinorVersion(version);
@@ -534,7 +598,7 @@ public class MELMResource {
         FileUtils.writeByteArrayToFile(largeIconFile, IOUtils.toByteArray(file));
         if ((largeIconFile != null) && (largeIconFile.length() > 0)) {
           // Check the file is 100px by 100px
-          if (!MELMUtils.checkImageSize(largeIconFile)) {
+          if (!MELMUtils.checkImageSize(largeIconFile, 100, 100)) {
             final MapElementIcon icon = melmService.getIcon(id);
             return Response.ok(
                 new Viewable("/updateIcon", new UpdateIconModel(icon, "Invalid size for large icon file (must be 100px by 100px)")))
@@ -551,7 +615,7 @@ public class MELMResource {
         FileUtils.writeByteArrayToFile(largeIconSelectedFile, IOUtils.toByteArray(selectedFile));
         if ((largeIconSelectedFile != null) && (largeIconSelectedFile.length() > 0)) {
           // Check the file is 100px by 100px
-          if (!MELMUtils.checkImageSize(largeIconSelectedFile)) {
+          if (!MELMUtils.checkImageSize(largeIconSelectedFile, 100, 100)) {
             final MapElementIcon icon = melmService.getIcon(id);
             return Response
                 .ok(new Viewable("/updateIcon", new UpdateIconModel(icon,
@@ -591,6 +655,14 @@ public class MELMResource {
     try {
       final File libraryIconMaybeNull = File.createTempFile("fromUpload", fileDisposition.getFileName());
       FileUtils.writeByteArrayToFile(libraryIconMaybeNull, IOUtils.toByteArray(file));
+
+      // Check the file is 40px by 40px
+      if (!MELMUtils.checkImageSize(libraryIconMaybeNull, 40, 40)) {
+        final MapElementLibrary library = melmService.getLibrary(id);
+        return Response.ok(
+            new Viewable("/updateLibrary", new UpdateLibraryModel(library, "Invalid size for icon file (must be 40px by 40px)"))).build();
+      }
+
       final int majorVersion = MELMUtils.getMajorVersion(version);
       final int minorVersion = MELMUtils.getMinorVersion(version);
       if ((libraryIconMaybeNull != null) && (libraryIconMaybeNull.length() > 0)) {
