@@ -1,4 +1,6 @@
 app.controller('IconsCtrl', [ '$scope', '$http', 'melmService', function($scope, $http, melmService) {
+  'use strict';
+  
   $scope.loadResources = function() {
     melmService.loadResources($scope, '/rest/icons/linked/json', function() {
       $scope.processLinks($scope.resources);

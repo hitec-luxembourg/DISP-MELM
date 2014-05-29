@@ -1,4 +1,6 @@
 app.service('melmService', [ '$http', '$window', function($http, $window) {
+  'use strict';
+  
   this.encodeParams = function(data) {
     var result = [];
     for ( var d in data) {

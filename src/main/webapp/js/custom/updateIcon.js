@@ -1,4 +1,6 @@
 app.controller('UpdateIconCtrl', [ '$scope', '$window', 'melmService', function($scope, $window, melmService) {
+  'use strict';
+  
   $scope.go = function(path) {
     melmService(path);
   };

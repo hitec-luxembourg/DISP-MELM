@@ -1,4 +1,5 @@
 app.controller('LibraryIconsCtrl', [ '$scope', '$document', 'melmService', function($scope, $document, melmService) {
+  'use strict';
 
   $document.bind('keypress', function(event) {
     console.debug(event);

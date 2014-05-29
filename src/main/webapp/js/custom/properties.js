@@ -1,4 +1,6 @@
 app.controller('PropertiesCtrl', [ '$scope', '$http', 'melmService', function($scope, $http, melmService) {
+  'use strict';
+  
   $scope.loadResources = function(id) {
     melmService.loadResources($scope, '/rest/libraries/icons/properties/json/' + id, function() {
       var data = $scope.resources;

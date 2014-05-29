@@ -1,4 +1,6 @@
 app.controller('UpdateLibraryIconCtrl', [ '$scope', '$http', '$window', 'melmService', function($scope, $http, $window, melmService) {
+  'use strict';
+  
   $scope.loadResources = function() {
     melmService.loadResources($scope, '/rest/icons/linked/json', function() {
       $scope.processLinks($scope.resources);

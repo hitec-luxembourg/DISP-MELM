@@ -5,7 +5,8 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="app">
 <head>
-<title>Pulse Collection - List Libraries</title>
+<title>Pulse Collection - List of libraries</title>
+<link rel="icon" href="${ctx}/favicon.ico" />
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <jsp:include page="css-includes.jsp" />
@@ -16,7 +17,7 @@
 	<jsp:include page="header.jsp" />
 	<div class="container">
 		<div class="page-header">
-			<h1>List Libraries</h1>
+			<h1>List of libraries</h1>
 		</div>
 		<progressbar class="progress-striped active" value="100" type="warning" ng-show="loadingVisible">
 		<i>Loading resources</i></progressbar>
