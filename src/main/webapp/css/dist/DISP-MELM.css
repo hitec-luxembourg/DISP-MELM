@@ -1,0 +1,239 @@
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  padding-top: 25px;
+  /* Margin bottom by footer height */
+  margin-bottom: 100px;
+}
+body.modal-open {
+  margin-left: auto;
+  margin-right: auto;
+}
+#footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 100px;
+  background-color: #000;
+  color: #fff;
+  height: auto !important;
+  margin-top: 20px;
+}
+#logo {
+  height: 50px;
+}
+.container .left {
+  margin: 20px 0;
+  float: left;
+}
+.container .right {
+  margin: 20px 0;
+  float: right;
+}
+.pagination-centered {
+  text-align: center;
+}
+nav#main-nav {
+  background-color: #000;
+}
+#main-nav .navbar-nav > .open > a,
+#main-nav .navbar-nav > .open > a:hover,
+#main-nav .navbar-nav > .open > a:focus {
+  background: #ddd;
+  color: #000000;
+}
+#main-nav a.navbar-brand {
+  color: #ffdc00;
+  padding: 0px 0px 0px 15px;
+  margin-right: 10px;
+}
+#main-nav a.navbar-brand:hover {
+  color: #ffdc00;
+}
+#main-nav a.navbar-brand img {
+  width: 50px;
+  height: 50px;
+}
+#main-nav .navbar-nav > li > a {
+  color: #ffdc00;
+  height: 50px;
+}
+#main-nav .navbar-nav > li > a:hover {
+  color: #ffdc00;
+  border-bottom: 3px solid #ffdc00;
+  padding-bottom: 3px;
+}
+#main-nav .dropdown-menu > li > a:hover {
+  background: none;
+  text-decoration: underline;
+}
+/* nav.row_nav { */
+/*   background-color: transparent; */
+/*   border:none; */
+/* } */
+/* nav.row_nav .navbar-collapse.in { */
+/*   border: 1px solid #ddd; */
+/* } */
+.btn {
+  background: linear-gradient(to bottom, #000000 0%, #0f0f0f 49%, #000000 52%, #595959 100%) repeat scroll 0 0 rgba(0, 0, 0, 0) !important;
+  border: 2px solid #888888 !important;
+  border-radius: 0 !important;
+  box-shadow: 0 0 2px 1px #888888 !important;
+  color: #FFFFFF;
+  width: auto !important;
+  margin: 0px 4px !important;
+}
+.btn:hover {
+  color: #ffdc00;
+}
+#btn-login {
+  background: url("../../img/lock.png") no-repeat left, linear-gradient(to bottom, #000000 0%, #0f0f0f 49%, #000000 52%, #595959 100%) repeat scroll 0 0 rgba(0, 0, 0, 0) !important;
+  padding-left: 34px;
+}
+#btn-logout {
+  background: url("../../img/logout.png") no-repeat 5px;
+}
+#btn-logout li a {
+  padding-left: 34px;
+}
+.btn-list {
+  background: url("../../img/list.png") no-repeat 5px, linear-gradient(to bottom, #000000 0%, #0f0f0f 49%, #000000 52%, #595959 100%) repeat scroll 0 0 rgba(0, 0, 0, 0) !important;
+  padding-left: 40px;
+  height: 36px;
+}
+.btn-add {
+  background: url("../../img/add.png") no-repeat 5px, linear-gradient(to bottom, #000000 0%, #0f0f0f 49%, #000000 52%, #595959 100%) repeat scroll 0 0 rgba(0, 0, 0, 0) !important;
+  padding-left: 30px;
+}
+.btn-import {
+  background: url("../../img/import.png") no-repeat 5px, linear-gradient(to bottom, #000000 0%, #0f0f0f 49%, #000000 52%, #595959 100%) repeat scroll 0 0 rgba(0, 0, 0, 0) !important;
+  padding-left: 40px;
+}
+.glyphicon:before {
+  color: #FFFFFF;
+  margin-right: 10px;
+}
+.black,
+.black a {
+  color: #fff;
+}
+.icon-wrapper {
+  padding: 10px;
+  line-height: 1.4;
+  text-align: center;
+  border: 1px solid #fff;
+  background-color: #f9f9f9;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.icon-wrapper-disabled {
+  cursor: initial;
+}
+.icon > input[type=radio] {
+  display: none;
+}
+.icon > input[type=radio] + img {
+  cursor: pointer;
+  border-color: transparent;
+  border-width: 2px;
+  border-style: solid;
+}
+.icon-selected {
+  background-color: #ffdc00;
+}
+.icon-disabled {
+  background-color: #cccccc;
+  opacity: 0.4;
+}
+.icon-disabled > input[type=radio] + img {
+  opacity: 0.4;
+}
+.library-icons .btn {
+  padding: 6px 0 6px 10px;
+}
+.anchor-wrapper {
+  margin-top: 10px;
+  position: relative;
+  background-color: #eeeeee !important;
+  width: 215px;
+  height: 197px;
+  background: url("../../img/ic_target.png") no-repeat 90px 85px;
+}
+.anchor {
+  background: #cccccc;
+  width: 55px;
+  height: 37px;
+  border: 0;
+}
+.anchor-selected {
+  background-color: #333333 !important;
+}
+.anchor-E {
+  background: url("../../img/anchor_E.png") no-repeat 3px;
+}
+.anchor-N {
+  background: url("../../img/anchor_N.png") no-repeat 5px;
+}
+.anchor-NE {
+  background: url("../../img/anchor_NE.png") no-repeat 0px;
+}
+.anchor-NW {
+  background: url("../../img/anchor_NW.png") no-repeat 0px;
+}
+.anchor-S {
+  background: url("../../img/anchor_S.png") no-repeat 5px;
+}
+.anchor-SE {
+  background: url("../../img/anchor_SE.png") no-repeat 0px;
+}
+.anchor-SW {
+  background: url("../../img/anchor_SW.png") no-repeat 0px;
+}
+.anchor-W {
+  background: url("../../img/anchor_W.png") no-repeat 0px;
+}
+.btn-file {
+  position: relative;
+  overflow: hidden;
+}
+.btn-file.disabled,
+.btn-file[disabled],
+fieldset[disabled] .btn-file {
+  color: #999999;
+}
+.btn-file input[type=file] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 100%;
+  min-height: 100%;
+  font-size: 999px;
+  text-align: right;
+  filter: alpha(opacity = @opacity);
+  opacity: 0;
+  outline: none;
+  background: white;
+  cursor: inherit;
+  display: block;
+}
+.my-drop-zone {
+  border: dotted 3px lightgray;
+}
+/* Default class applied to drop zones on over */
+.ng-file-over {
+  border: dotted 3px red;
+}
+canvas {
+  background-color: #f3f3f3;
+  -webkit-box-shadow: 3px 3px 3px 0 #e3e3e3;
+  -moz-box-shadow: 3px 3px 3px 0 #e3e3e3;
+  box-shadow: 3px 3px 3px 0 #e3e3e3;
+  border: 1px solid #c3c3c3;
+  height: 100px;
+  margin: 6px 0 0 6px;
+}

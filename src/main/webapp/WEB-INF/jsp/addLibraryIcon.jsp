@@ -11,7 +11,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <jsp:include page="css-includes.jsp" />
 <jsp:include page="js-includes.jsp" />
-<script type="text/javascript" src="${ctx}/js/custom/addLibraryIcon.js"></script>
 <script type="text/javascript">
   var libraryId = parseInt("${it.library.id}", 10);
 </script>

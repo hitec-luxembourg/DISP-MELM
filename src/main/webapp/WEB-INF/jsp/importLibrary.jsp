@@ -11,7 +11,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <jsp:include page="css-includes.jsp" />
 <jsp:include page="js-includes.jsp" />
-<script type="text/javascript" src="${ctx}/js/custom/importLibrary.js"></script>
 </head>
 <body ng-controller="ImportLibraryCtrl" ng-file-drop>
   <jsp:include page="header.jsp" />

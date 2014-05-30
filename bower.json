@@ -1,0 +1,15 @@
+{
+  "name": "DISP-MELM",
+  "description": "Map Element Library Manager",
+  "version": "1.0.0",
+  "homepage": "https://github.com/hitec-luxembourg/DISP-MELM",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "angular": "1.2.x",
+    "angular-xeditable": "0.1.8",
+    "bootstrap": "3.1.x",
+    "es5-shim": "3.4.x",
+    "jQuery": "2.1.x"
+  }
+}

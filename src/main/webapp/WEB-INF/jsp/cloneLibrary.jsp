@@ -11,8 +11,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <jsp:include page="css-includes.jsp" />
 <jsp:include page="js-includes.jsp" />
-<script type="text/javascript" src="${ctx}/js/custom/cloneLibrary.js"></script>
-<script type="text/javascript" src="${ctx}/js/custom/inputFile.js"></script>
 </head>
 <body ng-controller="CloneLibraryCtrl">
 	<jsp:include page="header.jsp" />
