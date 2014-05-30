@@ -2,15 +2,17 @@
 <script type="text/javascript">
   var melmContextRoot = "${ctx}";
 </script>
-<script type="text/javascript" src="${ctx}/js/jquery.min.js"></script>
-<script type="text/javascript" src="${ctx}/js/angular.min.js"></script>
+<script type="text/javascript" src="${ctx}/js/vendor/jquery.min.js"></script>
+<script type="text/javascript" src="${ctx}/js/vendor/angular.min.js"></script>
 <script type="text/javascript">
   var app = angular.module('app', [ 'xeditable', 'ui.bootstrap', 'angularFileUpload']);
 </script>
-<script type="text/javascript" src="${ctx}/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="${ctx}/js/ui-bootstrap-tpls-0.11.0.min.js"></script>
+<script type="text/javascript" src="${ctx}/js/vendor/bootstrap.min.js"></script>
+<script type="text/javascript" src="${ctx}/js/vendor/xeditable.min.js"></script>
+<script type="text/javascript" src="${ctx}/js/vendor/es5-shim.min.js"></script>
+<script type="text/javascript" src="${ctx}/js/vendor/angular-file-upload.min.js"></script>
+<script type="text/javascript" src="${ctx}/js/vendor/ui-bootstrap-tpls.min.js"></script>
+
 <script type="text/javascript" src="${ctx}/js/bootstrap-dialog.min.js"></script>
-<script type="text/javascript" src="${ctx}/js/xeditable.min.js"></script>
-<script type="text/javascript" src="${ctx}/js/es5-shim.min.js"></script>
-<script type="text/javascript" src="${ctx}/js/angular-file-upload.min.js"></script>
+
 <script type="text/javascript" src="${ctx}/js/dist/DISP-MELM.min.js"></script>

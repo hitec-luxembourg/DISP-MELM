@@ -2,7 +2,7 @@ app.controller('UpdateLibraryCtrl', [ '$scope', 'melmService', function($scope, 
   'use strict';
   
   $scope.go = function(path) {
-    melmService(path);
+    melmService.go(path);
   };
 
 } ]);

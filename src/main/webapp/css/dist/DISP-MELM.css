@@ -78,7 +78,7 @@ nav#main-nav {
 /*   border: 1px solid #ddd; */
 /* } */
 .btn {
-  background: linear-gradient(to bottom, #000000 0%, #0f0f0f 49%, #000000 52%, #595959 100%) repeat scroll 0 0 rgba(0, 0, 0, 0) !important;
+  background: linear-gradient(to bottom, #000000 0%, #0f0f0f 49%, #000000 52%, #595959 100%) repeat scroll 0 0 rgba(0, 0, 0, 0);
   border: 2px solid #888888 !important;
   border-radius: 0 !important;
   box-shadow: 0 0 2px 1px #888888 !important;
@@ -90,7 +90,7 @@ nav#main-nav {
   color: #ffdc00;
 }
 #btn-login {
-  background: url("../../img/lock.png") no-repeat left, linear-gradient(to bottom, #000000 0%, #0f0f0f 49%, #000000 52%, #595959 100%) repeat scroll 0 0 rgba(0, 0, 0, 0) !important;
+  background: url("../../img/lock.png") no-repeat left, linear-gradient(to bottom, #000000 0%, #0f0f0f 49%, #000000 52%, #595959 100%) repeat scroll 0 0 rgba(0, 0, 0, 0);
   padding-left: 34px;
 }
 #btn-logout {
@@ -100,16 +100,16 @@ nav#main-nav {
   padding-left: 34px;
 }
 .btn-list {
-  background: url("../../img/list.png") no-repeat 5px, linear-gradient(to bottom, #000000 0%, #0f0f0f 49%, #000000 52%, #595959 100%) repeat scroll 0 0 rgba(0, 0, 0, 0) !important;
+  background: url("../../img/list.png") no-repeat 5px, linear-gradient(to bottom, #000000 0%, #0f0f0f 49%, #000000 52%, #595959 100%) repeat scroll 0 0 rgba(0, 0, 0, 0);
   padding-left: 40px;
   height: 36px;
 }
 .btn-add {
-  background: url("../../img/add.png") no-repeat 5px, linear-gradient(to bottom, #000000 0%, #0f0f0f 49%, #000000 52%, #595959 100%) repeat scroll 0 0 rgba(0, 0, 0, 0) !important;
+  background: url("../../img/add.png") no-repeat 5px, linear-gradient(to bottom, #000000 0%, #0f0f0f 49%, #000000 52%, #595959 100%) repeat scroll 0 0 rgba(0, 0, 0, 0);
   padding-left: 30px;
 }
 .btn-import {
-  background: url("../../img/import.png") no-repeat 5px, linear-gradient(to bottom, #000000 0%, #0f0f0f 49%, #000000 52%, #595959 100%) repeat scroll 0 0 rgba(0, 0, 0, 0) !important;
+  background: url("../../img/import.png") no-repeat 5px, linear-gradient(to bottom, #000000 0%, #0f0f0f 49%, #000000 52%, #595959 100%) repeat scroll 0 0 rgba(0, 0, 0, 0);
   padding-left: 40px;
 }
 .glyphicon:before {

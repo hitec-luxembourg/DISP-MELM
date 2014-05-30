@@ -6,36 +6,59 @@ module.exports = function(grunt) {
     pkg : grunt.file.readJSON('package.json'),
     watch : {
       js : {
-        files : [ 'src/main/webapp/js/custom/*.js', 'Gruntfile.js' ],
-        tasks : [ 'uglify', 'less' ]
+        files : [ 'app/js/*.js', 'Gruntfile.js', 'app/css/*.less' ],
+        tasks : [ 'bowercopy', 'jshint', 'uglify', 'less' ]
+      }
+    },
+    "bower-install-simple" : {
+      options : {
+        color : true,
+        production : false,
+      }
+    },
+    bowercopy : {
+      options : {
+        srcPrefix : 'bower_components'
+      },
+      scripts : {
+        options : {
+          destPrefix : 'src/main/webapp'
+        },
+        files : {
+          'js/vendor/angular.min.js' : 'bower_components/angular/angular.min.js',
+          'js/vendor/angular.min.js.map' : 'bower_components/angular/angular.min.js.map',
+          'js/vendor/angular-file-upload.min.js' : 'bower_components/angular-file-upload/angular-file-upload.min.js',
+          'js/vendor/angular-file-upload.min.map' : 'bower_components/angular-file-upload/angular-file-upload.min.map',
+          'js/vendor/ui-bootstrap-tpls.min.js' : 'bower_components/angular-ui-bootstrap-bower/ui-bootstrap-tpls.min.js',
+          'js/vendor/xeditable.min.js' : 'bower_components/angular-xeditable/dist/js/xeditable.min.js',
+          'css/vendor/xeditable.css' : 'bower_components/angular-xeditable/dist/css/xeditable.css',
+          'js/vendor/bootstrap.min.js' : 'bower_components/bootstrap/dist/js/bootstrap.min.js',
+          'css/vendor/bootstrap.min.css' : 'bower_components/bootstrap/dist/css/bootstrap.min.css',
+          'css/fonts/glyphicons-halflings-regular.eot' : 'bower_components/bootstrap/dist/fonts/glyphicons-halflings-regular.eot',
+          'css/fonts/glyphicons-halflings-regular.svg' : 'bower_components/bootstrap/dist/fonts/glyphicons-halflings-regular.svg',
+          'css/fonts/glyphicons-halflings-regular.ttf' : 'bower_components/bootstrap/dist/fonts/glyphicons-halflings-regular.ttf',
+          'css/fonts/glyphicons-halflings-regular.woff' : 'bower_components/bootstrap/dist/fonts/glyphicons-halflings-regular.woff',
+          'js/vendor/es5-shim.min.js' : 'bower_components/es5-shim/es5-shim.min.js',
+          'js/vendor/es5-shim.map' : 'bower_components/es5-shim/es5-shim.map',
+          'js/vendor/jquery.min.js' : 'bower_components/jquery/dist/jquery.min.js',
+          'js/vendor/jquery.min.map' : 'bower_components/jquery/dist/jquery.min.map'
+        }
       }
     },
     jshint : {
       options : {
-        jshintrc : 'src/main/webapp/js/custom/.jshintrc'
+        jshintrc : '.jshintrc',
       },
-      all : [ 'Gruntfile.js', 'src/main/webapp/js/custom/*.js' ]
+      all : [ 'Gruntfile.js', 'app/js/*.js' ]
     },
-    // concat : {
-    // options : {
-    // // define a string to put between each file in the concatenated output
-    // separator : ';'
-    // },
-    // dist : {
-    // // the files to concatenate
-    // src : [ 'src/**/*.js' ],
-    // // the location of the resulting JS file
-    // dest : 'src/main/webapp/js/dist/<%= pkg.name %>.js'
-    // }
-    // },
-    uglify : {
+    uglify : { 
       options : {
         // the banner is inserted at the top of the output
         banner : '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n'
       },
       dist : {
         files : {
-          'src/main/webapp/js/dist/<%= pkg.name %>.min.js' : [ 'src/main/webapp/js/custom/*.js' ]
+          'src/main/webapp/js/dist/<%= pkg.name %>.min.js' : [ 'app/js/*.js' ]
         }
       }
     },
@@ -45,7 +68,7 @@ module.exports = function(grunt) {
       },
       development : {
         files : {
-          "src/main/webapp/css/dist/DISP-MELM.css" : "src/main/webapp/css/custom/style.less"
+          "src/main/webapp/css/dist/DISP-MELM.css" : "app/css/style.less"
         }
       },
       production : {
@@ -54,48 +77,18 @@ module.exports = function(grunt) {
           cleancss : true
         },
         files : {
-          "src/main/webapp/css/dist/DISP-MELM.min.css" : "src/main/webapp/css/custom/style.less"
+          "src/main/webapp/css/dist/DISP-MELM.min.css" : "app/css/style.less"
         }
       }
-    },
-    bowerInstall : {
-      target : {
-        // Point to the files that should be updated when
-        // you run `grunt bower-install`
-        src : [ 'src/main/webapp/WEB-INF/jsp/js-includes.jsp' ],
-
-        // Optional:
-        // ---------
-        cwd : '',
-        dependencies : true,
-        devDependencies : false,
-        exclude : [],
-        fileTypes : {},
-        ignorePath : '',
-        overrides : {} 
-      }
     }
-  // cssmin : {
-  // add_banner : {
-  // options : {
-  // banner : '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n'
-  // },
-  // files : {
-  // 'src/main/webapp/css/dist/<%= pkg.name %>.min.css' : [ 'src/main/webapp/css/dist/DISP-MELM.css' ]
-  // }
-  // }
-  // }
   });
 
   // Load the Grunt plugins.
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-contrib-clean');
-  // grunt.loadNpmTasks('grunt-concat');
+  grunt.loadNpmTasks('grunt-bowercopy');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-less');
-  // grunt.loadNpmTasks('grunt-contrib-cssmin');
-  grunt.loadNpmTasks('grunt-bower-install');
 
   // Register the default tasks.
   grunt.registerTask('default', [ 'watch' ]);

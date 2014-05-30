@@ -45,6 +45,8 @@ app.directive('ngThumb', [ '$window', function($window) {
       }
 
       function onLoadImage() {
+        /*jshint validthis:true */
+        
         var width = params.width || this.width / this.height * params.height;
         var height = params.height || this.height / this.width * params.width;
         canvas.attr({
