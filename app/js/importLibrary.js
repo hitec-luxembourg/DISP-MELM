@@ -40,6 +40,12 @@ app.controller('ImportLibraryCtrl', [ '$scope', 'melmService', '$fileUploader', 
   uploader.filters.push(function() {
     return uploader.queue.length !== 1; // only one file in the queue
   });
+  
+  uploader.filters.push(function(item /*{File|HTMLInputElement}*/) {
+    var type = uploader.isHTML5 ? item.type : '/' + item.value.slice(item.value.lastIndexOf('.') + 1);
+    type = '|' + type.toLowerCase().slice(type.lastIndexOf('/') + 1) + '|';
+    return '|zip|'.indexOf(type) !== -1;
+  });
 
   $scope.go = function(path) {
     melmService.go(path);
