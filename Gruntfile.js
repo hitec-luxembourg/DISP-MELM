@@ -29,6 +29,7 @@ module.exports = function(grunt) {
           'js/vendor/angular.min.js.map' : 'bower_components/angular/angular.min.js.map',
           'js/vendor/angular-file-upload.min.js' : 'bower_components/angular-file-upload/angular-file-upload.min.js',
           'js/vendor/angular-file-upload.min.map' : 'bower_components/angular-file-upload/angular-file-upload.min.map',
+          'js/vendor/ui-bootstrap.min.js' : 'bower_components/angular-ui-bootstrap-bower/ui-bootstrap.min.js',
           'js/vendor/ui-bootstrap-tpls.min.js' : 'bower_components/angular-ui-bootstrap-bower/ui-bootstrap-tpls.min.js',
           'js/vendor/xeditable.min.js' : 'bower_components/angular-xeditable/dist/js/xeditable.min.js',
           'css/vendor/xeditable.css' : 'bower_components/angular-xeditable/dist/css/xeditable.css',
@@ -54,7 +55,7 @@ module.exports = function(grunt) {
     uglify : { 
       options : {
         // the banner is inserted at the top of the output
-        banner : '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n'
+        banner : '/*! <%= pkg.name %> */\n'
       },
       dist : {
         files : {
@@ -64,7 +65,7 @@ module.exports = function(grunt) {
     },
     less : {
       options : {
-        banner : '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n'
+        banner : '/*! <%= pkg.name %> */\n'
       },
       development : {
         files : {
@@ -73,7 +74,7 @@ module.exports = function(grunt) {
       },
       production : {
         options : {
-          banner : '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n',
+          banner : '/*! <%= pkg.name %> */\n',
           cleancss : true
         },
         files : {

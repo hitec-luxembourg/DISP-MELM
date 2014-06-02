@@ -11,6 +11,7 @@
 <script type="text/javascript" src="${ctx}/js/vendor/xeditable.min.js"></script>
 <script type="text/javascript" src="${ctx}/js/vendor/es5-shim.min.js"></script>
 <script type="text/javascript" src="${ctx}/js/vendor/angular-file-upload.min.js"></script>
+<script type="text/javascript" src="${ctx}/js/vendor/ui-bootstrap.min.js"></script>
 <script type="text/javascript" src="${ctx}/js/vendor/ui-bootstrap-tpls.min.js"></script>
 
 <script type="text/javascript" src="${ctx}/js/bootstrap-dialog.min.js"></script>
