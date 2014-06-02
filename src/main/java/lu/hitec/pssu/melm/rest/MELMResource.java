@@ -321,7 +321,7 @@ public class MELMResource {
   @Produces(MediaType.TEXT_HTML)
   @Path("/libraries/icons/properties/{id}")
   public Response gotoProperties(@PathParam("id") final long id) {
-    return Response.ok(new Viewable("/properties", id)).build();
+    return Response.ok(new Viewable("/properties", melmService.getLibraryIcon(id))).build();
   }
 
   @GET
