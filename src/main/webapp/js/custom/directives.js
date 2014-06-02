@@ -5,6 +5,8 @@
  * @version: 0.1.2, 2014-01-09
  */
 app.directive('ngThumb', [ '$window', function($window) {
+  'use strict';
+  
   var helper = {
     support : !!($window.FileReader && $window.CanvasRenderingContext2D),
     isFile : function(item) {
@@ -43,6 +45,8 @@ app.directive('ngThumb', [ '$window', function($window) {
       }
 
       function onLoadImage() {
+        /*jshint validthis:true */
+        
         var width = params.width || this.width / this.height * params.height;
         var height = params.height || this.height / this.width * params.width;
         canvas.attr({

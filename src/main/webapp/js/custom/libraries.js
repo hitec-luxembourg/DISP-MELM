@@ -1,4 +1,6 @@
 app.controller('LibrariesCtrl', [ '$scope', '$http', 'melmService', function($scope, $http, melmService) {
+  'use strict';
+  
   $scope.loadResources = function() {
     melmService.loadResources($scope, '/rest/libraries/json', function() {
       var data = $scope.resources;

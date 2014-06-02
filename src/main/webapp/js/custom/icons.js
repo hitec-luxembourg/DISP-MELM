@@ -1,4 +1,6 @@
 app.controller('IconsCtrl', [ '$scope', '$http', 'melmService', function($scope, $http, melmService) {
+  'use strict';
+
   $scope.loadResources = function() {
     melmService.loadResources($scope, '/rest/icons/linked/json', function() {
       $scope.processLinks($scope.resources);
@@ -17,23 +19,27 @@ app.controller('IconsCtrl', [ '$scope', '$http', 'melmService', function($scope,
         // Extend the given data to perform libraries ordering in the UI
         var libraries = "";
         if (data[i] && data[i].libraries && 0 < data[i].libraries.length) {
-          libraries = data[i].libraries.sort(function compare(a, b) {
-            if (a.name < b.name)
-              return -1;
-            if (a.name > b.name)
-              return 1;
-            return 0;
-          }).map(function(elem) {
-            return elem.name;
-          }).join(",");
+          libraries = data[i].libraries.sort($scope.libraryCompare).map($scope.libraryMap).join(",");
         }
-        
+
         angular.extend(data[i].icon, {
           librariesAsString : libraries,
           checked : false
         });
       }
     }
+  };
+
+  $scope.libraryCompare = function(a, b) {
+    if (a.name < b.name)
+      return -1;
+    if (a.name > b.name)
+      return 1;
+    return 0;
+  };
+
+  $scope.libraryMap = function(elem) {
+    return elem.name;
   };
 
   $scope.changeImage = function(id, which) {
