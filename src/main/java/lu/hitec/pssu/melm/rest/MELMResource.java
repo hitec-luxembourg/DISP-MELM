@@ -90,13 +90,6 @@ public class MELMResource {
   }
 
   @POST
-  @Path("/libraries/delete")
-  public Response deleteLibrary(@FormParam("id") final long id) {
-    melmService.deleteLibrary(id);
-    return Response.ok().build();
-  }
-
-  @POST
   @Path("/libraries/deleteMultiple")
   public Response deleteLibraries(@FormParam("ids") final String ids) {
     final String[] ids_ = getIds(ids);
@@ -104,6 +97,13 @@ public class MELMResource {
       final long id = Long.valueOf(ids_[i]);
       melmService.deleteLibrary(id);
     }
+    return Response.ok().build();
+  }
+
+  @POST
+  @Path("/libraries/delete")
+  public Response deleteLibrary(@FormParam("id") final long id) {
+    melmService.deleteLibrary(id);
     return Response.ok().build();
   }
 
@@ -126,21 +126,6 @@ public class MELMResource {
     return Response.ok().build();
   }
 
-  private String[] getIds(final String ids) {
-    String[] result = {};
-    if ((null != ids) && !"".equals(ids)) {
-      result = ids.split(",");
-    }
-    return result;
-  }
-
-  @POST
-  @Path("/libraries/icons/properties/delete")
-  public Response deleteProperty(@FormParam("id") final long id) {
-    melmService.deleteProperty(id);
-    return Response.ok().build();
-  }
-
   @POST
   @Path("/libraries/icons/properties/deleteMultiple")
   public Response deleteProperties(@FormParam("ids") final String ids) {
@@ -149,6 +134,13 @@ public class MELMResource {
       final long id = Long.valueOf(ids_[i]);
       melmService.deleteProperty(id);
     }
+    return Response.ok().build();
+  }
+
+  @POST
+  @Path("/libraries/icons/properties/delete")
+  public Response deleteProperty(@FormParam("id") final long id) {
+    melmService.deleteProperty(id);
     return Response.ok().build();
   }
 
@@ -321,7 +313,7 @@ public class MELMResource {
   @Produces(MediaType.TEXT_HTML)
   @Path("/libraries/icons/properties/{id}")
   public Response gotoProperties(@PathParam("id") final long id) {
-    return Response.ok(new Viewable("/properties", id)).build();
+    return Response.ok(new Viewable("/properties", melmService.getLibraryIcon(id))).build();
   }
 
   @GET
@@ -739,6 +731,14 @@ public class MELMResource {
       final String error = e.getMessage();
       return Response.status(Status.BAD_REQUEST).entity(error).build();
     }
+  }
+
+  private String[] getIds(final String ids) {
+    String[] result = {};
+    if ((null != ids) && !"".equals(ids)) {
+      result = ids.split(",");
+    }
+    return result;
   }
 
 }

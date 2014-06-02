@@ -16,12 +16,12 @@
 	<jsp:include page="header.jsp" />
 	<div class="container">
 		<div class="page-header">
-			<h1>Properties</h1>
+			<h1>Properties <small>${it.library.name}-${it.library.majorVersion}.${it.library.minorVersion} > ${it.iconNameInLibrary}</small></h1>
 		</div>
 		<div>
 			<h3>Add property</h3>
 			<form novalidate name="createResourceForm">
-				<input type="hidden" id="newResource_id" ng-model="newResource.id" value="${it}" />
+				<input type="hidden" id="newResource_id" ng-model="newResource.id" value="${it.id}" />
 				<table class="table table-striped">
 					<tr>
 						<td><input type="text" class="form-control" placeholder="Specify a property unique name" id="newResource_unique_name" ng-model="newResource.uniqueName" required /></td>
