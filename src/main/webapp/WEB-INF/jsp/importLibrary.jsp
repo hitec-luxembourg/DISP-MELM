@@ -21,7 +21,7 @@
     <form method="POST" class="form-horizontal" role="form">
       <div class="jumbotron">
         <p>
-          Click on the following button or drag and drop your file in order to select a library file.<br />Then you can click on the 'import' button if you want
+          Click on the following button or drag and drop your file in order to select a <b>library file</b>.<br />Then you can click on the 'import' button if you want
           to use this file or on the 'delete' button if you want to use another file.
         </p>
         <p>
@@ -31,7 +31,7 @@
           <button type="button" ng-click="go('/rest/libraries')" class="btn btn-default">
             <span class="glyphicon glyphicon-remove"></span>Cancel
           </button>
-        <div ng-show="uploader.isHTML5" class="well my-drop-zone" ng-file-over>Drag and drop your library file here</div>
+        <div ng-show="uploader.isHTML5" class="well my-drop-zone" ng-file-over>Drag and drop your <b>library file</b> here</div>
       </div>
       <div class="form-group">
         <table class="table" ng-show="uploader.queue.length===1" style="width: 100%">

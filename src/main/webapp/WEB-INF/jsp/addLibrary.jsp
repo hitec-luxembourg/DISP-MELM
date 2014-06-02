@@ -21,7 +21,7 @@
     <form method="POST" class="form-horizontal" role="form">
       <div class="jumbotron">
         <p>
-          Click on the following button or drag and drop your file in order to select a library icon.<br />Then you can click on the 'add'
+          Click on the following button or drag and drop your file in order to select a <b>library icon</b>.<br />Then you can click on the 'add'
           button if you want to create the library or on the 'delete' button if you want to use another file.
         </p>
         <p>
@@ -31,7 +31,7 @@
           <button type="button" ng-click="go('/rest/libraries')" class="btn btn-default">
             <span class="glyphicon glyphicon-remove"></span>Cancel
           </button>
-        <div ng-show="uploader.isHTML5" class="well my-drop-zone" ng-file-over>Drag and drop your library icon file here</div>
+        <div ng-show="uploader.isHTML5" class="well my-drop-zone" ng-file-over>Drag and drop your <b>library icon</b> file here</div>
       </div>
       <div ng-show="uploader.queue.length===1">
         <div class="form-group">
@@ -60,7 +60,7 @@
               <tbody>
                 <tr ng-repeat="item in uploader.queue">
                   <td>{{item.file.name}}
-                    <div ng-show="uploader.isHTML5" ng-thumb="{ file: item.file, height: 100 }"></div>
+                    <div ng-show="uploader.isHTML5" ng-thumb="{ file: item.file, height: 40 }"></div>
                   </td>
                   <td ng-show="uploader.isHTML5" nowrap>{{ item.file.size/1024|number:2 }} KB</td>
                   <td nowrap>
