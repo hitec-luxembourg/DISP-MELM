@@ -22,8 +22,8 @@
     <form method="POST" class="form-horizontal" role="form">
       <div class="jumbotron">
         <p>
-          Click on the following button or drag and drop your file in order to select a library file.<br />Then you can click on the 'import' button if you want
-          to use this file or on the 'delete' button if you want to use another file.
+          Click on the following button or drag and drop your file in order to select a <b>library file</b>.<br />Then you can click on the
+          'import' button if you want to use this file or on the 'delete' button if you want to use another file.
         </p>
         <p>
           <span class="btn btn-primary btn-file"> <span class="glyphicon glyphicon-file"></span> Browse&hellip; <input type="file"
@@ -32,16 +32,19 @@
           <button type="button" ng-click="go('/rest/libraries')" class="btn btn-default">
             <span class="glyphicon glyphicon-remove"></span>Cancel
           </button>
-        <div ng-show="uploader.isHTML5" class="well my-drop-zone" ng-file-over>Drag and drop your library file here</div>
+        <div ng-show="uploader.isHTML5" class="well my-drop-zone" ng-file-over>
+          Drag and drop your <b>library file</b> here
+        </div>
       </div>
       <div class="form-group">
-        <table class="table" ng-show="uploader.queue.length===1" style="width: 100%">
+        <table class="table" ng-show="uploader.queue.length!==0" style="width: 100%">
           <thead>
             <tr>
               <th width="20%">File Name</th>
               <th width="20%">Detected Name</th>
               <th width="20%">Detected Version</th>
               <th ng-show="uploader.isHTML5">Size</th>
+              <th ng-show="uploader.isHTML5">Progress</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -51,6 +54,11 @@
               <td>{{detectLibraryName(item.file.name)}}</td>
               <td>{{detectLibraryVersion(item.file.name)}}</td>
               <td ng-show="uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
+              <td ng-show="uploader.isHTML5">
+                <div class="progress" style="margin-bottom: 0;">
+                  <div class="progress-bar" role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
+                </div>
+              </td>
               <td nowrap>
                 <button type="button" class="btn btn-import" ng-click="item.upload()"
                   ng-disabled="item.isReady || item.isUploading || item.isSuccess">Import</button>
@@ -61,6 +69,23 @@
             </tr>
           </tbody>
         </table>
+        <div ng-show="uploader.queue.length!==0" >
+          <p>Queue progress:
+          <div class="progress" style="">
+            <div class="progress-bar" role="progressbar" ng-style="{ 'width': uploader.progress + '%' }"></div>
+          </div>
+          </p>
+          <button type="button" class="btn btn-success btn-s" ng-click="uploader.uploadAll()"
+            ng-disabled="!uploader.getNotUploadedItems().length">
+            <span class="glyphicon glyphicon-upload"></span> Upload all
+          </button>
+          <button type="button" class="btn btn-warning btn-s" ng-click="uploader.cancelAll()" ng-disabled="!uploader.isUploading">
+            <span class="glyphicon glyphicon-ban-circle"></span> Cancel all
+          </button>
+          <button type="button" class="btn btn-danger btn-s" ng-click="uploader.clearQueue()" ng-disabled="!uploader.queue.length">
+            <span class="glyphicon glyphicon-trash"></span> Remove all
+          </button>
+        </div>
       </div>
     </form>
   </div>
