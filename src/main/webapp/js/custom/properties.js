@@ -1,4 +1,4 @@
-app.controller('PropertiesCtrl', [ '$scope', '$http', 'melmService', function($scope, $http, melmService) {
+app.controller('PropertiesCtrl', [ '$scope', '$http', 'melmService', 'dialogs', function($scope, $http, melmService, dialogs) {
   'use strict';
 
   $scope.loadResources = function(id) {
@@ -50,13 +50,6 @@ app.controller('PropertiesCtrl', [ '$scope', '$http', 'melmService', function($s
       },
       errorCallback : function(data) {
         dialogs.error('Error', data);
-        // BootstrapDialog.alert({
-        // title : 'ERROR',
-        // message : data,
-        // type : BootstrapDialog.TYPE_DANGER,
-        // closable : true,
-        // buttonLabel : 'Close'
-        // });
       }
     });
   };
@@ -76,13 +69,6 @@ app.controller('PropertiesCtrl', [ '$scope', '$http', 'melmService', function($s
       },
       errorCallback : function(data) {
         dialogs.error('Error', data);
-        // BootstrapDialog.alert({
-        // title : 'ERROR',
-        // message : data,
-        // type : BootstrapDialog.TYPE_DANGER,
-        // closable : true,
-        // buttonLabel : 'Close'
-        // });
       }
     });
   };
@@ -106,13 +92,6 @@ app.controller('PropertiesCtrl', [ '$scope', '$http', 'melmService', function($s
       },
       errorCallback : function() {
         dialogs.error('Error', 'Resource deletion threw an error.');
-        // BootstrapDialog.alert({
-        // title : 'ERROR',
-        // message : 'Resource deletion threw an error.',
-        // type : BootstrapDialog.TYPE_DANGER,
-        // closable : true,
-        // buttonLabel : 'Close'
-        // });
       }
     });
   };
@@ -137,13 +116,6 @@ app.controller('PropertiesCtrl', [ '$scope', '$http', 'melmService', function($s
       },
       errorCallback : function() {
         dialogs.error('Error', 'Resources deletion threw an error.');
-        // BootstrapDialog.alert({
-        // title : 'ERROR',
-        // message : 'Resources deletion threw an error.',
-        // type : BootstrapDialog.TYPE_DANGER,
-        // closable : true,
-        // buttonLabel : 'Close'
-        // });
       }
     });
   };

@@ -17,32 +17,15 @@ app.controller('ImportLibraryCtrl', [ '$scope', 'melmService', '$fileUploader', 
           version : $scope.detectLibraryVersion(item.file.name),
         });
         item.alias = 'libraryFile';
-        // $('#libraryFile').attr("disabled", "disabled").css("opacity", 0.4).css("filter", "alpha(opacity=40)");
-        // item.remove = function() {
-        // uploader.removeFromQueue(this);
-        // $('#libraryFile').removeAttr("disabled").css("opacity", 0).css("filter", "alpha(opacity=0)");
-        // };
       });
 
       uploader.bind('success', function(event, xhr, item, response) {
         dialogs.notify('Notification', item.file.name + ' has been successfully imported!');
-        // melmService.go('/rest/libraries/');
       });
 
       uploader.bind('error', function(event, xhr, item, response) {
         dialogs.error('Error', response);
-        // BootstrapDialog.alert({
-        // title : 'ERROR',
-        // message : response,
-        // type : BootstrapDialog.TYPE_DANGER,
-        // closable : true,
-        // buttonLabel : 'Close'
-        // });
       });
-
-      // uploader.filters.push(function() {
-      // return uploader.queue.length !== 1; // only one file in the queue
-      // });
 
       uploader.filters.push(function(item /* {File|HTMLInputElement} */) {
         var type = uploader.isHTML5 ? item.type : '/' + item.value.slice(item.value.lastIndexOf('.') + 1);

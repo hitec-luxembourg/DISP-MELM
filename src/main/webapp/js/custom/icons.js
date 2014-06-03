@@ -69,13 +69,6 @@ app.controller('IconsCtrl', [ '$scope', '$http', 'melmService', 'dialogs', funct
       },
       errorCallback : function() {
         dialogs.error('Error', 'Resource deletion threw an error.');
-        // BootstrapDialog.alert({
-        // title : 'ERROR',
-        // message : 'Resource deletion threw an error.',
-        // type : BootstrapDialog.TYPE_DANGER,
-        // closable : true,
-        // buttonLabel : 'Close'
-        // });
       }
     });
   };
@@ -101,13 +94,6 @@ app.controller('IconsCtrl', [ '$scope', '$http', 'melmService', 'dialogs', funct
       },
       errorCallback : function() {
         dialogs.error('Error', 'Resources deletion threw an error.');
-        // BootstrapDialog.alert({
-        // title : 'ERROR',
-        // message : 'Resources deletion threw an error.',
-        // type : BootstrapDialog.TYPE_DANGER,
-        // closable : true,
-        // buttonLabel : 'Close'
-        // });
       }
     });
   };

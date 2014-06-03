@@ -7,7 +7,6 @@
 <script type="text/javascript" src="${ctx}/js/angular-sanitize.min.js"></script>
 <script type="text/javascript" src="${ctx}/js/angular-translate.min.js"></script>
 <script type="text/javascript" src="${ctx}/js/ui-bootstrap-tpls-0.11.0.min.js"></script>
-<%-- <script type="text/javascript" src="${ctx}/js/bootstrap-dialog.min.js"></script> --%>
 <script type="text/javascript" src="${ctx}/js/dialogs.min.js"></script>
 <script type="text/javascript" src="${ctx}/js/xeditable.min.js"></script>
 <script type="text/javascript" src="${ctx}/js/es5-shim.min.js"></script>

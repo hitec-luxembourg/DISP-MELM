@@ -70,11 +70,6 @@ app.service('melmService', [ '$http', '$window', 'dialogs', function($http, $win
     dlg.result.then(function(btn) {
       theScope.deleteResource(id);
     });
-    // BootstrapDialog.confirm('Do you really want to delete this resource ?', function(result) {
-    // if (result) {
-    // theScope.deleteResource(id);
-    // }
-    // });
   };
 
   this.confirmDeleteMultiple = function(theScope) {
@@ -82,11 +77,6 @@ app.service('melmService', [ '$http', '$window', 'dialogs', function($http, $win
     dlg.result.then(function(btn) {
       theScope.deleteResources();
     });
-    // BootstrapDialog.confirm('Do you really want to delete these resources ?', function(result) {
-    // if (result) {
-    // theScope.deleteResources();
-    // }
-    // });
   };
 
 } ]);
