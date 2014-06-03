@@ -2,7 +2,7 @@ app.controller('UpdateIconCtrl', [ '$scope', '$window', 'melmService', function(
   'use strict';
   
   $scope.go = function(path) {
-    melmService(path);
+    melmService.go(path);
   };
 
   $scope.setAnchor = function(anchor) {

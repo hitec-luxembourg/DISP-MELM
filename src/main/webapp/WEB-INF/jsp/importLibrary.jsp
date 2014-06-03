@@ -76,7 +76,7 @@
           </div>
           <button type="button" class="btn btn-success btn-s" ng-click="uploader.uploadAll()"
             ng-disabled="!uploader.getNotUploadedItems().length">
-            <span class="glyphicon glyphicon-upload"></span> Upload all
+            <span class="glyphicon glyphicon-upload"></span> Import all
           </button>
           <button type="button" class="btn btn-danger btn-s" ng-click="uploader.clearQueue()" ng-disabled="!uploader.queue.length">
             <span class="glyphicon glyphicon-trash"></span> Remove all

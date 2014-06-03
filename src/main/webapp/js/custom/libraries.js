@@ -1,6 +1,6 @@
 app.controller('LibrariesCtrl', [ '$scope', '$http', 'melmService', function($scope, $http, melmService) {
   'use strict';
-  
+
   $scope.loadResources = function() {
     melmService.loadResources($scope, '/rest/libraries/json', function() {
       var data = $scope.resources;
@@ -18,11 +18,11 @@ app.controller('LibrariesCtrl', [ '$scope', '$http', 'melmService', function($sc
   $scope.go = function(path) {
     melmService.go(path);
   };
-  
+
   $scope.confirmDelete = function(id) {
     melmService.confirmDelete($scope, id);
   };
-  
+
   $scope.confirmDeleteMultiple = function() {
     melmService.confirmDeleteMultiple($scope);
   };
@@ -37,13 +37,14 @@ app.controller('LibrariesCtrl', [ '$scope', '$http', 'melmService', function($sc
         $scope.loadResources();
       },
       errorCallback : function() {
-        BootstrapDialog.alert({
-          title : 'ERROR',
-          message : 'Resource deletion threw an error.',
-          type : BootstrapDialog.TYPE_DANGER,
-          closable : true,
-          buttonLabel : 'Close'
-        });
+        dialogs.error('Error', 'Resource deletion threw an error.');
+        // BootstrapDialog.alert({
+        // title : 'ERROR',
+        // message : 'Resource deletion threw an error.',
+        // type : BootstrapDialog.TYPE_DANGER,
+        // closable : true,
+        // buttonLabel : 'Close'
+        // });
       }
     });
   };
@@ -67,13 +68,14 @@ app.controller('LibrariesCtrl', [ '$scope', '$http', 'melmService', function($sc
         $scope.loadResources();
       },
       errorCallback : function() {
-        BootstrapDialog.alert({
-          title : 'ERROR',
-          message : 'Resources deletion threw an error.',
-          type : BootstrapDialog.TYPE_DANGER,
-          closable : true,
-          buttonLabel : 'Close'
-        });
+        dialogs.error('Error', 'Resources deletion threw an error.');
+        // BootstrapDialog.alert({
+        // title : 'ERROR',
+        // message : 'Resources deletion threw an error.',
+        // type : BootstrapDialog.TYPE_DANGER,
+        // closable : true,
+        // buttonLabel : 'Close'
+        // });
       }
     });
   };

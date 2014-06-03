@@ -1,6 +1,6 @@
-app.service('melmService', [ '$http', '$window', function($http, $window) {
+app.service('melmService', [ '$http', '$window', 'dialogs', function($http, $window, dialogs) {
   'use strict';
-  
+
   this.encodeParams = function(data) {
     var result = [];
     for ( var d in data) {
@@ -66,19 +66,27 @@ app.service('melmService', [ '$http', '$window', function($http, $window) {
   };
 
   this.confirmDelete = function(theScope, id) {
-    BootstrapDialog.confirm('Do you really want to delete this resource ?', function(result) {
-      if (result) {
-        theScope.deleteResource(id);
-      }
+    var dlg = dialogs.confirm('Confirmation required', 'Do you really want to delete this resource ?');
+    dlg.result.then(function(btn) {
+      theScope.deleteResource(id);
     });
+    // BootstrapDialog.confirm('Do you really want to delete this resource ?', function(result) {
+    // if (result) {
+    // theScope.deleteResource(id);
+    // }
+    // });
   };
 
   this.confirmDeleteMultiple = function(theScope) {
-    BootstrapDialog.confirm('Do you really want to delete these resources ?', function(result) {
-      if (result) {
-        theScope.deleteResources();
-      }
+    var dlg = dialogs.confirm('Confirmation required', 'Do you really want to delete these resources ?');
+    dlg.result.then(function(btn) {
+      theScope.deleteResources();
     });
+    // BootstrapDialog.confirm('Do you really want to delete these resources ?', function(result) {
+    // if (result) {
+    // theScope.deleteResources();
+    // }
+    // });
   };
 
 } ]);

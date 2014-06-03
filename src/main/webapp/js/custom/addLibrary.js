@@ -1,4 +1,4 @@
-app.controller('AddLibraryCtrl', [ '$scope', 'melmService', '$fileUploader', function($scope, melmService, $fileUploader) {
+app.controller('AddLibraryCtrl', [ '$scope', 'melmService', '$fileUploader', 'dialogs', function($scope, melmService, $fileUploader, dialogs) {
   'use strict';
 
   // create a uploader with options
@@ -31,13 +31,14 @@ app.controller('AddLibraryCtrl', [ '$scope', 'melmService', '$fileUploader', fun
   });
 
   uploader.bind('error', function(event, xhr, item, response) {
-    BootstrapDialog.alert({
-      title : 'ERROR',
-      message : response,
-      type : BootstrapDialog.TYPE_DANGER,
-      closable : true,
-      buttonLabel : 'Close'
-    });
+    dialogs.error('Error', response);
+    // BootstrapDialog.alert({
+    // title : 'ERROR',
+    // message : response,
+    // type : BootstrapDialog.TYPE_DANGER,
+    // closable : true,
+    // buttonLabel : 'Close'
+    // });
   });
 
   uploader.filters.push(function() {

@@ -1,6 +1,6 @@
 app.controller('PropertiesCtrl', [ '$scope', '$http', 'melmService', function($scope, $http, melmService) {
   'use strict';
-  
+
   $scope.loadResources = function(id) {
     melmService.loadResources($scope, '/rest/libraries/icons/properties/json/' + id, function() {
       var data = $scope.resources;
@@ -49,13 +49,14 @@ app.controller('PropertiesCtrl', [ '$scope', '$http', 'melmService', function($s
         $scope.loadResources(melmService.getRESTParameter('properties/'));
       },
       errorCallback : function(data) {
-        BootstrapDialog.alert({
-          title : 'ERROR',
-          message : data,
-          type : BootstrapDialog.TYPE_DANGER,
-          closable : true,
-          buttonLabel : 'Close'
-        });
+        dialogs.error('Error', data);
+        // BootstrapDialog.alert({
+        // title : 'ERROR',
+        // message : data,
+        // type : BootstrapDialog.TYPE_DANGER,
+        // closable : true,
+        // buttonLabel : 'Close'
+        // });
       }
     });
   };
@@ -74,13 +75,14 @@ app.controller('PropertiesCtrl', [ '$scope', '$http', 'melmService', function($s
         $scope.loadResources(melmService.getRESTParameter('properties/'));
       },
       errorCallback : function(data) {
-        BootstrapDialog.alert({
-          title : 'ERROR',
-          message : data,
-          type : BootstrapDialog.TYPE_DANGER,
-          closable : true,
-          buttonLabel : 'Close'
-        });
+        dialogs.error('Error', data);
+        // BootstrapDialog.alert({
+        // title : 'ERROR',
+        // message : data,
+        // type : BootstrapDialog.TYPE_DANGER,
+        // closable : true,
+        // buttonLabel : 'Close'
+        // });
       }
     });
   };
@@ -103,13 +105,14 @@ app.controller('PropertiesCtrl', [ '$scope', '$http', 'melmService', function($s
         $scope.loadResources(melmService.getRESTParameter('properties/'));
       },
       errorCallback : function() {
-        BootstrapDialog.alert({
-          title : 'ERROR',
-          message : 'Resource deletion threw an error.',
-          type : BootstrapDialog.TYPE_DANGER,
-          closable : true,
-          buttonLabel : 'Close'
-        });
+        dialogs.error('Error', 'Resource deletion threw an error.');
+        // BootstrapDialog.alert({
+        // title : 'ERROR',
+        // message : 'Resource deletion threw an error.',
+        // type : BootstrapDialog.TYPE_DANGER,
+        // closable : true,
+        // buttonLabel : 'Close'
+        // });
       }
     });
   };
@@ -133,13 +136,14 @@ app.controller('PropertiesCtrl', [ '$scope', '$http', 'melmService', function($s
         $scope.loadResources(melmService.getRESTParameter('properties/'));
       },
       errorCallback : function() {
-        BootstrapDialog.alert({
-          title : 'ERROR',
-          message : 'Resources deletion threw an error.',
-          type : BootstrapDialog.TYPE_DANGER,
-          closable : true,
-          buttonLabel : 'Close'
-        });
+        dialogs.error('Error', 'Resources deletion threw an error.');
+        // BootstrapDialog.alert({
+        // title : 'ERROR',
+        // message : 'Resources deletion threw an error.',
+        // type : BootstrapDialog.TYPE_DANGER,
+        // closable : true,
+        // buttonLabel : 'Close'
+        // });
       }
     });
   };
