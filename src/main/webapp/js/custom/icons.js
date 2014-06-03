@@ -27,7 +27,7 @@ app.controller('IconsCtrl', [ '$scope', '$http', 'melmService', function($scope,
             return elem.name;
           }).join(",");
         }
-        
+
         angular.extend(data[i].icon, {
           librariesAsString : libraries,
           checked : false
@@ -117,20 +117,36 @@ app.controller('IconsCtrl', [ '$scope', '$http', 'melmService', function($scope,
     }
   };
 
+  $scope.atLeastOneWithoutLibraries = function() {
+    if ($scope.resources && 0 < $scope.resources.length) {
+      for (var i = 0; i < $scope.resources.length; i++) {
+        if (!$scope.hasLibraries($scope.resources[i])) {
+          return false;
+        }
+      }
+    }
+    return true;
+  };
+
   $scope.allChecked = function() {
     var result = true;
+    var atLeastOneWithoutLibraries = false;
     if (!$scope.resources || 0 === $scope.resources.length) {
       result = false;
     } else {
       for (var i = 0; i < $scope.resources.length; i++) {
         var icon = $scope.resources[i].icon;
-        if (!icon.checked && !$scope.hasLibraries($scope.resources[i])) {
+        var hasLibraries = $scope.hasLibraries($scope.resources[i]);
+        atLeastOneWithoutLibraries = atLeastOneWithoutLibraries || !hasLibraries;
+        // console.log("Icon", icon.id, "has libraries [", hasLibraries, "], atLeastOneWithoutLibraries [", atLeastOneWithoutLibraries, "]");
+        if (!icon.checked && !hasLibraries) {
           result = false;
           break;
         }
       }
     }
-    return result;
+    // console.log("Result ", (atLeastOneWithoutLibraries || result));
+    return atLeastOneWithoutLibraries && result;
   };
 
   $scope.someSelected = function() {

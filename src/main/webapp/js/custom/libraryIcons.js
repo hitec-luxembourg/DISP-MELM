@@ -1,12 +1,5 @@
 app.controller('LibraryIconsCtrl', [ '$scope', '$document', 'melmService', function($scope, $document, melmService) {
 
-  $document.bind('keypress', function(event) {
-    console.debug(event);
-    if (124 === event.charCode) {
-      alert(angular.toJson($scope.resources));
-    }
-  });
-
   $scope.loadResources = function(id) {
     melmService.loadResources($scope, '/rest/libraries/icons/json/' + id, function() {
       $scope.processLinks($scope.resources);
@@ -175,7 +168,7 @@ app.controller('LibraryIconsCtrl', [ '$scope', '$document', 'melmService', funct
   $scope.loadResources(melmService.getRESTParameter('icons/'));
 
   $scope.sortableOptions = {
-    cursor : "move",
+    cursor : "pointer",
     update : function(e, ui) {
       var libIcon = ui.item.scope().icon;
       var icon = ui.item.scope().icon.icon;
@@ -186,5 +179,4 @@ app.controller('LibraryIconsCtrl', [ '$scope', '$document', 'melmService', funct
       });
     }
   };
-
 } ]);

@@ -13,7 +13,7 @@ app.service('melmService', [ '$http', '$window', function($http, $window) {
   };
 
   this.loadResources = function(theScope, url, successCallback, errorCallback) {
-    theScope.loadingVisible = true;
+    // theScope.loadingVisible = true;
     return $http.get(melmContextRoot + url).success(function(data, status, headers, config) {
       theScope.resources = data;
       theScope.totalItems = data.length;

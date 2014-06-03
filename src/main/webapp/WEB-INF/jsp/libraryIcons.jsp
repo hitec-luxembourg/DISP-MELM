@@ -26,6 +26,7 @@
 				<thead>
 					<tr>
 						<!-- td align="left" style="width: 150px"><a href="" ng-click="predicate='indexOfIconInLibrary'; reverse=!reverse">Element Index</a></td -->
+						<td style="width: 10px">&nbsp;</td>
 						<td align="center" style="width: 20px"><input type="checkbox" ng-click="allClicked()" ng-checked="allChecked()"></td>
 						<td align="left" style="width: 300px"><a href="" ng-click="predicate='iconNameInLibrary'; reverse=!reverse">Element Name</a></td>
 						<td align="left" style="width: 300px"><a href="" ng-click="predicate='iconDescriptionInLibrary'; reverse=!reverse">Element Description</a></td>
@@ -33,9 +34,10 @@
 						<td align="left" style="width: 300px">Actions</td>
 					</tr>
 				</thead>
-				<tbody ui:sortable="sortableOptions" style="cursor:move;">
+				<tbody ui:sortable="sortableOptions">
 					<tr class="item sortable" ng-repeat="icon in resources.icons | orderBy:predicate:reverse | startFrom: (currentPage - 1) * itemsPerPage | limitTo: itemsPerPage" class="sortableItem">
 						<!-- td align="left">{{icon.indexOfIconInLibrary}}</td -->
+						<td style="background-color: gray; cursor: move;" ng-style="hover && {'background-color': 'gray'} || !hover && {'background-color': 'lightGray'} " ng-mouseenter="hover=true" ng-mouseleave="hover=false">&nbsp;</td>
 						<td align="center"><input type="checkbox" ng-model="icon.icon.checked"></td>
 						<td align="left">{{icon.iconNameInLibrary}}</td>
 						<td align="left">{{icon.iconDescriptionInLibrary}}</td>
