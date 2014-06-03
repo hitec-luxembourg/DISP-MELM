@@ -870,14 +870,7 @@ public class MELMServiceImpl implements MELMService {
             break;
           }
         }
-        int order = 0;
-        for (int i = 0; i < iconsInLibrary.size(); i++) {
-          final MapElementLibraryIcon iconInLibrary = iconsInLibrary.get(i);
-          order += ORDER_INCREMENT;
-          LOGGER.debug("*** Updating icon [" + iconInLibrary.getId() + "] with index order [" + order + "]");
-          mapElementLibraryIconDAO.updateLibraryIcon(iconInLibrary.getId(), iconInLibrary.getIcon(), order,
-              iconInLibrary.getIconNameInLibrary(), iconInLibrary.getIconDescriptionInLibrary());
-        }
+        reorder(iconsInLibrary);
       }
 
       break;
@@ -913,14 +906,7 @@ public class MELMServiceImpl implements MELMService {
             break;
           }
         }
-        int order = 0;
-        for (int i = 0; i < iconsInLibrary.size(); i++) {
-          final MapElementLibraryIcon iconInLibrary = iconsInLibrary.get(i);
-          order += ORDER_INCREMENT;
-          LOGGER.debug("*** Updating icon [" + iconInLibrary.getId() + "] with index order [" + order + "]");
-          mapElementLibraryIconDAO.updateLibraryIcon(iconInLibrary.getId(), iconInLibrary.getIcon(), order,
-              iconInLibrary.getIconNameInLibrary(), iconInLibrary.getIconDescriptionInLibrary());
-        }
+        reorder(iconsInLibrary);
       }
 
       break;
@@ -929,6 +915,99 @@ public class MELMServiceImpl implements MELMService {
       break;
     }
 
+  }
+
+  private void reorder(final List<MapElementLibraryIcon> iconsInLibrary) {
+    int order = 0;
+    for (int i = 0; i < iconsInLibrary.size(); i++) {
+      final MapElementLibraryIcon iconInLibrary = iconsInLibrary.get(i);
+      order += ORDER_INCREMENT;
+      LOGGER.debug("*** Updating icon [" + iconInLibrary.getId() + "] with index order [" + order + "]");
+      mapElementLibraryIconDAO.updateLibraryIcon(iconInLibrary.getId(), iconInLibrary.getIcon(), order,
+          iconInLibrary.getIconNameInLibrary(), iconInLibrary.getIconDescriptionInLibrary());
+    }
+  }
+
+  @Override
+  public void moveLibraryIconTo(final long id, final long to) {
+    final MapElementLibraryIcon libraryIcon = mapElementLibraryIconDAO.getLibraryIcon(id);
+    MapElementLibraryIcon firstLibraryIcon = null;
+    MapElementLibraryIcon previousLibraryIcon = null;
+    MapElementLibraryIcon nextLibraryIcon = null;
+    MapElementLibraryIcon lastLibraryIcon = null;
+    final MapElementLibrary library = libraryIcon.getLibrary();
+
+    LOGGER.debug("*** Moving icon [" + libraryIcon.getId() + "] from library [" + library.getId() + "] with actual index order ["
+        + libraryIcon.getIndexOfIconInLibrary() + "] to position " + to);
+
+    final List<MapElementLibraryIcon> iconsInLibrary = mapElementLibraryIconDAO.getIconsInLibrary(library);
+
+    if (null != iconsInLibrary) {
+      int index = 0;
+      for (; index < iconsInLibrary.size(); index++) {
+        final MapElementLibraryIcon mapElementLibraryIcon = iconsInLibrary.get(index);
+        if(libraryIcon.getId() == mapElementLibraryIcon.getId()) {
+          break;
+        }
+      }
+      // If the icon doesn't move...
+      if (index == to) {
+        // ... there's nothing to do
+        return;
+      }
+
+      int newIndex = 0;
+      // The item is put at the beginning of the list
+      final int iconsInLibrarySize = iconsInLibrary.size();
+      if (0 == to) {
+        // If there is more than one item in the list, see if there is space in front
+        if (1 < iconsInLibrarySize) {
+          firstLibraryIcon = iconsInLibrary.get(0);
+          newIndex = MELMUtils.getNewIndex(0, firstLibraryIcon.getIndexOfIconInLibrary());
+        }
+        // else nothing to do
+      }
+      // The item is put at the end of the list
+      else if ((iconsInLibrarySize - 1) == to) {
+        // If there is more than one item in the list, set the new order
+        if (1 < iconsInLibrarySize) {
+          lastLibraryIcon = iconsInLibrary.get(iconsInLibrarySize - 2);
+          newIndex = lastLibraryIcon.getIndexOfIconInLibrary() + (ORDER_INCREMENT * 2);
+        }
+        // else nothing to do
+      }
+      // The item is put somewhere in the middle of the list
+      else {
+        previousLibraryIcon = iconsInLibrary.get((int) to - 1);
+        nextLibraryIcon = iconsInLibrary.get((int) to + 1);
+        newIndex = MELMUtils.getNewIndex(previousLibraryIcon.getIndexOfIconInLibrary(), nextLibraryIcon.getIndexOfIconInLibrary());
+      }
+
+      // Set the new index
+      if (0 == newIndex) {
+        // Nothing to do, the index of the icon is right
+      } else if (-1 == newIndex) {
+        // Recompute all indices
+        int order = 0;
+        for (int i = 0; i < iconsInLibrary.size(); i++) {
+          MapElementLibraryIcon iconInLibrary = null;
+          if(i == to) {
+            iconInLibrary = libraryIcon;
+          }
+          else {
+            iconInLibrary = iconsInLibrary.get(i);
+          }
+          order += ORDER_INCREMENT;
+          LOGGER.debug("*** Updating icon [" + iconInLibrary.getId() + "] with index order [" + order + "]");
+          mapElementLibraryIconDAO.updateLibraryIcon(iconInLibrary.getId(), iconInLibrary.getIcon(), order,
+              iconInLibrary.getIconNameInLibrary(), iconInLibrary.getIconDescriptionInLibrary());
+        }
+      } else {
+        // Just save the new index
+        mapElementLibraryIconDAO.updateLibraryIcon(libraryIcon.getId(), libraryIcon.getIcon(), newIndex,
+            libraryIcon.getIconNameInLibrary(), libraryIcon.getIconDescriptionInLibrary());
+      }
+    }
   }
 
   @Override
@@ -1041,7 +1120,7 @@ public class MELMServiceImpl implements MELMService {
         deleteFile(mapElementIcon, IconSize.MEDIUM);
         deleteFile(mapElementIcon, IconSize.SMALL);
         deleteFile(mapElementIcon, IconSize.TINY);
-        
+
         // Update the images
         copyFile(mapElementIcon, iconFile_LARGE, iconSelectedFile_LARGE, IconSize.LARGE);
         copyFile(mapElementIcon, iconFile_MEDIUM, iconSelectedFile_MEDIUM, IconSize.MEDIUM);

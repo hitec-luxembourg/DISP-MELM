@@ -1,3 +1,4 @@
+<link rel="stylesheet" type="text/css" href="${ctx}/css/angular-ui.min.css" />
 <link rel="stylesheet" type="text/css" href="${ctx}/css/bootstrap.min.css" />
 <link rel="stylesheet" type="text/css" href="${ctx}/css/bootstrap-dialog.min.css" />
 <link rel="stylesheet" type="text/css" href="${ctx}/css/xeditable.css" />

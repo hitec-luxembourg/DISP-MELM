@@ -98,6 +98,7 @@ app.controller('LibraryIconsCtrl', [ '$scope', '$document', 'melmService', funct
   };
 
   $scope.move = function(which, id) {
+    console.log('Moving icon', id, 'to index', which);
     melmService.post({
       params : {
         "id" : id,
@@ -172,4 +173,18 @@ app.controller('LibraryIconsCtrl', [ '$scope', '$document', 'melmService', funct
   $scope.currentPage = 1;
   $scope.predicate = 'indexOfIconInLibrary';
   $scope.loadResources(melmService.getRESTParameter('icons/'));
+
+  $scope.sortableOptions = {
+    cursor : "move",
+    update : function(e, ui) {
+      var libIcon = ui.item.scope().icon;
+      var icon = ui.item.scope().icon.icon;
+      var index = (($scope.currentPage - 1) * $scope.itemsPerPage) + ui.item.index();
+
+      $scope.$apply(function() {
+        $scope.move(index, libIcon.id);
+      });
+    }
+  };
+
 } ]);

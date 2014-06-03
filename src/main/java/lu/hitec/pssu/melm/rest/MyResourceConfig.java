@@ -11,11 +11,10 @@ public class MyResourceConfig extends ResourceConfig {
    */
   public MyResourceConfig() {
     super();
+    register(AuthenticationExceptionMapper.class);
+    register(AuthenticationFilter.class);
     register(JacksonFeature.class);
     register(MultiPartFeature.class);
-    register(JacksonFeature.class);
-    register(AuthenticationFilter.class);
-    register(AuthenticationExceptionMapper.class);
     register(LoginResource.class);
     register(LogoutResource.class);
     register(MELMResource.class);
