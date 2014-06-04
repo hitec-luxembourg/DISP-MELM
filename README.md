@@ -6,11 +6,11 @@ DISP Map Element Library Manager
 Development:
 
 <ul>
-<li>Install NodeJS (from http://nodejs.org/) for it npm (node package modules)</li>
+<li>Install NodeJS (from http://nodejs.org/) for its npm (node package modules)</li>
 <li>Install Grunt command line with "npm install -g grunt-cli"</li>
 <li>With a command prompt go to the project directory and launch "npm install"</li>
 <li>Then launch "grunt" (http://gruntjs.com/getting-started)</li>
-<li>Finally use "bower install <package>" in order to add new JS dependency</li>
+<li>Finally use "bower install 'package'" in order to add new JS dependency</li>
 <li>Copy the needed files to /css/vendor and js/vendor with configuring the copy plugin in Gruntfile.js</li>
 </ul>
 
