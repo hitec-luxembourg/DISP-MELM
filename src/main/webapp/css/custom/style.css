@@ -1,273 +1,279 @@
 html {
-  position: relative;
-  min-height: 100%;
+	position: relative;
+	min-height: 100%;
 }
 
 body {
-  padding-top: 25px;
-  /* Margin bottom by footer height */
-  margin-bottom: 100px;
+	padding-top: 25px;
+	/* Margin bottom by footer height */
+	margin-bottom: 100px;
 }
 
 body.modal-open {
-  margin-left: auto;
-  margin-right: auto;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 #footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  /* Set the fixed height of the footer here */
-  height: 100px;
-  background-color: #000;
-  color: #fff;
-  height: auto !important;
-  margin-top: 20px;
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	/* Set the fixed height of the footer here */
+	height: 100px;
+	background-color: #000;
+	color: #fff;
+	height: auto !important;
+	margin-top: 20px;
 }
 
 #logo {
-  height: 50px;
+	height: 50px;
 }
 
 .container .left {
-  margin: 20px 0;
-  float: left;
+	margin: 20px 0;
+	float: left;
 }
 
 .container .right {
-  margin: 20px 0;
-  float: right;
+	margin: 20px 0;
+	float: right;
 }
 
 .pagination-centered {
-  text-align: center;
+	text-align: center;
 }
 
 nav#main-nav {
-  background-color: #000;
+	background-color: #000;
 }
 
-#main-nav .navbar-nav>.open>a,#main-nav .navbar-nav>.open>a:hover,#main-nav .navbar-nav>.open>a:focus {
-  background: #ddd;
-  color: #000000;
+#main-nav .navbar-nav>.open>a,#main-nav .navbar-nav>.open>a:hover,#main-nav .navbar-nav>.open>a:focus
+	{
+	background: #ddd;
+	color: #000000;
 }
 
 #main-nav a.navbar-brand {
-  color: #ffdc00;
-  padding: 0px 0px 0px 15px;
-  margin-right: 10px;
+	color: #ffdc00;
+	padding: 0px 0px 0px 15px;
+	margin-right: 10px;
 }
 
 #main-nav a.navbar-brand:hover {
-  color: #ffdc00;
+	color: #ffdc00;
 }
 
 #main-nav a.navbar-brand img {
-  width: 50px;
-  height: 50px;
+	width: 50px;
+	height: 50px;
 }
 
 #main-nav .navbar-nav>li>a {
-  color: #ffdc00;
-  height: 50px;
+	color: #ffdc00;
+	height: 50px;
 }
 
 #main-nav .navbar-nav>li>a:hover {
-  color: #ffdc00;
-  border-bottom: 3px solid #ffdc00;
-  padding-bottom: 3px;
+	color: #ffdc00;
+	border-bottom: 3px solid #ffdc00;
+	padding-bottom: 3px;
 }
 
 #main-nav .dropdown-menu>li>a:hover {
-  background: none;
-  text-decoration: underline;
+	background: none;
+	text-decoration: underline;
 }
 
 .btn {
-  background: linear-gradient(to bottom, #000000 0%, #0F0F0F 49%, #000000 52%, #595959 100%) repeat scroll 0 0 rgba(0, 0, 0, 0) !important;
-  border: 2px solid #888888 !important;
-  border-radius: 0 !important;
-  box-shadow: 0 0 2px 1px #888888 !important;
-  color: #FFFFFF;
-  width: auto !important;
-  margin: 0px 4px !important;
+	background: linear-gradient(to bottom, #000000 0%, #0F0F0F 49%, #000000 52%, #595959
+		100%) repeat scroll 0 0 rgba(0, 0, 0, 0) !important;
+	border: 2px solid #888888 !important;
+	border-radius: 0 !important;
+	box-shadow: 0 0 2px 1px #888888 !important;
+	color: #FFFFFF;
+	width: auto !important;
+	margin: 0px 4px !important;
 }
 
 .btn:hover {
-  color: #ffdc00;
+	color: #ffdc00;
 }
 
 #btn-login {
-  background: url("../../img/lock.png") no-repeat left, linear-gradient(to bottom, #000000 0%, #0F0F0F 49%, #000000 52%, #595959 100%) repeat
-    scroll 0 0 rgba(0, 0, 0, 0) !important;
-  padding-left: 34px;
+	background: url("../../img/lock.png") no-repeat left,
+		linear-gradient(to bottom, #000000 0%, #0F0F0F 49%, #000000 52%, #595959
+		100%) repeat scroll 0 0 rgba(0, 0, 0, 0) !important;
+	padding-left: 34px;
 }
 
 #btn-logout {
-  background: url("../../img/logout.png") no-repeat 5px;
+	background: url("../../img/logout.png") no-repeat 5px;
 }
 
 #btn-logout li a {
-  padding-left: 34px;
+	padding-left: 34px;
 }
 
 .btn-list {
-  background: url("../../img/list.png") no-repeat 5px, linear-gradient(to bottom, #000000 0%, #0F0F0F 49%, #000000 52%, #595959 100%) repeat
-    scroll 0 0 rgba(0, 0, 0, 0) !important;
-  padding-left: 40px;
-  height: 36px;
+	background: url("../../img/list.png") no-repeat 5px,
+		linear-gradient(to bottom, #000000 0%, #0F0F0F 49%, #000000 52%, #595959
+		100%) repeat scroll 0 0 rgba(0, 0, 0, 0) !important;
+	padding-left: 40px;
+	height: 36px;
 }
 
 .btn-add {
-  background: url("../../img/add.png") no-repeat 5px, linear-gradient(to bottom, #000000 0%, #0F0F0F 49%, #000000 52%, #595959 100%) repeat
-    scroll 0 0 rgba(0, 0, 0, 0) !important;
-  padding-left: 30px;
+	background: url("../../img/add.png") no-repeat 5px,
+		linear-gradient(to bottom, #000000 0%, #0F0F0F 49%, #000000 52%, #595959
+		100%) repeat scroll 0 0 rgba(0, 0, 0, 0) !important;
+	padding-left: 30px;
 }
 
 .btn-import {
-  background: url("../../img/import.png") no-repeat 5px, linear-gradient(to bottom, #000000 0%, #0F0F0F 49%, #000000 52%, #595959 100%) repeat
-    scroll 0 0 rgba(0, 0, 0, 0) !important;
-  padding-left: 40px;
+	background: url("../../img/import.png") no-repeat 5px,
+		linear-gradient(to bottom, #000000 0%, #0F0F0F 49%, #000000 52%, #595959
+		100%) repeat scroll 0 0 rgba(0, 0, 0, 0) !important;
+	padding-left: 40px;
 }
 
 .glyphicon:before {
-  color: #FFFFFF;
-  margin-right: 10px;
+	color: #FFFFFF;
+	margin-right: 10px;
 }
 
 .black,.black a {
-  color: #fff;
+	color: #fff;
 }
 
 .icon-wrapper {
-  padding: 10px;
-  line-height: 1.4;
-  text-align: center;
-  border: 1px solid #fff;
-  background-color: #f9f9f9;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-  cursor: pointer;
+	padding: 10px;
+	line-height: 1.4;
+	text-align: center;
+	border: 1px solid #fff;
+	background-color: #f9f9f9;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	cursor: pointer;
 }
 
 .icon-wrapper-disabled {
-  cursor: initial;
+	cursor: initial;
 }
 
 .icon>input[type=radio] {
-  display: none;
+	display: none;
 }
 
 .icon>input[type=radio]+img {
-  cursor: pointer;
-  border-color: transparent;
-  border-width: 2px;
-  border-style: solid;
+	cursor: pointer;
+	border-color: transparent;
+	border-width: 2px;
+	border-style: solid;
 }
 
 .icon-selected {
-  background-color: #ffdc00;
+	background-color: #ffdc00;
 }
 
 .icon-disabled {
-  background-color: #cccccc;
-  opacity: 0.4;
+	background-color: #cccccc;
+	opacity: 0.4;
 }
 
 .icon-disabled>input[type=radio]+img {
-  opacity: 0.4;
+	opacity: 0.4;
 }
 
 .library-icons .btn {
-  padding: 6px 0 6px 10px;
+	padding: 6px 0 6px 10px;
 }
 
 .anchor-wrapper {
-  margin-top: 10px;
-  position: relative;
-  background-color: #eeeeee !important;
-  width: 215px;
-  height: 197px;
-  background: url("../../img/ic_target.png") no-repeat 90px 85px;
+	margin-top: 10px;
+	position: relative;
+	background-color: #eeeeee !important;
+	width: 215px;
+	height: 197px;
+	background: url("../../img/ic_target.png") no-repeat 90px 85px;
 }
 
 .anchor {
-  background: #cccccc;
-  width: 55px;
-  height: 37px;
-  border: 0;
+	background: #cccccc;
+	width: 55px;
+	height: 37px;
+	border: 0;
 }
 
 .anchor-selected {
-  background-color: #333333 !important;
+	background-color: #333333 !important;
 }
 
 .anchor-E {
-  background: url("../../img/anchor_E.png") no-repeat 3px;
+	background: url("../../img/anchor_E.png") no-repeat 3px;
 }
 
 .anchor-N {
-  background: url("../../img/anchor_N.png") no-repeat 5px;
+	background: url("../../img/anchor_N.png") no-repeat 5px;
 }
 
 .anchor-NE {
-  background: url("../../img/anchor_NE.png") no-repeat 0px;
+	background: url("../../img/anchor_NE.png") no-repeat 0px;
 }
 
 .anchor-NW {
-  background: url("../../img/anchor_NW.png") no-repeat 0px;
+	background: url("../../img/anchor_NW.png") no-repeat 0px;
 }
 
 .anchor-S {
-  background: url("../../img/anchor_S.png") no-repeat 5px;
+	background: url("../../img/anchor_S.png") no-repeat 5px;
 }
 
 .anchor-SE {
-  background: url("../../img/anchor_SE.png") no-repeat 0px;
+	background: url("../../img/anchor_SE.png") no-repeat 0px;
 }
 
 .anchor-SW {
-  background: url("../../img/anchor_SW.png") no-repeat 0px;
+	background: url("../../img/anchor_SW.png") no-repeat 0px;
 }
 
 .anchor-W {
-  background: url("../../img/anchor_W.png") no-repeat 0px;
+	background: url("../../img/anchor_W.png") no-repeat 0px;
 }
 
 .btn-file {
-  position: relative;
-  overflow: hidden;
+	position: relative;
+	overflow: hidden;
 }
 
 .btn-file.disabled,.btn-file[disabled],fieldset[disabled] .btn-file {
-  color: #999999;
+	color: #999999;
 }
 
 .btn-file input[type=file] {
-  position: absolute;
-  top: 0;
-  right: 0;
-  min-width: 100%;
-  min-height: 100%;
-  font-size: 999px;
-  text-align: right;
-  filter: alpha(opacity = 0);
-  opacity: 0;
-  outline: none;
-  background: white;
-  cursor: inherit;
-  display: block;
+	position: absolute;
+	top: 0;
+	right: 0;
+	min-width: 100%;
+	min-height: 100%;
+	font-size: 999px;
+	text-align: right;
+	filter: alpha(opacity = 0);
+	opacity: 0;
+	outline: none;
+	background: white;
+	cursor: inherit;
+	display: block;
 }
 
 .my-drop-zone {
-  border: dotted 3px lightgray;
+	border: dotted 3px lightgray;
 }
 
 /* Default class applied to drop zones on over */
 .ng-file-over {
-  border: dotted 3px red;
+	border: dotted 3px red;
 }
 
 canvas {
@@ -280,19 +286,35 @@ canvas {
   margin: 6px 0 0 6px;
 }
 
-
 #loading-bar .bar {
-  /* background: #2c3e50; */
-  background: yellow;
+	/* background: #2c3e50; */
+	background: yellow;
 }
 
 #loading-bar .peg {
-  /* box-shadow: 0 0 10px #2c3e50, 0 0 5px #2c3e50; */
-  box-shadow: 0 0 10px yellow, 0 0 5px yellow;
+	/* box-shadow: 0 0 10px #2c3e50, 0 0 5px #2c3e50; */
+	box-shadow: 0 0 10px yellow, 0 0 5px yellow;
 }
+
 #loading-bar-spinner .spinner-icon {
-/*  border-top-color:  #2c3e50;
+	/*  border-top-color:  #2c3e50;
   border-left-color: #2c3e50; */
-  border-top-color:  yellow;
-  border-left-color: yellow;
+	border-top-color: yellow;
+	border-left-color: yellow;
+}
+
+.sortable-leave {
+	background-color: gray;
+	cursor: move;
+}
+
+.sortable-enter {
+	cursor: move;
+	background-color: white;
+	background-image: linear-gradient(45deg, lightgray 25%, transparent 25%, transparent 75%,
+		lightgray 75%, lightgray),
+		linear-gradient(45deg, lightgray 25%, transparent 25%, transparent 75%,
+		lightgray 75%, lightgray);
+	background-size: 10px 10px;
+	background-position: 0 0, 5px 5px;
 }

@@ -13,6 +13,7 @@
 <jsp:include page="js-includes.jsp" />
 <script type="text/javascript" src="${ctx}/js/custom/updateIcon.js"></script>
 <script type="text/javascript" src="${ctx}/js/custom/inputFile.js"></script>
+<script type="text/javascript" src="${ctx}/js/custom/fileUploadPreview.js"></script>
 <script type="text/javascript">
   var anchor = '${it.icon.anchor}';
 </script>
@@ -63,11 +64,12 @@
 						<input type="radio" name="iconChoice" ng-model="iconChoice" value="leave" checked="true">Leave the icon as it is
 					</div>
 					<div style="margin-top: 6px;">
-						<input type="radio" name="iconChoice" ng-model="iconChoice" value="new">Upload a new icon
+						<input type="radio" name="iconChoice" ng-model="iconChoice" value="new">Upload a new icon<br>
+						<i ng-hide="imageSrc">No image chosen</i> <img ng-src="{{imageSrc}}" />
 						<div class="input-group">
 							<span class="input-group-btn">
 								<span class="btn btn-primary btn-file" ng-disabled="iconChoice != 'new'">
-									Browse&hellip;<input type="file" id="largeIconFile" name="largeIconFile" maxlength='1000000' accept='image/png'>
+									Browse&hellip;<input type="file" ng-file-select="onFileSelect($files)" id="largeIconFile" name="largeIconFile" maxlength='1000000' accept='image/png'>
 								</span>
 							</span>
 							<input type="text" class="form-control" readonly>
@@ -91,12 +93,12 @@
 						<input type="radio" name="iconSelectedChoice" ng-model="iconSelectedChoice" value="generate">Let the system generate a "selected" icon
 					</div>
 					<div style="margin-top: 6px;">
-						<input type="radio" name="iconSelectedChoice" ng-model="iconSelectedChoice" value="new">Upload a new "selected" icon
-
+						<input type="radio" name="iconSelectedChoice" ng-model="iconSelectedChoice" value="new">Upload a new "selected" icon<br>
+						<i ng-hide="selectedImageSrc">No image chosen</i> <img ng-src="{{selectedImageSrc}}" />
 						<div class="input-group">
 							<span class="input-group-btn">
 								<span class="btn btn-primary btn-file" ng-disabled="iconSelectedChoice != 'new'">
-									Browse&hellip; <input type="file" ng-disabled="iconSelectedChoice != 'new'" id="largeIconSelectedFile" name="largeIconSelectedFile" maxlength='1000000' accept='image/png'>
+									Browse&hellip; <input type="file" ng-disabled="iconSelectedChoice != 'new'" ng-file-select="onFileSelect($files)" id="largeIconSelectedFile" name="largeIconSelectedFile" maxlength='1000000' accept='image/png'>
 								</span>
 							</span>
 							<input type="text" class="form-control" readonly>

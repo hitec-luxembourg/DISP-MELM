@@ -1,4 +1,4 @@
-app.controller('UpdateIconCtrl', [ '$scope', '$window', 'melmService', function($scope, $window, melmService) {
+app.controller('UpdateIconCtrl', [ '$scope', '$window', 'melmService', 'fileReader', function($scope, $window, melmService, fileReader) {
   'use strict';
   
   $scope.go = function(path) {
@@ -21,5 +21,21 @@ app.controller('UpdateIconCtrl', [ '$scope', '$window', 'melmService', function(
 
   $scope.iconChoice = "leave";
   $scope.iconSelectedChoice = "leave";
+  
+  $scope.getFile = function(which) {
+    fileReader.readAsDataUrl($scope.file, $scope).then(function(result) {
+      switch (which) {
+      case 'largeIconFile':
+        $scope.imageSrc = result;
+        break;
+      case 'largeIconSelectedFile':
+        $scope.selectedImageSrc = result;
+        break;
+
+      default:
+        break;
+      }
+    });
+  };
 
 } ]);

@@ -13,6 +13,7 @@
 <jsp:include page="js-includes.jsp" />
 <script type="text/javascript" src="${ctx}/js/custom/addIcon.js"></script>
 <script type="text/javascript" src="${ctx}/js/custom/inputFile.js"></script>
+<script type="text/javascript" src="${ctx}/js/custom/fileUploadPreview.js"></script>
 </head>
 <body ng-controller="AddIconCtrl">
 	<jsp:include page="header.jsp" />
@@ -35,24 +36,23 @@
 				<div class="col-sm-10">
 					<input type="hidden" class="form-control" id="anchor" name="anchor" ng-value="anchor">
 					<div class="anchor-wrapper">
-						<a href="" ng-click="setAnchor('SW')" ng-class="getClass('SW')" style="position: absolute; top: 0px; left: 0px;"></a> 
-                        <a href="" ng-click="setAnchor('S')" ng-class="getClass('S')" style="position: absolute; top: 0px; left: 80px;"></a>
-                        <a href="" ng-click="setAnchor('SE')" ng-class="getClass('SE')" style="position: absolute; top: 0px; left: 160px;"></a> 
-                        <a href="" ng-click="setAnchor('W')" ng-class="getClass('W')" style="position: absolute; top: 80px; left: 0px;"></a>
-                        <a href="" ng-click="setAnchor('E')" ng-class="getClass('E')" style="position: absolute; top: 80px; left: 160px;"></a>
-                        <a href="" ng-click="setAnchor('NW')" ng-class="getClass('NW')" style="position: absolute; top: 160px; left: 0px;"></a>
-                        <a href="" ng-click="setAnchor('N')" ng-class="getClass('N')" style="position: absolute; top: 160px; left: 80px;"></a>
-                        <a href="" ng-click="setAnchor('NE')" ng-class="getClass('NE')" style="position: absolute; top: 160px; left: 160px;"></a>
+						<a href="" ng-click="setAnchor('SW')" ng-class="getClass('SW')" style="position: absolute; top: 0px; left: 0px;"></a> <a href="" ng-click="setAnchor('S')" ng-class="getClass('S')"
+							style="position: absolute; top: 0px; left: 80px;"></a> <a href="" ng-click="setAnchor('SE')" ng-class="getClass('SE')" style="position: absolute; top: 0px; left: 160px;"></a> <a href=""
+							ng-click="setAnchor('W')" ng-class="getClass('W')" style="position: absolute; top: 80px; left: 0px;"></a> <a href="" ng-click="setAnchor('E')" ng-class="getClass('E')"
+							style="position: absolute; top: 80px; left: 160px;"></a> <a href="" ng-click="setAnchor('NW')" ng-class="getClass('NW')" style="position: absolute; top: 160px; left: 0px;"></a> <a href=""
+							ng-click="setAnchor('N')" ng-class="getClass('N')" style="position: absolute; top: 160px; left: 80px;"></a> <a href="" ng-click="setAnchor('NE')" ng-class="getClass('NE')"
+							style="position: absolute; top: 160px; left: 160px;"></a>
 					</div>
 				</div>
 			</div>
 			<div class="form-group">
 				<label for="largeIconFile" class="col-sm-2 control-label">Large Icon File</label>
 				<div class="col-sm-10">
+					<i ng-hide="imageSrc">No image chosen</i> <img ng-src="{{imageSrc}}" />
 					<div class="input-group">
 						<span class="input-group-btn">
 							<span class="btn btn-primary btn-file">
-								Browse&hellip; <input type="file" id="largeIconFile" name="largeIconFile" maxlength='1000000' accept='image/png'>
+								Browse&hellip; <input type="file" ng-file-select="onFileSelect($files)" id="largeIconFile" name="largeIconFile" maxlength='1000000' accept='image/png'>
 							</span>
 						</span>
 						<input type="text" class="form-control" readonly>
@@ -66,11 +66,12 @@
 						<input type="radio" name="iconSelectedChoice" ng-model="iconSelectedChoice" value="generate">Let the system generate a "selected" icon
 					</div>
 					<div style="margin-top: 6px;">
-						<input type="radio" name="iconSelectedChoice" ng-model="iconSelectedChoice" value="new">Upload a "selected" icon
+						<input type="radio" name="iconSelectedChoice" ng-model="iconSelectedChoice" value="new">Upload a "selected" icon<br>
+						<i ng-hide="selectedImageSrc">No image chosen</i> <img ng-src="{{selectedImageSrc}}" />
 						<div class="input-group">
 							<span class="input-group-btn">
-								<span class="btn btn-primary btn-file" ng-disabled="iconSelectedChoice != 'new'" >
-									Browse&hellip; <input type="file" id="largeIconSelectedFile" name="largeIconSelectedFile" maxlength='1000000' accept='image/png'>
+								<span class="btn btn-primary btn-file" ng-disabled="iconSelectedChoice != 'new'">
+									Browse&hellip; <input type="file" ng-file-select="onFileSelect($files)" id="largeIconSelectedFile" name="largeIconSelectedFile" maxlength='1000000' accept='image/png'>
 								</span>
 							</span>
 							<input type="text" class="form-control" readonly>

@@ -1,6 +1,6 @@
-app.controller('AddIconCtrl', [ '$scope', 'melmService', function($scope, melmService) {
+app.controller('AddIconCtrl', [ '$scope', 'melmService', 'fileReader', function($scope, melmService, fileReader) {
   'use strict';
-  
+
   $scope.go = function(path) {
     melmService.go(path);
   };
@@ -19,5 +19,21 @@ app.controller('AddIconCtrl', [ '$scope', 'melmService', function($scope, melmSe
 
   $scope.anchor = "SE";
   $scope.iconSelectedChoice = "generate";
+  
+  $scope.getFile = function(which) {
+    fileReader.readAsDataUrl($scope.file, $scope).then(function(result) {
+      switch (which) {
+      case 'largeIconFile':
+        $scope.imageSrc = result;
+        break;
+      case 'largeIconSelectedFile':
+        $scope.selectedImageSrc = result;
+        break;
+
+      default:
+        break;
+      }
+    });
+  };
 
 } ]);
