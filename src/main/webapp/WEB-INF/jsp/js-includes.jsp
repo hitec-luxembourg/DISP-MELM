@@ -19,7 +19,7 @@
   var app = angular.module('app', [ 'xeditable', 'ui', 'ui.bootstrap', 'angularFileUpload', 'dialogs.main', 'pascalprecht.translate', 'angular-loading-bar', 'ngAnimate']);
     app.config(function(cfpLoadingBarProvider) {
     cfpLoadingBarProvider.includeSpinner = true;
-    cfpLoadingBarProvider.latencyThreshold = 1;
+    cfpLoadingBarProvider.latencyThreshold = 400;
     });
 </script>
 <script type="text/javascript" src="${ctx}/js/bootstrap.min.js"></script>

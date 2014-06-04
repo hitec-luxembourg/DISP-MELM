@@ -38,7 +38,7 @@
 				<tbody ui:sortable="sortableOptions">
 					<tr class="item sortable" ng-repeat="icon in resources.icons | orderBy:predicate:reverse | startFrom: (currentPage - 1) * itemsPerPage | limitTo: itemsPerPage" class="sortableItem">
 						<!-- td align="left">{{icon.indexOfIconInLibrary}}</td -->
-						<td style="background-color: gray; cursor: move;" ng-style="hover && {'background-color': 'gray'} || !hover && {'background-color': 'lightGray'} " ng-mouseenter="hover=true" ng-mouseleave="hover=false">&nbsp;</td>
+						<td style="background-color: gray;" ng-attr-class="{{hover && 'sortable-enter' || 'sortable-leave' }}" ng-mouseenter="hover=true" ng-mouseleave="hover=false">&nbsp;</td>
 						<td align="center"><input type="checkbox" ng-model="icon.icon.checked"></td>
 						<td align="left">{{icon.iconNameInLibrary}}</td>
 						<td align="left">{{icon.iconDescriptionInLibrary}}</td>
