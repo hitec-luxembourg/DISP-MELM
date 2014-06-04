@@ -1,0 +1,12 @@
+{
+  "devel": true,
+  "browser": true,
+  "jquery": true,
+  "globalstrict": true,
+  "laxbreak": true,
+  /*"unused":true,*/
+  "globals": {
+    "app": false,
+    "melmContextRoot": false
+  }
+}

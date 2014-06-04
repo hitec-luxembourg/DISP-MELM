@@ -35,7 +35,7 @@
 						<td align="left" style="width: 300px">Actions</td>
 					</tr>
 				</thead>
-				<tbody ui:sortable="sortableOptions">
+				<tbody ui:sortable="sortableOptions" ng-model="resources.icons">
 					<tr class="item sortable" ng-repeat="icon in resources.icons | orderBy:predicate:reverse | startFrom: (currentPage - 1) * itemsPerPage | limitTo: itemsPerPage" class="sortableItem">
 						<!-- td align="left">{{icon.indexOfIconInLibrary}}</td -->
 						<td style="background-color: gray; cursor: move;" ng-style="hover && {'background-color': 'gray'} || !hover && {'background-color': 'lightGray'} " ng-mouseenter="hover=true" ng-mouseleave="hover=false">&nbsp;</td>
