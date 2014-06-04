@@ -279,3 +279,20 @@ canvas {
   height: 40px;
   margin: 6px 0 0 6px;
 }
+
+
+#loading-bar .bar {
+  /* background: #2c3e50; */
+  background: yellow;
+}
+
+#loading-bar .peg {
+  /* box-shadow: 0 0 10px #2c3e50, 0 0 5px #2c3e50; */
+  box-shadow: 0 0 10px yellow, 0 0 5px yellow;
+}
+#loading-bar-spinner .spinner-icon {
+/*  border-top-color:  #2c3e50;
+  border-left-color: #2c3e50; */
+  border-top-color:  yellow;
+  border-left-color: yellow;
+}

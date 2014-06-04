@@ -870,14 +870,7 @@ public class MELMServiceImpl implements MELMService {
             break;
           }
         }
-        int order = 0;
-        for (int i = 0; i < iconsInLibrary.size(); i++) {
-          final MapElementLibraryIcon iconInLibrary = iconsInLibrary.get(i);
-          order += ORDER_INCREMENT;
-          LOGGER.debug("*** Updating icon [" + iconInLibrary.getId() + "] with index order [" + order + "]");
-          mapElementLibraryIconDAO.updateLibraryIcon(iconInLibrary.getId(), iconInLibrary.getIcon(), order,
-              iconInLibrary.getIconNameInLibrary(), iconInLibrary.getIconDescriptionInLibrary());
-        }
+        reorder(iconsInLibrary);
       }
 
       break;
@@ -913,14 +906,7 @@ public class MELMServiceImpl implements MELMService {
             break;
           }
         }
-        int order = 0;
-        for (int i = 0; i < iconsInLibrary.size(); i++) {
-          final MapElementLibraryIcon iconInLibrary = iconsInLibrary.get(i);
-          order += ORDER_INCREMENT;
-          LOGGER.debug("*** Updating icon [" + iconInLibrary.getId() + "] with index order [" + order + "]");
-          mapElementLibraryIconDAO.updateLibraryIcon(iconInLibrary.getId(), iconInLibrary.getIcon(), order,
-              iconInLibrary.getIconNameInLibrary(), iconInLibrary.getIconDescriptionInLibrary());
-        }
+        reorder(iconsInLibrary);
       }
 
       break;
@@ -929,6 +915,131 @@ public class MELMServiceImpl implements MELMService {
       break;
     }
 
+  }
+
+  private void reorder(final List<MapElementLibraryIcon> iconsInLibrary) {
+    int order = 0;
+    for (int i = 0; i < iconsInLibrary.size(); i++) {
+      final MapElementLibraryIcon iconInLibrary = iconsInLibrary.get(i);
+      order += ORDER_INCREMENT;
+      LOGGER.debug("*** Updating icon [" + iconInLibrary.getId() + "] with index order [" + order + "]");
+      mapElementLibraryIconDAO.updateLibraryIcon(iconInLibrary.getId(), iconInLibrary.getIcon(), order,
+          iconInLibrary.getIconNameInLibrary(), iconInLibrary.getIconDescriptionInLibrary());
+    }
+  }
+
+  @Override
+  public void moveLibraryIconTo(final long id, final long to) {
+    final MapElementLibraryIcon libraryIcon = mapElementLibraryIconDAO.getLibraryIcon(id);
+    MapElementLibraryIcon firstLibraryIcon = null;
+    MapElementLibraryIcon previousLibraryIcon = null;
+    MapElementLibraryIcon nextLibraryIcon = null;
+    MapElementLibraryIcon lastLibraryIcon = null;
+    final MapElementLibrary library = libraryIcon.getLibrary();
+
+    LOGGER.debug("*** Moving icon [" + libraryIcon.getId() + "] named [" + libraryIcon.getIconNameInLibrary() + "] from library ["
+        + library.getId() + "] with actual index order [" + libraryIcon.getIndexOfIconInLibrary() + "] to position " + to);
+
+    final List<MapElementLibraryIcon> iconsInLibrary = mapElementLibraryIconDAO.getIconsInLibrary(library);
+
+    if (null != iconsInLibrary) {
+      int index = 0;
+      for (; index < iconsInLibrary.size(); index++) {
+        final MapElementLibraryIcon mapElementLibraryIcon = iconsInLibrary.get(index);
+        if (libraryIcon.getId() == mapElementLibraryIcon.getId()) {
+          LOGGER.debug("Index of actual icon is " + index + " with id [" + mapElementLibraryIcon.getId() + "] and name ["
+              + mapElementLibraryIcon.getIconNameInLibrary() + "]");
+          break;
+        }
+      }
+
+      // If the icon doesn't move...
+      if (index == to) {
+        // ... there's nothing to do
+        LOGGER.debug("Actual index and destination are the same, returning.");
+        return;
+      }
+
+      int newIndex = 0;
+      // The item is put at the beginning of the list
+      final int iconsInLibrarySize = iconsInLibrary.size();
+      if (0 == to) {
+        LOGGER.debug("Moving icon on the top of the list...");
+        // If there is more than one item in the list, see if there is space in front
+        if (1 < iconsInLibrarySize) {
+          LOGGER.debug("There's more than one icon in the list.");
+          firstLibraryIcon = iconsInLibrary.get(0);
+          LOGGER.debug("Actual first icon in the list is " + firstLibraryIcon.getId() + " with name "
+              + firstLibraryIcon.getIconNameInLibrary() + " with index " + firstLibraryIcon.getIndexOfIconInLibrary());
+          newIndex = MELMUtils.getNewIndex(0, firstLibraryIcon.getIndexOfIconInLibrary());
+          LOGGER.debug("New index for the moved icon will be " + newIndex);
+        } else {
+          // else nothing to do
+          LOGGER.debug("There's only one icon in the list, so nothing changes.");
+        }
+      }
+      // The item is put at the end of the list
+      else if ((iconsInLibrarySize - 1) == to) {
+        LOGGER.debug("Moving icon on the end of the list...");
+        // If there is more than one item in the list, set the new order
+        if (1 < iconsInLibrarySize) {
+          LOGGER.debug("There's more than one icon in the list.");
+          lastLibraryIcon = iconsInLibrary.get(iconsInLibrarySize - 2);
+          LOGGER.debug("Actual last icon in the list is " + lastLibraryIcon.getId() + " with name "
+              + lastLibraryIcon.getIconNameInLibrary() + " with index " + lastLibraryIcon.getIndexOfIconInLibrary());
+          newIndex = lastLibraryIcon.getIndexOfIconInLibrary() + (ORDER_INCREMENT * 2);
+          LOGGER.debug("New index for the moved icon will be " + newIndex);
+        } else {
+          // else nothing to do
+          LOGGER.debug("There's only one icon in the list, so nothing changes.");
+        }
+      }
+      // The item is put somewhere in the middle of the list
+      else {
+        LOGGER.debug("Moving icon somewhere in the middle of the list...");
+        previousLibraryIcon = to < index ? iconsInLibrary.get((int) to - 1) : iconsInLibrary.get((int) to);
+        LOGGER.debug("Previous icon in the list is " + previousLibraryIcon.getId() + " with name "
+            + previousLibraryIcon.getIconNameInLibrary() + " with index " + previousLibraryIcon.getIndexOfIconInLibrary());
+        nextLibraryIcon = to < index ? iconsInLibrary.get((int) to) : iconsInLibrary.get((int) to + 1);
+        LOGGER.debug("Next icon in the list is " + nextLibraryIcon.getId() + " with name " + nextLibraryIcon.getIconNameInLibrary()
+            + " with index " + nextLibraryIcon.getIndexOfIconInLibrary());
+        newIndex = MELMUtils.getNewIndex(previousLibraryIcon.getIndexOfIconInLibrary(), nextLibraryIcon.getIndexOfIconInLibrary());
+        LOGGER.debug("New index for the moved icon will be " + newIndex);
+      }
+
+      // Set the new index
+      if (0 == newIndex) {
+        // Nothing to do, the index of the icon is right
+        LOGGER.debug("New index is 0, so nothing to do.");
+      } else if (-1 == newIndex) {
+        LOGGER.debug("New index is -1, so we have to recompute all indices.");
+        LOGGER.debug("Adding icon [" + libraryIcon.getId() + "] with name [" + libraryIcon.getIconNameInLibrary() + "] to position [" + to
+            + "]");
+        iconsInLibrary.add((int) to, libraryIcon);
+        // Recompute all indices
+        int order = 0;
+        for (int i = 0; i < iconsInLibrary.size(); i++) {
+          final MapElementLibraryIcon iconInLibrary = iconsInLibrary.get(i);
+          if ((i != to) && (iconInLibrary.getId() == libraryIcon.getId())) {
+            LOGGER.debug("Ignoring existing icon  [" + iconInLibrary.getId() + "] with name [" + iconInLibrary.getIconNameInLibrary() + "] at position [" + i
+            + "] that is now at the wrong place");
+            continue;
+          }
+          order += ORDER_INCREMENT;
+          LOGGER.debug("*** Updating icon [" + iconInLibrary.getId() + "] named [" + iconInLibrary.getIconNameInLibrary()
+              + "] with index order [" + order + "]");
+          mapElementLibraryIconDAO.updateLibraryIcon(iconInLibrary.getId(), iconInLibrary.getIcon(), order,
+              iconInLibrary.getIconNameInLibrary(), iconInLibrary.getIconDescriptionInLibrary());
+        }
+      } else {
+        // Just save the new index
+        LOGGER.debug("New index has been calculated, so we update just this one.");
+        LOGGER.debug("*** Updating icon [" + libraryIcon.getId() + "] named [" + libraryIcon.getIconNameInLibrary()
+            + "] with index order [" + newIndex + "]");
+        mapElementLibraryIconDAO.updateLibraryIcon(libraryIcon.getId(), libraryIcon.getIcon(), newIndex,
+            libraryIcon.getIconNameInLibrary(), libraryIcon.getIconDescriptionInLibrary());
+      }
+    }
   }
 
   @Override
@@ -1041,7 +1152,7 @@ public class MELMServiceImpl implements MELMService {
         deleteFile(mapElementIcon, IconSize.MEDIUM);
         deleteFile(mapElementIcon, IconSize.SMALL);
         deleteFile(mapElementIcon, IconSize.TINY);
-        
+
         // Update the images
         copyFile(mapElementIcon, iconFile_LARGE, iconSelectedFile_LARGE, IconSize.LARGE);
         copyFile(mapElementIcon, iconFile_MEDIUM, iconSelectedFile_MEDIUM, IconSize.MEDIUM);

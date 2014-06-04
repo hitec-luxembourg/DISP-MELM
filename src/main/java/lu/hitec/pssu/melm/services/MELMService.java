@@ -99,6 +99,8 @@ public interface MELMService {
 
   void moveLibraryIcon(long id, String which);
 
+  void moveLibraryIconTo(long id, long to);
+
   void updateIconAndFiles(long id, @Nonnull String displayName, @Nonnull MapElementIconAnchor anchor, File largeIconFile,
       File largeIconSelectedFileMaybeNull, boolean generate) throws MELMException;
 
@@ -111,4 +113,5 @@ public interface MELMService {
   void updateProperty(long id, @Nonnull String uniqueName, @Nonnull CustomPropertyType type) throws MELMException;
 
   NodeList validateImportedLibraryAndGetNodeList(@Nonnull String libraryName, int majorVersion, int minorVersion) throws MELMException;
+
 }

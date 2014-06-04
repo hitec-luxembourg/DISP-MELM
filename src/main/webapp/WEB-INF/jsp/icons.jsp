@@ -23,7 +23,7 @@
 		<div class="table-responsive">
 			<table class="table table-striped">
 				<tr>
-					<td align="center" style="width: 20px"><input type="checkbox" ng-click="allClicked()" ng-checked="allChecked()"></td>
+					<td align="center" style="width: 20px"><input type="checkbox" ng-disabled="atLeastOneWithoutLibraries()" ng-click="allClicked()" ng-checked="allChecked()"></td>
 					<td align="left" style="width: 200px"><a href="" ng-click="predicate='icon.displayName'; reverse=!reverse">Name</a></td>
 					<td align="left" style="width: 100px"><a href="" ng-click="predicate='icon.anchor'; reverse=!reverse">Anchor</a></td>
 					<td align="left" style="width: 200px"><a href="" ng-click="predicate='icon.librariesAsString'; reverse=!reverse">Linked libraries</a></td>

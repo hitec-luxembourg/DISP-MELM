@@ -349,7 +349,17 @@ public class MELMResource {
   @POST
   @Path("/libraries/icons/move")
   public Response moveLibraryIcon(@FormParam("id") final long id, @FormParam("which") final String which) {
-    melmService.moveLibraryIcon(id, which);
+    switch (which) {
+    case "up":
+    case "down":
+      melmService.moveLibraryIcon(id, which);
+      break;
+
+    default:
+      final Long to = Long.valueOf(which);
+      melmService.moveLibraryIconTo(id, to);
+      break;
+    }
     return Response.ok().build();
   }
 

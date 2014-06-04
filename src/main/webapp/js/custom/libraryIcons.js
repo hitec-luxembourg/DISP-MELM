@@ -7,13 +7,6 @@ app.controller('LibraryIconsCtrl',
         function($scope, $document, melmService, dialogs) {
           'use strict';
 
-          $document.bind('keypress', function(event) {
-            console.debug(event);
-            if (124 === event.charCode) {
-              alert(angular.toJson($scope.resources));
-            }
-          });
-
           $scope.loadResources = function(id) {
             melmService.loadResources($scope, '/rest/libraries/icons/json/' + id, function() {
               $scope.processLinks($scope.resources);
@@ -93,6 +86,7 @@ app.controller('LibraryIconsCtrl',
           };
 
           $scope.move = function(which, id) {
+    console.log('Moving icon', id, 'to index', which);
             melmService.post({
               params : {
                 "id" : id,
@@ -163,4 +157,17 @@ app.controller('LibraryIconsCtrl',
           $scope.currentPage = 1;
           $scope.predicate = 'indexOfIconInLibrary';
           $scope.loadResources(melmService.getRESTParameter('icons/'));
+
+  $scope.sortableOptions = {
+    cursor : "pointer",
+    update : function(e, ui) {
+      var libIcon = ui.item.scope().icon;
+      var icon = ui.item.scope().icon.icon;
+      var index = (($scope.currentPage - 1) * $scope.itemsPerPage) + ui.item.index();
+
+      $scope.$apply(function() {
+        $scope.move(index, libIcon.id);
+      });
+    }
+  };
         } ]);
