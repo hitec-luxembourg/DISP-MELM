@@ -18,6 +18,7 @@ import java.util.zip.ZipFile;
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 import javax.imageio.ImageIO;
+import javax.persistence.NoResultException;
 import javax.transaction.Transactional;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -177,7 +178,7 @@ public class MELMServiceImpl implements MELMService {
         LOGGER.debug(msg);
       }
       throw new MELMException(msg);
-    } catch (final javax.persistence.NoResultException e) {
+    } catch (final NoResultException e) {
       return mapElementLibraryDAO.addMapElementLibrary(libraryName, majorVersion, minorVersion, iconMd5);
     }
   }
@@ -675,40 +676,50 @@ public class MELMServiceImpl implements MELMService {
     assert libraryName != null : "library name is null";
     assert libraryName.length() != 0 : "library name is empty";
     assert libraryFile != null : "library file is null";
-    final File targetArchiveFile = getTargetArchiveFile(libraryName, majorVersion, minorVersion);
 
-    if (targetArchiveFile.isFile()) {
-      LOGGER.warn(String.format("Target file for picture : %s exists, will be overwritten", targetArchiveFile.getName()));
-      if (!targetArchiveFile.delete()) {
-        LOGGER.debug(String.format("Could not delete file : %s", targetArchiveFile.getAbsolutePath()));
-      }
-    }
-
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(String.format("About to copy tmp. archive file %s to %s", libraryFile.getAbsolutePath(),
-          targetArchiveFile.getAbsolutePath()));
-    }
-    FileOutputStream out = null;
-    FileInputStream in = null;
     try {
-      in = new FileInputStream(libraryFile);
-      out = new FileOutputStream(targetArchiveFile);
-      IOUtils.copy(in, out);
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER
-            .debug(String.format("Copied tmp. archive file %s to %s", libraryFile.getAbsolutePath(), targetArchiveFile.getAbsolutePath()));
-      }
-    } catch (final Exception e) {
-      final String msg = String.format("Failed copying archive to target location %s", targetArchiveFile.getName());
+      mapElementLibraryDAO.getMapElementLibrary(libraryName, majorVersion, minorVersion);
+      final String msg = String.format("Library with name %s and version %d.%d already exist", libraryName, majorVersion, minorVersion);
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug(msg);
       }
-      throw new MELMException(msg, e);
-    } finally {
-      MELMUtils.closeResource(out);
-      MELMUtils.closeResource(in);
+      throw new MELMException(msg);
+    } catch (final NoResultException e) {
+      final File targetArchiveFile = getTargetArchiveFile(libraryName, majorVersion, minorVersion);
+
+      if (targetArchiveFile.isFile()) {
+        LOGGER.warn(String.format("Target file for picture : %s exists, will be overwritten", targetArchiveFile.getName()));
+        if (!targetArchiveFile.delete()) {
+          LOGGER.debug(String.format("Could not delete file : %s", targetArchiveFile.getAbsolutePath()));
+        }
+      }
+
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug(String.format("About to copy tmp. archive file %s to %s", libraryFile.getAbsolutePath(),
+            targetArchiveFile.getAbsolutePath()));
+      }
+      FileOutputStream out = null;
+      FileInputStream in = null;
+      try {
+        in = new FileInputStream(libraryFile);
+        out = new FileOutputStream(targetArchiveFile);
+        IOUtils.copy(in, out);
+        if (LOGGER.isDebugEnabled()) {
+          LOGGER.debug(String.format("Copied tmp. archive file %s to %s", libraryFile.getAbsolutePath(),
+              targetArchiveFile.getAbsolutePath()));
+        }
+      } catch (final Exception e2) {
+        final String msg = String.format("Failed copying archive to target location %s", targetArchiveFile.getName());
+        if (LOGGER.isDebugEnabled()) {
+          LOGGER.debug(msg);
+        }
+        throw new MELMException(msg, e2);
+      } finally {
+        MELMUtils.closeResource(out);
+        MELMUtils.closeResource(in);
+      }
+      return targetArchiveFile;
     }
-    return targetArchiveFile;
   }
 
   @Override
@@ -763,15 +774,24 @@ public class MELMServiceImpl implements MELMService {
           }
         } else {
           final MapElementIcon mapElementIcon = mapElementIconDAO.getMapElementIcon(hashForLargeFile, sourceIconLargeFile.length());
-          final MapElementLibraryIcon libraryIcon = mapElementLibraryIconDAO.addIconToLibrary(mapElementLibrary, mapElementIcon, i,
-              itemName, itemDescription);
-          final NodeList nodeList2 = (NodeList) xPath.compile(XPATH_LIBRARY_ELEMENTS_CUSTOM_PROPERTY_EXPRESSION).evaluate(node,
-              XPathConstants.NODESET);
-          for (int j = 0; j < nodeList2.getLength(); j++) {
-            final Node subNode2 = nodeList2.item(j);
-            final Element subElement2 = (Element) subNode2;
-            mapElementCustomPropertyDAO.addCustomProperty(libraryIcon, subElement2.getAttribute("key"),
-                CustomPropertyType.valueOf(subElement2.getAttribute("type").toUpperCase()));
+
+          // Case invalid library zip file.
+          if (mapElementLibraryIconDAO.checkIconInLibrary(mapElementLibrary, mapElementIcon)) {
+            final String msg = String.format("Icon %s is already linked to maybe invalid library %s-%s.%s",
+                mapElementIcon.getDisplayName(), mapElementLibrary.getName(), mapElementLibrary.getMajorVersion(),
+                mapElementLibrary.getMinorVersion());
+            LOGGER.warn(msg);
+          } else {
+            final MapElementLibraryIcon libraryIcon = mapElementLibraryIconDAO.addIconToLibrary(mapElementLibrary, mapElementIcon, i,
+                itemName, itemDescription);
+            final NodeList nodeList2 = (NodeList) xPath.compile(XPATH_LIBRARY_ELEMENTS_CUSTOM_PROPERTY_EXPRESSION).evaluate(node,
+                XPathConstants.NODESET);
+            for (int j = 0; j < nodeList2.getLength(); j++) {
+              final Node subNode2 = nodeList2.item(j);
+              final Element subElement2 = (Element) subNode2;
+              mapElementCustomPropertyDAO.addCustomProperty(libraryIcon, subElement2.getAttribute("key"),
+                  CustomPropertyType.valueOf(subElement2.getAttribute("type").toUpperCase()));
+            }
           }
         }
       }
@@ -832,8 +852,10 @@ public class MELMServiceImpl implements MELMService {
   @Override
   public void moveLibraryIcon(final long id, final String which) {
     final MapElementLibraryIcon libraryIcon = mapElementLibraryIconDAO.getLibraryIcon(id);
-    LOGGER.debug("*** Moving icon [" + libraryIcon.getId() + "] with actual index order [" + libraryIcon.getIndexOfIconInLibrary() + "] "
-        + which);
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("*** Moving icon [" + libraryIcon.getId() + "] with actual index order [" + libraryIcon.getIndexOfIconInLibrary() + "] "
+          + which);
+    }
     MapElementLibraryIcon neighbour = null;
     MapElementLibraryIcon neighbourNext = null;
     int neighbourIndex = 0;
@@ -1021,8 +1043,8 @@ public class MELMServiceImpl implements MELMService {
         for (int i = 0; i < iconsInLibrary.size(); i++) {
           final MapElementLibraryIcon iconInLibrary = iconsInLibrary.get(i);
           if ((i != to) && (iconInLibrary.getId() == libraryIcon.getId())) {
-            LOGGER.debug("Ignoring existing icon  [" + iconInLibrary.getId() + "] with name [" + iconInLibrary.getIconNameInLibrary() + "] at position [" + i
-            + "] that is now at the wrong place");
+            LOGGER.debug("Ignoring existing icon  [" + iconInLibrary.getId() + "] with name [" + iconInLibrary.getIconNameInLibrary()
+                + "] at position [" + i + "] that is now at the wrong place");
             continue;
           }
           order += ORDER_INCREMENT;
