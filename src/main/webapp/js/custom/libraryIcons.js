@@ -161,12 +161,13 @@ app.controller('LibraryIconsCtrl',
           $scope.sortableOptions = {
             cursor : "pointer",
             stop : function(e, ui) {
-              var libIcon = ui.item.scope().icon; 
-              var index = (($scope.currentPage - 1) * $scope.itemsPerPage) + ui.item.sortable.dropindex;
-
-              $scope.$apply(function() {
-                $scope.move(index, libIcon.id);
-              });
+              if (!isNaN(ui.item.sortable.dropindex)) {
+                var index = (($scope.currentPage - 1) * $scope.itemsPerPage) + ui.item.sortable.dropindex;
+                var libIcon = ui.item.scope().icon;
+                $scope.$apply(function() {
+                  $scope.move(index, libIcon.id);
+                });
+              }
             }
           };
         } ]);

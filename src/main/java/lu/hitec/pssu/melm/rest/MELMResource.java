@@ -354,10 +354,15 @@ public class MELMResource {
     case "down":
       melmService.moveLibraryIcon(id, which);
       break;
-
     default:
-      final Long to = Long.valueOf(which);
-      melmService.moveLibraryIconTo(id, to);
+      try {
+        final long to = Long.parseLong(which);
+        melmService.moveLibraryIconTo(id, to);
+      } catch (final NumberFormatException e) {
+        // Nothing to do
+        final String msg = String.format("Failed to move library icon to position %s", which);
+        LOGGER.warn(msg, e);
+      }
       break;
     }
     return Response.ok().build();
