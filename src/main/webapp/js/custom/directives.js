@@ -6,7 +6,7 @@
  */
 app.directive('ngThumb', [ '$window', function($window) {
   'use strict';
-  
+
   var helper = {
     support : !!($window.FileReader && $window.CanvasRenderingContext2D),
     isFile : function(item) {
@@ -45,8 +45,8 @@ app.directive('ngThumb', [ '$window', function($window) {
       }
 
       function onLoadImage() {
-        /*jshint validthis:true */
-        
+        /* jshint validthis:true */
+
         var width = params.width || this.width / this.height * params.height;
         var height = params.height || this.height / this.width * params.width;
         canvas.attr({
@@ -63,13 +63,16 @@ app.directive('ngThumb', [ '$window', function($window) {
  * Ng File Select directive
  */
 app.directive("ngFileSelect", function() {
+  'use strict';
+
   return {
     link : function($scope, el) {
 
       el.bind("change", function(e) {
-
         $scope.file = (e.srcElement || e.target).files[0];
-        $scope.getFile(e.target.id);
+        if ($scope.getFile) {
+          $scope.getFile(e.target.id);
+        }
       });
     }
   };
