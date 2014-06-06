@@ -62,7 +62,7 @@
               <td nowrap>
                 <button type="button" class="btn btn-import" ng-click="item.upload()"
                   ng-disabled="item.isReady || item.isUploading || item.isSuccess">Import</button>
-                <button type="button" class="btn btn-danger" ng-click="item.remove()">
+                <button type="button" class="btn btn-danger" ng-disabled="item.isSuccess " ng-click="item.remove()">
                   <span class="glyphicon glyphicon-trash"></span> Remove
                 </button>
               </td>

@@ -66,7 +66,7 @@
             <span class="glyphicon glyphicon-refresh"></span>Update
           </button>
           <button type="button" ng-click="back()" class="btn btn-default">
-            <span class="glyphicon glyphicon-remove"></span>Back
+            <span class="glyphicon glyphicon-remove"></span>Cancel
           </button>
         </div>
       </div>

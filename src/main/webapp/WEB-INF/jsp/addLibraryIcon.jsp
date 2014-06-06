@@ -57,7 +57,7 @@
         <div class="col-sm-offset-2 col-sm-10">
           <button type="submit" class="btn btn-add">Add</button>
           <button type="button" ng-click="back()" class="btn btn-default">
-            <span class="glyphicon glyphicon-remove"></span>Back
+            <span class="glyphicon glyphicon-remove"></span>Cancel
           </button>
         </div>
       </div>

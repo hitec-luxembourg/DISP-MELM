@@ -82,7 +82,7 @@
 		<hr />
 		<button type="button" ng-click="back()" class="btn btn-default">
 			<span class="glyphicon glyphicon-remove"></span>
-			Back
+			Cancel
 		</button>
 		<button class="btn btn-delete" ng-disabled="!someSelected()" ng-click="confirmDeleteMultiple()"><span>Delete selected</span></button>
 	</div>

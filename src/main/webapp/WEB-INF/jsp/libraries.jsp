@@ -17,7 +17,7 @@
 	<jsp:include page="header.jsp" />
 	<div class="container">
 		<div class="page-header">
-			<h1>List Libraries</h1>
+			<h1>Libraries List</h1>
 		</div>
 		<progressbar class="progress-striped active" value="100" type="warning" ng-show="loadingVisible">
 		<i>Loading resources</i></progressbar>
