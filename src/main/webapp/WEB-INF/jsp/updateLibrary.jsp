@@ -13,6 +13,7 @@
 <jsp:include page="js-includes.jsp" />
 <script type="text/javascript" src="${ctx}/js/custom/updateLibrary.js"></script>
 <script type="text/javascript" src="${ctx}/js/custom/inputFile.js"></script>
+<script type="text/javascript" src="${ctx}/js/custom/fileUploadPreview.js"></script>
 </head>
 <body ng-controller="UpdateLibraryCtrl">
 	<jsp:include page="header.jsp" />
@@ -46,10 +47,11 @@
 			<div class="form-group">
 				<label for="libraryIconFile" class="col-sm-2 control-label">New Icon</label>
 				<div class="col-sm-10">
+					<i ng-hide="imageSrc">No image chosen</i> <img ng-src="{{imageSrc}}" />
 					<div class="input-group">
 						<span class="input-group-btn">
 							<span class="btn btn-primary btn-file">
-								Browse&hellip; <input type="file" id="libraryIconFile" name="libraryIconFile" maxlength='1000000' accept='image/png'>
+								Browse&hellip; <input type="file" ng-file-select="onFileSelect($files)" id="libraryIconFile" name="libraryIconFile" maxlength='1000000' accept='image/png'>
 							</span>
 						</span>
 						<input type="text" class="form-control" readonly>

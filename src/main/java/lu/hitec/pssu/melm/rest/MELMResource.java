@@ -517,6 +517,13 @@ public class MELMResource {
           final String error = "Invalid icon file";
           return Response.ok(new Viewable("/cloneLibrary", new CloneLibraryModel(library, error))).build();
         }
+        // Check the file is 40px by 40px
+        if (!MELMUtils.checkImageSize(libraryIconMaybeNull, 40, 40)) {
+          final MapElementLibrary library = melmService.getLibrary(id);
+          final String error = "Invalid size for icon file (must be 40px by 40px)";
+          return Response.ok(new Viewable("/cloneLibrary", new CloneLibraryModel(library, error))).build();
+        }
+
         hashForFile = melmService.addLibraryIcon(libraryIconMaybeNull);
       }
       // Icon for this library is reused from the cloned one
@@ -612,6 +619,12 @@ public class MELMResource {
                 .build();
           }
         }
+        else {
+          final MapElementIcon icon = melmService.getIcon(id);
+          return Response.ok(
+              new Viewable("/updateIcon", new UpdateIconModel(icon, "Please select a new large icon file")))
+              .build();
+        }
       }
 
       boolean generate = false;
@@ -628,6 +641,12 @@ public class MELMResource {
                 .ok(new Viewable("/updateIcon", new UpdateIconModel(icon,
                     "Invalid size for large icon selected file (must be 100px by 100px)"))).build();
           }
+        }
+        else {
+          final MapElementIcon icon = melmService.getIcon(id);
+          return Response.ok(
+              new Viewable("/updateIcon", new UpdateIconModel(icon, "Please select a new large icon selected file")))
+              .build();
         }
       }
       melmService.updateIconAndFiles(id, displayName, MapElementIconAnchor.valueOf(anchor.toUpperCase()), largeIconFile,
@@ -663,16 +682,16 @@ public class MELMResource {
       final File libraryIconMaybeNull = File.createTempFile("fromUpload", fileDisposition.getFileName());
       FileUtils.writeByteArrayToFile(libraryIconMaybeNull, IOUtils.toByteArray(file));
 
-      // Check the file is 40px by 40px
-      if (!MELMUtils.checkImageSize(libraryIconMaybeNull, 40, 40)) {
-        final MapElementLibrary library = melmService.getLibrary(id);
-        return Response.ok(
-            new Viewable("/updateLibrary", new UpdateLibraryModel(library, "Invalid size for icon file (must be 40px by 40px)"))).build();
-      }
-
       final int majorVersion = MELMUtils.getMajorVersion(version);
       final int minorVersion = MELMUtils.getMinorVersion(version);
       if ((libraryIconMaybeNull != null) && (libraryIconMaybeNull.length() > 0)) {
+        // Check the file is 40px by 40px
+        if (!MELMUtils.checkImageSize(libraryIconMaybeNull, 40, 40)) {
+          final MapElementLibrary library = melmService.getLibrary(id);
+          return Response.ok(
+              new Viewable("/updateLibrary", new UpdateLibraryModel(library, "Invalid size for icon file (must be 40px by 40px)"))).build();
+        }
+
         final String hashForFile = melmService.addLibraryIcon(libraryIconMaybeNull);
         melmService.updateLibrary(id, libraryName, majorVersion, minorVersion, hashForFile);
       } else {
