@@ -2,6 +2,8 @@ package lu.hitec.pssu.melm.persistence.dao;
 
 import java.util.List;
 
+import javax.annotation.CheckReturnValue;
+
 import lu.hitec.pssu.melm.persistence.entity.MapElementLibrary;
 
 public interface MapElementLibraryDAO {
@@ -14,6 +16,7 @@ public interface MapElementLibraryDAO {
 
   MapElementLibrary getMapElementLibrary(final long id);
 
+  @CheckReturnValue
   MapElementLibrary getMapElementLibrary(final String name, final int majorVersion, final int minorVersion);
 
   List<MapElementLibrary> listAllLibraries();

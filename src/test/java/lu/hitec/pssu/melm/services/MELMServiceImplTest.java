@@ -337,11 +337,11 @@ public class MELMServiceImplTest {
 
 	@Test
 	public void testMoveImportedIcons() throws MELMException, IOException {
-		final MapElementLibrary mapElementLibrary = melmService.addLibrary("emergency.lu", 1, 1, "");
 		final File tmpZipFile = new ClassPathResource("sample/zip/emergency.lu-1.1.zip").getFile();
 		final File targetArchiveFile = melmService.importLibrary("emergency.lu", 1, 1, tmpZipFile);
 		final File libraryFolder = melmService.extractImportedLibrary(targetArchiveFile);
 		final NodeList nodeList = melmService.validateImportedLibraryAndGetNodeList("emergency.lu", 1, 1);
+		final MapElementLibrary mapElementLibrary = melmService.addLibrary("emergency.lu", 1, 1, "");
 		melmService.moveImportedIcons(mapElementLibrary, nodeList, libraryFolder);
 	}
 

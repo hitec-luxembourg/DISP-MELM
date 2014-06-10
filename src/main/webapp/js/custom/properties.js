@@ -57,20 +57,26 @@ app.controller('PropertiesCtrl', [ '$scope', '$http', 'melmService', 'dialogs', 
   $scope.updateResource = function(data, id) {
     var uniqueName = data ? data.uniqueName : "";
     var type = data ? data.type : "";
-    melmService.post({
-      params : {
-        "id" : id,
-        "uniqueName" : typeof uniqueName !== "undefined" ? uniqueName : "",
-        "type" : typeof type !== "undefined" ? type : ""
-      },
-      url : '/rest/libraries/icons/properties/update',
-      successCallback : function() {
-        $scope.loadResources(melmService.getRESTParameter('properties/'));
-      },
-      errorCallback : function(data) {
-        dialogs.error('Error', data);
-      }
-    });
+    if(uniqueName!==""){
+      melmService.post({
+        params : {
+          "id" : id,
+          "uniqueName" : typeof uniqueName !== "undefined" ? uniqueName : "",
+          "type" : typeof type !== "undefined" ? type : ""
+        },
+        url : '/rest/libraries/icons/properties/update',
+        successCallback : function() {
+          $scope.loadResources(melmService.getRESTParameter('properties/'));
+        },
+        errorCallback : function(data) {
+          dialogs.error('Error', data);
+          // FIXME How to return string in order to prevent updated form?
+        }
+      });
+    } else {
+      dialogs.error('Error', 'Name is mandatory');
+      return 'Name is mandatory';
+    }
   };
 
   $scope.confirmDelete = function(id) {

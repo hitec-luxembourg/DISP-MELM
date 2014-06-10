@@ -2,8 +2,10 @@ package lu.hitec.pssu.melm.persistence.dao;
 
 import java.util.List;
 
+import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
@@ -49,6 +51,7 @@ public class MapElementLibraryDAOImpl implements MapElementLibraryDAO {
   }
 
   @Override
+  @CheckReturnValue
   public MapElementLibrary getMapElementLibrary(final String name, final int majorVersion, final int minorVersion) {
     final TypedQuery<MapElementLibrary> query = em
         .createQuery(
@@ -57,7 +60,11 @@ public class MapElementLibraryDAOImpl implements MapElementLibraryDAO {
     query.setParameter("name", name);
     query.setParameter("majorVersion", majorVersion);
     query.setParameter("minorVersion", minorVersion);
-    return query.getSingleResult();
+    try {
+      return query.getSingleResult();
+    } catch (final NoResultException e) {
+      return null;
+    }
   }
 
   @Override

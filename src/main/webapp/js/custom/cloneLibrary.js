@@ -1,4 +1,4 @@
-app.controller('CloneLibraryCtrl', [ '$scope', 'melmService', function($scope, melmService) {
+app.controller('CloneLibraryCtrl', [ '$scope', 'melmService', 'fileReader', function($scope, melmService, fileReader) {
   'use strict';
   
   $scope.back = function() {
@@ -6,4 +6,17 @@ app.controller('CloneLibraryCtrl', [ '$scope', 'melmService', function($scope, m
   };
 
   $scope.iconChoice = "existing";
+  
+  $scope.getFile = function(which) {
+    fileReader.readAsDataUrl($scope.file, $scope).then(function(result) {
+      switch (which) {
+      case 'libraryIconFile':
+        $scope.imageSrc = result;
+        break;
+
+      default:
+        break;
+      }
+    });
+  };
 } ]);

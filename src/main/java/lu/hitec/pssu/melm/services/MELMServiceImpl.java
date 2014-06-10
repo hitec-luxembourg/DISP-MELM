@@ -18,7 +18,6 @@ import java.util.zip.ZipFile;
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 import javax.imageio.ImageIO;
-import javax.persistence.NoResultException;
 import javax.transaction.Transactional;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -171,16 +170,15 @@ public class MELMServiceImpl implements MELMService {
     assert libraryName != null : "library name is null";
     assert libraryName.length() != 0 : "library name is empty";
     assert iconMd5 != null : "iconMd5 is null";
-    try {
-      mapElementLibraryDAO.getMapElementLibrary(libraryName, majorVersion, minorVersion);
+    final MapElementLibrary library = mapElementLibraryDAO.getMapElementLibrary(libraryName, majorVersion, minorVersion);
+    if (library != null) {
       final String msg = String.format("Library with name %s and version %d.%d already exist", libraryName, majorVersion, minorVersion);
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug(msg);
       }
       throw new MELMException(msg);
-    } catch (final NoResultException e) {
-      return mapElementLibraryDAO.addMapElementLibrary(libraryName, majorVersion, minorVersion, iconMd5);
     }
+    return mapElementLibraryDAO.addMapElementLibrary(libraryName, majorVersion, minorVersion, iconMd5);
   }
 
   @Override
@@ -261,25 +259,23 @@ public class MELMServiceImpl implements MELMService {
       @Nonnull final String iconMd5) throws MELMException {
     assert libraryName != null : "library name is null";
     assert libraryName.length() != 0 : "library name is empty";
-
-    try {
-      mapElementLibraryDAO.getMapElementLibrary(libraryName, majorVersion, minorVersion);
+    final MapElementLibrary library = mapElementLibraryDAO.getMapElementLibrary(libraryName, majorVersion, minorVersion);
+    if (library != null) {
       final String msg = String.format("Library with name %s and version %d.%d already exist", libraryName, majorVersion, minorVersion);
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug(msg);
       }
       throw new MELMException(msg);
-    } catch (final javax.persistence.NoResultException e) {
-      final MapElementLibrary oldMapElementLibrary = mapElementLibraryDAO.getMapElementLibrary(id);
-      final MapElementLibrary newMapElementLibrary = mapElementLibraryDAO.addMapElementLibrary(libraryName, majorVersion, minorVersion,
-          iconMd5);
-      for (final MapElementLibraryIcon mapElementLibraryIcon : mapElementLibraryIconDAO.getIconsInLibrary(oldMapElementLibrary)) {
-        mapElementLibraryIconDAO.addIconToLibrary(newMapElementLibrary, mapElementLibraryIcon.getIcon(),
-            mapElementLibraryIcon.getIndexOfIconInLibrary(), mapElementLibraryIcon.getIconNameInLibrary(),
-            mapElementLibraryIcon.getIconDescriptionInLibrary());
-      }
-      return newMapElementLibrary;
     }
+    final MapElementLibrary oldMapElementLibrary = mapElementLibraryDAO.getMapElementLibrary(id);
+    final MapElementLibrary newMapElementLibrary = mapElementLibraryDAO.addMapElementLibrary(libraryName, majorVersion, minorVersion,
+        iconMd5);
+    for (final MapElementLibraryIcon mapElementLibraryIcon : mapElementLibraryIconDAO.getIconsInLibrary(oldMapElementLibrary)) {
+      mapElementLibraryIconDAO.addIconToLibrary(newMapElementLibrary, mapElementLibraryIcon.getIcon(),
+          mapElementLibraryIcon.getIndexOfIconInLibrary(), mapElementLibraryIcon.getIconNameInLibrary(),
+          mapElementLibraryIcon.getIconDescriptionInLibrary());
+    }
+    return newMapElementLibrary;
   }
 
   @Override
@@ -677,49 +673,49 @@ public class MELMServiceImpl implements MELMService {
     assert libraryName.length() != 0 : "library name is empty";
     assert libraryFile != null : "library file is null";
 
-    try {
-      mapElementLibraryDAO.getMapElementLibrary(libraryName, majorVersion, minorVersion);
-      final String msg = String.format("Library with name %s and version %d.%d already exist", libraryName, majorVersion, minorVersion);
+    final MapElementLibrary library = mapElementLibraryDAO.getMapElementLibrary(libraryName, majorVersion, minorVersion);
+    if (library != null) {
+      final String msg = String.format("Library with name %s and version %d.%d already exist", library.getName(),
+          library.getMajorVersion(), library.getMinorVersion());
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug(msg);
       }
       throw new MELMException(msg);
-    } catch (final NoResultException e) {
-      final File targetArchiveFile = getTargetArchiveFile(libraryName, majorVersion, minorVersion);
-
-      if (targetArchiveFile.isFile()) {
-        LOGGER.warn(String.format("Target file for picture : %s exists, will be overwritten", targetArchiveFile.getName()));
-        if (!targetArchiveFile.delete()) {
-          LOGGER.debug(String.format("Could not delete file : %s", targetArchiveFile.getAbsolutePath()));
-        }
-      }
-
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(String.format("About to copy tmp. archive file %s to %s", libraryFile.getAbsolutePath(),
-            targetArchiveFile.getAbsolutePath()));
-      }
-      FileOutputStream out = null;
-      FileInputStream in = null;
-      try {
-        in = new FileInputStream(libraryFile);
-        out = new FileOutputStream(targetArchiveFile);
-        IOUtils.copy(in, out);
-        if (LOGGER.isDebugEnabled()) {
-          LOGGER.debug(String.format("Copied tmp. archive file %s to %s", libraryFile.getAbsolutePath(),
-              targetArchiveFile.getAbsolutePath()));
-        }
-      } catch (final Exception e2) {
-        final String msg = String.format("Failed copying archive to target location %s", targetArchiveFile.getName());
-        if (LOGGER.isDebugEnabled()) {
-          LOGGER.debug(msg);
-        }
-        throw new MELMException(msg, e2);
-      } finally {
-        MELMUtils.closeResource(out);
-        MELMUtils.closeResource(in);
-      }
-      return targetArchiveFile;
     }
+    final File targetArchiveFile = getTargetArchiveFile(libraryName, majorVersion, minorVersion);
+
+    if (targetArchiveFile.isFile()) {
+      LOGGER.warn(String.format("Target file for picture : %s exists, will be overwritten", targetArchiveFile.getName()));
+      if (!targetArchiveFile.delete()) {
+        LOGGER.debug(String.format("Could not delete file : %s", targetArchiveFile.getAbsolutePath()));
+      }
+    }
+
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug(String.format("About to copy tmp. archive file %s to %s", libraryFile.getAbsolutePath(),
+          targetArchiveFile.getAbsolutePath()));
+    }
+    FileOutputStream out = null;
+    FileInputStream in = null;
+    try {
+      in = new FileInputStream(libraryFile);
+      out = new FileOutputStream(targetArchiveFile);
+      IOUtils.copy(in, out);
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER
+            .debug(String.format("Copied tmp. archive file %s to %s", libraryFile.getAbsolutePath(), targetArchiveFile.getAbsolutePath()));
+      }
+    } catch (final Exception e2) {
+      final String msg = String.format("Failed copying archive to target location %s", targetArchiveFile.getName());
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug(msg);
+      }
+      throw new MELMException(msg, e2);
+    } finally {
+      MELMUtils.closeResource(out);
+      MELMUtils.closeResource(in);
+    }
+    return targetArchiveFile;
   }
 
   @Override
@@ -1193,7 +1189,18 @@ public class MELMServiceImpl implements MELMService {
   @Override
   public void updateLibrary(final long id, @Nonnull final String libraryName, final int majorVersion, final int minorVersion,
       final String iconMd5MaybeNull) throws MELMException {
-    mapElementLibraryDAO.updateMapElementLibrary(id, libraryName, majorVersion, minorVersion, iconMd5MaybeNull);
+    final MapElementLibrary oldLibrary = mapElementLibraryDAO.getMapElementLibrary(id);
+    if ((!oldLibrary.getName().equalsIgnoreCase(libraryName) || (oldLibrary.getMajorVersion() != majorVersion) || (oldLibrary
+        .getMinorVersion() != minorVersion))
+        && (mapElementLibraryDAO.getMapElementLibrary(libraryName, majorVersion, minorVersion) != null)) {
+      final String msg = String.format("Library with name %s and version %d.%d already exist", libraryName, majorVersion, minorVersion);
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug(msg);
+      }
+      throw new MELMException(msg);
+    } else {
+      mapElementLibraryDAO.updateMapElementLibrary(id, libraryName, majorVersion, minorVersion, iconMd5MaybeNull);
+    }
   }
 
   @Override

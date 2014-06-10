@@ -33,6 +33,12 @@ app.controller('ImportLibraryCtrl', [ '$scope', 'melmService', '$fileUploader', 
         return '|x-zip-compressed|'.indexOf(type) !== -1;
       });
 
+      uploader.filters.push(function(item /* {File|HTMLInputElement} */) {
+        var libraryName = $scope.detectLibraryName(item.name);
+        var version = $scope.detectLibraryVersion(item.name);
+        return libraryName !== '' && version !== '';
+      });
+
       $scope.go = function(path) {
         melmService.go(path);
       };
