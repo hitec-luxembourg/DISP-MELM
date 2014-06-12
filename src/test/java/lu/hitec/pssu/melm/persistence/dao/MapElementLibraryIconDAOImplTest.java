@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import java.util.List;
+import java.util.Map;
 
 import lu.hitec.pssu.melm.IntegrationTestSetUpAndTearDown;
 import lu.hitec.pssu.melm.persistence.entity.MapElementIcon;
@@ -51,6 +52,11 @@ public class MapElementLibraryIconDAOImplTest {
     final MapElementLibrary library = mapElementLibraryDAO.getMapElementLibrary("IntegrationTest", 1, 0);
 
     assertEquals(0, mapElementLibraryIconDAO.getIconsInLibrary(library).size());
+    
+    Map<Long, Integer> countLibrariesElements = mapElementLibraryIconDAO.countLibrariesElements();
+    Integer count = countLibrariesElements.get(library.getId());
+    assertNull(count);
+    
 
     final MapElementIcon mapElementIcon = mapElementIconDAO.getMapElementIcon("IntegrationTestHash", 100);
     mapElementLibraryIconDAO.addIconToLibrary(library, mapElementIcon, 1, "iconNameInLibrary", "iconDescriptionInLibrary");
@@ -58,6 +64,10 @@ public class MapElementLibraryIconDAOImplTest {
     final List<MapElementLibraryIcon> iconsInLibrary = mapElementLibraryIconDAO.getIconsInLibrary(library);
     assertEquals(1, iconsInLibrary.size());
 
+    countLibrariesElements = mapElementLibraryIconDAO.countLibrariesElements();
+    count = countLibrariesElements.get(library.getId());
+    assertEquals(Integer.valueOf(1), count);
+    
     mapElementLibraryIconDAO.deleteLibraryIcon(iconsInLibrary.get(0).getId());
 
     assertEquals(0, mapElementLibraryIconDAO.getIconsInLibrary(library).size());

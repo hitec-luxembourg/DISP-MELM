@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -730,6 +731,11 @@ public class MELMServiceImpl implements MELMService {
   @Override
   public List<MapElementLibrary> listAllLibraries() {
     return mapElementLibraryDAO.listAllLibraries();
+  }
+
+  @Override
+  public Map<Long, Integer> countLibrariesElements() {
+    return mapElementLibraryIconDAO.countLibrariesElements();
   }
 
   @Override

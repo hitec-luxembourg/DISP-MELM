@@ -19,6 +19,9 @@
 		<div class="page-header">
 			<h1>Libraries List</h1>
 		</div>
+		<c:if test="${not empty it}">
+			<div class="alert alert-danger">${it}</div>
+		</c:if>
 		<progressbar class="progress-striped active" value="100" type="warning" ng-show="loadingVisible">
 		<i>Loading resources</i></progressbar>
 		<div class="table-responsive">
@@ -48,7 +51,7 @@
 									<span class="glyphicon glyphicon-random"></span>
 									<span class="hidden-xs hidden-sm">Clone</span>
 								</button></li>
-							<li><button class="btn" ng-click="go('/rest/libraries/zip/'+library.name+'-'+library.majorVersion+'.'+library.minorVersion+'.zip')">
+							<li><button class="btn" ng-disabled="!library.hasElements" ng-click="go('/rest/libraries/zip/'+library.name+'-'+library.majorVersion+'.'+library.minorVersion+'.zip')">
 									<span class="glyphicon glyphicon-download"></span>
 									<span class="hidden-xs hidden-sm">Zip</span>
 								</button></li>

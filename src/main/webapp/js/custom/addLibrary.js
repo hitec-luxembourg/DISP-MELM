@@ -49,7 +49,7 @@ app.controller('AddLibraryCtrl', [ '$scope', 'melmService', '$fileUploader', 'di
   };
 
   $scope.isAddActive = function() {
-    return $scope.libraryName && "" != $scope.libraryName && $scope.version && "" != $scope.version && uploader.queue.length === 1; 
+    return $scope.libraryName && "" !== $scope.libraryName && $scope.version && "" !== $scope.version && uploader.queue.length === 1; 
   };
 
   $scope.create = function() {

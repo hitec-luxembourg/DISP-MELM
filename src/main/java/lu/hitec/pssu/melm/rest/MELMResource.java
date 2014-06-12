@@ -238,6 +238,13 @@ public class MELMResource {
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
+  @Path("/countLibrariesElements/json")
+  public Response countLibrariesElements() {
+    return Response.ok(melmService.countLibrariesElements()).build();
+  }
+
+  @GET
+  @Produces(MediaType.APPLICATION_JSON)
   @Path("/libraries/icons/properties/json/{id}")
   public Response getProperties(@PathParam("id") final long id) {
     final List<MapElementCustomProperty> properties = melmService.getProperties(id);
@@ -762,8 +769,8 @@ public class MELMResource {
       return Response.ok(zipFile).build();
     } catch (final MELMException e) {
       LOGGER.warn("Error in performZipLibrary", e);
-      final String error = e.getMessage();
-      return Response.status(Status.BAD_REQUEST).entity(error).build();
+      // final String error = e.getMessage();
+      return Response.ok(new Viewable("/libraries", "Error when creating zip. Maybe the library does not contain any image ?")).build();
     }
   }
 
