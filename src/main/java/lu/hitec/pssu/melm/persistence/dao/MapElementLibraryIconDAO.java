@@ -1,6 +1,7 @@
 package lu.hitec.pssu.melm.persistence.dao;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.CheckReturnValue;
@@ -21,6 +22,8 @@ public interface MapElementLibraryIconDAO {
   boolean checkNameInLibrary(@Nonnull MapElementLibrary library, @Nonnull String iconName);
 
   void deleteLibraryIcon(long id);
+
+  Map<Long, Integer> countLibrariesElements();
 
   List<MapElementLibraryIcon> getIconsInLibrary(MapElementLibrary library);
 

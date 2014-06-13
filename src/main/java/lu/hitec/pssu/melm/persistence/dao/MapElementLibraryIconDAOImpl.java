@@ -1,7 +1,10 @@
 package lu.hitec.pssu.melm.persistence.dao;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.CheckReturnValue;
@@ -9,6 +12,7 @@ import javax.annotation.Nonnull;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import lu.hitec.pssu.melm.persistence.entity.MapElementIcon;
@@ -59,6 +63,26 @@ public class MapElementLibraryIconDAOImpl implements MapElementLibraryIconDAO {
   public void deleteLibraryIcon(final long id) {
     final MapElementLibraryIcon libraryIcon = em.find(MapElementLibraryIcon.class, id);
     em.remove(libraryIcon);
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public Map<Long, Integer> countLibrariesElements() {
+    final Map<Long, Integer> result = new HashMap<Long, Integer>();
+    final Query query = em.createQuery("SELECT li.library.id, count(li) FROM MapElementLibraryIcon li GROUP BY li.library.id");
+    List<Object[]> queryResult = null;
+    try {
+      queryResult = query.getResultList();
+    } catch (final NoResultException e) {
+      // It is possible that no value exists
+      queryResult = new ArrayList<Object[]>();
+    }
+    if (null != queryResult) {
+      for (final Object[] row : queryResult) {
+        result.put((Long)row[0], ((Long)row[1]).intValue());
+      }
+    }
+    return result;
   }
 
   @Override

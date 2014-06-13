@@ -2,6 +2,7 @@ package lu.hitec.pssu.melm.services;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
@@ -88,6 +89,8 @@ public interface MELMService {
   List<MapElementIcon> listAllIcons();
 
   List<MapElementLibrary> listAllLibraries();
+
+  Map<Long, Integer> countLibrariesElements();
 
   void moveImportedIcons(@Nonnull MapElementLibrary mapElementLibrary, @Nonnull NodeList nodeList, @Nonnull File libraryFolder)
       throws MELMException;
