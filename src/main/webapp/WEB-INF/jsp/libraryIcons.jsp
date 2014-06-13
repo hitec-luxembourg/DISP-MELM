@@ -18,7 +18,7 @@
 	<div class="container">
 		<div class="page-header">
 			<h1>
-				List library elements <small>{{resources.library.name}}-{{resources.library.majorVersion}}.{{resources.library.minorVersion}}</small>
+				Library Elements List <small>{{resources.library.name}}-{{resources.library.majorVersion}}.{{resources.library.minorVersion}}</small>
 			</h1>
 		</div>
 		<progressbar class="progress-striped active" value="100" type="warning" ng-show="loadingVisible"> <i>Loading resources</i></progressbar>
@@ -75,7 +75,7 @@
 		<button class="btn btn-delete" ng-disabled="!someSelected()" ng-click="confirmDeleteMultiple()">Delete selected</button>
 		<button type="button" ng-click="go('/rest/libraries')" class="btn btn-default">
 			<span class="glyphicon glyphicon-remove"></span>
-			Back
+			Cancel
 		</button>
 	</div>
 	<jsp:include page="footer.jsp" />

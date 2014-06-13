@@ -2,15 +2,33 @@ app.controller('LibrariesCtrl', [ '$scope', '$http', 'melmService', function($sc
   'use strict';
 
   $scope.loadResources = function() {
+
+    // Load the libraries
     melmService.loadResources($scope, '/rest/libraries/json', function() {
-      var data = $scope.resources;
-      if (data && data.libraries && 0 < data.libraries.length) {
-        for (var i = 0; i < data.libraries.length; i++) {
-          var library = data.libraries[i];
-          angular.extend(library, {
-            checked : false
-          });
-        }
+      var data_ = $scope.resources;
+      if (data_ && 0 < data_.length) {
+
+        // See if the libraries have elements
+        $http.get(melmContextRoot + '/rest/countLibrariesElements/json').success(function(data, status, headers, config) {
+          $scope.librariesElements = data;
+          for (var i = 0; i < $scope.resources.length; i++) {
+            var library = $scope.resources[i];
+            angular.extend(library, {
+              checked : false
+            });
+            if ($scope.librariesElements && $scope.librariesElements[library.id] && 0 < $scope.librariesElements[library.id]) {
+              angular.extend(library, {
+                hasElements : true
+              });
+            } else {
+              angular.extend(library, {
+                hasElements : false
+              });
+            }
+          }
+        }).error(function(data, status, headers, config) {
+          // N/A
+        });
       }
     });
   };
