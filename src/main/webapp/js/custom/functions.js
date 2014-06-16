@@ -30,6 +30,13 @@ app.service('melmService', [ '$http', '$window', 'dialogs', function($http, $win
     });
   };
 
+  this.setFocus = function(fieldId) {
+    var theField = document.getElementById(fieldId);
+    if (theField) {
+      theField.focus();
+    }
+  };
+
   this.go = function(path) {
     $window.location = melmContextRoot + path;
   };

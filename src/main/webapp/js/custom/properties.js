@@ -57,7 +57,7 @@ app.controller('PropertiesCtrl', [ '$scope', '$http', 'melmService', 'dialogs', 
   $scope.updateResource = function(data, id) {
     var uniqueName = data ? data.uniqueName : "";
     var type = data ? data.type : "";
-    if(uniqueName!==""){
+    if (uniqueName !== "") {
       melmService.post({
         params : {
           "id" : id,
@@ -70,7 +70,8 @@ app.controller('PropertiesCtrl', [ '$scope', '$http', 'melmService', 'dialogs', 
         },
         errorCallback : function(data) {
           dialogs.error('Error', data);
-          // FIXME How to return string in order to prevent updated form?
+          // TODO find a way to make field editable.
+          $scope.loadResources(melmService.getRESTParameter('properties/'));
         }
       });
     } else {

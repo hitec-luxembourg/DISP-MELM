@@ -1,6 +1,6 @@
 app.controller('UpdateLibraryIconCtrl', [ '$scope', '$http', '$window', 'melmService', function($scope, $http, $window, melmService) {
   'use strict';
-  
+
   $scope.loadResources = function() {
     melmService.loadResources($scope, '/rest/icons/linked/json', function() {
       $scope.processLinks($scope.resources);
@@ -8,11 +8,11 @@ app.controller('UpdateLibraryIconCtrl', [ '$scope', '$http', '$window', 'melmSer
   };
 
   $scope.links = {};
-  
+
   $scope.processLinks = function(data) {
     $scope.links = {};
-    if(data && 0 < data.length) {
-      for(var i = 0; i < data.length; i++) {
+    if (data && 0 < data.length) {
+      for (var i = 0; i < data.length; i++) {
         var icon = data[i].icon;
         $scope.links[icon.id] = melmContextRoot + "/rest/icons/file/" + icon.id + "/MEDIUM";
       }
@@ -22,9 +22,9 @@ app.controller('UpdateLibraryIconCtrl', [ '$scope', '$http', '$window', 'melmSer
   $scope.changeImage = function(id, which) {
     $scope.links[id] = melmContextRoot + "/rest/icons/file/" + which + id + "/MEDIUM";
   };
-  
+
   $scope.back = function() {
-    melmService.back();
+    melmService.go("/rest/libraries/icons/" + $scope.libraryId);
   };
 
   $scope.selectImage = function(id, libraries) {
