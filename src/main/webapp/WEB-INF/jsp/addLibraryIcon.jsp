@@ -28,7 +28,7 @@
     <c:if test="${not empty it.error}">
       <div class="alert alert-danger">${it.error}</div>
     </c:if>
-    <form method="POST" action="${ctx}/rest/libraries/icons/add" class="form-horizontal" role="form">
+    <form name="addLibraryIconForm" method="POST" action="${ctx}/rest/libraries/icons/add" class="form-horizontal" role="form">
       <input name="id" id="id" type="hidden" value="${it.library.id}" /> <input name="iconIndex" id="iconIndex" type="hidden" value="-1" />
       <input type="text" id="iconId" name="iconId" ng-value="id" ng-checked="isSelected(-1)" style="display: none" />
       <div class="row">
@@ -44,18 +44,22 @@
       <div class="form-group">
         <label for="iconName" class="col-sm-2 control-label">Element name</label>
         <div class="col-sm-10">
-          <input type="text" class="form-control" id="iconName" name="iconName" placeholder="Specify an element name" />
+          <input type="text" class="form-control" id="iconName" name="iconName" placeholder="Specify an element name" ng-model="iconName" ng-minlength="3" ng-maxlength="40" ng-required="true"/> <span class="error"
+              ng-show="addLibraryIconForm.iconName.$error.minlength"> Too short (3-40)!</span> <span class="error"
+              ng-show="addLibraryIconForm.iconName.$error.maxlength"> Too long (3-40)!</span>
         </div>
       </div>
       <div class="form-group">
         <label for="iconDescription" class="col-sm-2 control-label">Element description</label>
         <div class="col-sm-10">
-          <input type="text" class="form-control" id="iconDescription" name="iconDescription" placeholder="Specify an element description" />
+          <input type="text" class="form-control" id="iconDescription" name="iconDescription" placeholder="Specify an element description" ng-model="iconDescription" ng-minlength="3" ng-maxlength="40" ng-required="true"/> <span class="error"
+              ng-show="addLibraryIconForm.iconDescription.$error.minlength"> Too short (3-40)!</span> <span class="error"
+              ng-show="addLibraryIconForm.iconDescription.$error.maxlength"> Too long (3-40)!</span>
         </div>
       </div>
       <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
-          <button type="submit" class="btn btn-add">Add</button>
+          <button type="submit" class="btn btn-add" ng-disabled="!isAddActive()">Add</button>
           <button type="button" ng-click="back()" class="btn btn-default">
             <span class="glyphicon glyphicon-remove"></span>Cancel
           </button>

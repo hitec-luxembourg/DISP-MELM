@@ -39,6 +39,10 @@ app.controller('AddLibraryIconCtrl', [ '$scope', '$http', '$window', 'melmServic
     return mainClasses;
   };
 
+  $scope.isAddActive = function() {
+    return $scope.iconName && "" !== $scope.iconName && $scope.iconDescription && "" !== $scope.iconDescription; 
+  };
+
   $scope.loadingVisible = false;
   $scope.libraryId = $window.libraryId;
   $scope.id = -1;
